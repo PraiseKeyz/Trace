@@ -35,7 +35,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-all duration-300">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-all duration-300">
               <span className="font-bold text-white text-lg font-mono">T</span>
             </div>
             <div>
@@ -67,7 +67,7 @@ export default function LandingPage() {
       <Hero />
 
       {/* Why Trace Section */}
-      <section id="why-trace" className="relative z-10 py-32 bg-gradient-to-b from-white to-slate-50">
+      <section id="why-trace" className="relative z-10 py-32 bg-linear-to-b from-white to-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-20">
             <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-950 mb-6 leading-tight">
