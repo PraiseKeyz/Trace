@@ -21,10 +21,10 @@ export default function PortfolioPage() {
   ]
 
   const assets = [
-    { name: 'Savings Account', value: 120000, percent: 40, icon: '🏦', color: 'bg-green-100' },
-    { name: 'Investments', value: 62000, percent: 21, icon: '📈', color: 'bg-blue-100' },
+    { name: 'Savings Account', value: 120000, percent: 40, icon: '🏦', color: 'bg-orange-100' },
+    { name: 'Investments', value: 62000, percent: 21, icon: '📈', color: 'bg-slate-100' },
     { name: 'Trade Business', value: 95000, percent: 32, icon: '🏪', color: 'bg-trace-accent/10' },
-    { name: 'Crypto Holdings', value: 15000, percent: 5, icon: '₿', color: 'bg-yellow-100' },
+    { name: 'Crypto Holdings', value: 15000, percent: 5, icon: '₿', color: 'bg-orange-50' },
   ]
 
   const liabilities = [
@@ -62,13 +62,13 @@ export default function PortfolioPage() {
               <p className="text-xs text-muted-foreground mt-2">-8% from last month</p>
             </div>
 
-            <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-lg p-6 border border-green-200">
+            <div className="bg-gradient-to-br from-orange-100 to-orange-50 rounded-lg p-6 border border-orange-200">
               <div className="flex items-center gap-3 mb-2">
-                <PiggyBank className="text-green-600" size={24} />
+                <PiggyBank className="text-orange-600" size={24} />
                 <p className="text-sm font-medium text-muted-foreground">Net Worth</p>
               </div>
               <p className="text-3xl font-bold text-foreground">₦{(netWorth / 1000).toFixed(0)}K</p>
-              <p className="text-xs text-green-600 font-medium mt-2">↑ 18.2% this month</p>
+              <p className="text-xs text-orange-600 font-medium mt-2">↑ 18.2% this month</p>
             </div>
           </div>
         </div>
@@ -87,9 +87,9 @@ export default function PortfolioPage() {
               <Line
                 type="monotone"
                 dataKey="worth"
-                stroke="#1B4332"
+                stroke="#111827"
                 strokeWidth={3}
-                dot={{ fill: '#1B4332', r: 5 }}
+                dot={{ fill: '#111827', r: 5 }}
               />
             </LineChart>
           </ResponsiveContainer>
@@ -134,7 +134,7 @@ export default function PortfolioPage() {
                 <XAxis dataKey="month" stroke="#999" />
                 <YAxis stroke="#999" />
                 <Tooltip />
-                <Area type="monotone" dataKey="savings" stackId="1" fill="#1B4332" name="Savings" />
+                <Area type="monotone" dataKey="savings" stackId="1" fill="#111827" name="Savings" />
                 <Area type="monotone" dataKey="investments" stackId="1" fill="#F4A826" name="Investments" />
                 <Area type="monotone" dataKey="loans" stackId="1" fill="#E0E0E0" name="Loans" />
               </AreaChart>

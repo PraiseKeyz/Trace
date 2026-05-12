@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { motion, Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Briefcase, TrendingUp, PiggyBank, ArrowRight, CheckCircle, Shield, Zap, Users, Award, Clock, ArrowUpRight, Star } from 'lucide-react'
+import Hero from '@/components/Hero'
 
 export default function LandingPage() {
   const staggerContainer: Variants = {
@@ -34,27 +35,27 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-trace-primary to-[#0a281a] shadow-lg shadow-trace-primary/20 group-hover:scale-105 transition-all duration-300">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-all duration-300">
               <span className="font-bold text-white text-lg font-mono">T</span>
             </div>
             <div>
-              <span className="text-xl font-black text-trace-primary tracking-tight">Trace</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-trace-primary/50 block -mt-1">Economic Identity</span>
+              <span className="text-xl font-black text-slate-950 tracking-tight">Trace</span>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-orange-500 block -mt-1">Economic Identity</span>
             </div>
           </Link>
           <nav className="hidden md:flex gap-10 items-center">
             {['Why Trace', 'Features', 'Impact'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-bold text-trace-text/70 hover:text-trace-primary transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-trace-accent after:transition-all hover:after:w-full">
+              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-bold text-slate-700 hover:text-orange-500 transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-orange-500 after:transition-all hover:after:w-full">
                 {item}
               </a>
             ))}
           </nav>
           <div className="flex gap-4 items-center">
-            <Link href="/login" className="text-sm font-bold text-trace-text hover:text-trace-primary transition-colors">
+            <Link href="/login" className="text-sm font-bold text-trace-text hover:text-orange-500 transition-colors">
               Sign In
             </Link>
             <Link href="/onboarding">
-              <Button className="bg-trace-primary hover:bg-[#133224] text-white rounded-full px-6 font-bold shadow-lg shadow-trace-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+              <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 font-bold shadow-lg shadow-orange-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                 Get Started
               </Button>
             </Link>
@@ -62,282 +63,313 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <motion.div 
-            initial="hidden" 
-            animate="show" 
-            variants={staggerContainer}
-            className="max-w-2xl"
+      {/* Hero Section (refactored) */}
+      <Hero />
+
+      {/* Why Trace Section */}
+      <section id="why-trace" className="relative z-10 py-32 bg-gradient-to-b from-white to-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mb-20">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-950 mb-6 leading-tight">
+              Why we built Trace.
+            </h2>
+            <p className="text-xl text-slate-700 leading-relaxed font-medium">
+              Billions of workers in Africa generate real economic value every day—but the financial system doesn't see them. They're locked out of credit, insurance, and formal opportunities because they lack a verifiable economic identity. We're changing that.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-16 mb-20">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="space-y-8"
+            >
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+                    <Shield className="w-6 h-6 text-orange-500" />
+                  </motion.div>
+                  Bank-grade security, on your terms.
+                </h3>
+                <p className="text-slate-700 leading-relaxed">
+                  Your economic data is encrypted end-to-end. You own your identity. You control who sees it and when. No exploitative middlemen, no data brokers.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+                    <Zap className="w-6 h-6 text-orange-500" />
+                  </motion.div>
+                  Verify instantly. No paperwork.
+                </h3>
+                <p className="text-slate-700 leading-relaxed">
+                  QR codes, digital wallets, and voice verification mean you can prove your hustle in minutes—without office hours or bureaucracy. Mobile-first, always available.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+                    <Award className="w-6 h-6 text-orange-500" />
+                  </motion.div>
+                  Every transaction builds your score.
+                </h3>
+                <p className="text-slate-700 leading-relaxed">
+                  Work completed, trades settled, payments made—it all counts. Your economic footprint becomes a real asset that compounds over time.
+                </p>
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="space-y-8"
+            >
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
+                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+                    <Clock className="w-6 h-6 text-orange-500" />
+                  </motion.div>
+                  Always on, always accessible.
+                </h3>
+                <p className="text-slate-700 leading-relaxed">
+                  No closing times. No minimum balance. No gatekeepers deciding if you're "creditworthy enough." Access opportunities and financial products 24/7.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+                    <Users className="w-6 h-6 text-orange-500" />
+                  </motion.div>
+                  Community vouches build trust.
+                </h3>
+                <p className="text-slate-700 leading-relaxed">
+                  Your peers know your work. Peer recommendations and verified reviews create a network effect—trust becomes tradeable capital.
+                </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+              >
+                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
+                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+                    <TrendingUp className="w-6 h-6 text-orange-500" />
+                  </motion.div>
+                  Tools to grow, not just survive.
+                </h3>
+                <p className="text-slate-700 leading-relaxed">
+                  Real-time analytics, market intelligence, and income tracking help you make smarter decisions and scale your business intentionally.
+                </p>
+              </motion.div>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-br from-orange-50 to-white border border-orange-200 rounded-3xl p-12 text-center"
           >
-            <motion.div variants={fadeIn} className="inline-flex items-center gap-2 mb-8 px-4 py-2 bg-white/80 backdrop-blur-md rounded-full border border-white shadow-sm">
-              <span className="flex h-2 w-2 rounded-full bg-trace-accent animate-pulse"></span>
-              <span className="text-xs font-bold text-trace-text uppercase tracking-wider">Trusted by 50K+ Workers</span>
-            </motion.div>
-            
-            <motion.h1 variants={fadeIn} className="text-5xl lg:text-7xl font-black text-trace-text mb-6 leading-[1.1] tracking-tight">
-              Your hustle has a <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-trace-primary to-trace-accent">
-                footprint.
-              </span>
-            </motion.h1>
-            
-            <motion.p variants={fadeIn} className="text-lg text-trace-text/70 mb-10 leading-relaxed font-medium">
-              Build your Economic Identity Score and unlock access to verified work opportunities, trade intelligence, and financial products—all designed specifically for African informal traders and gig workers.
-            </motion.p>
-            
-            <motion.div variants={fadeIn} className="flex flex-col sm:flex-row gap-4 mb-10">
-              <Link href="/onboarding">
-                <Button size="lg" className="bg-trace-primary hover:bg-[#133224] text-white w-full sm:w-auto font-bold text-base rounded-2xl h-14 px-8 shadow-[0_8px_30px_rgb(27,67,50,0.2)] hover:shadow-[0_8px_30px_rgb(27,67,50,0.4)] hover:-translate-y-1 transition-all duration-300">
-                  Create Free Account <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <button className="h-14 px-8 rounded-2xl font-bold text-trace-primary bg-white border border-trace-primary/10 hover:border-trace-primary/30 hover:bg-trace-primary/5 shadow-sm hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2">
-                Watch Demo
-              </button>
-            </motion.div>
-
-            <motion.div variants={fadeIn} className="flex items-center gap-8">
-              <div className="flex -space-x-3">
-                {[1,2,3,4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-trace-surface bg-trace-light flex items-center justify-center text-xs">👨🏾‍t</div>
-                ))}
-              </div>
-              <div className="flex flex-col">
-                <div className="flex text-trace-accent">
-                  {[1,2,3,4,5].map(i => <Star key={i} size={14} fill="currentColor" />)}
-                </div>
-                <span className="text-xs font-bold text-trace-text/60 mt-1">4.9/5 from 2,000+ reviews</span>
-              </div>
-            </motion.div>
-          </motion.div>
-
-          {/* Hero Visual */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95, rotate: 1 }}
-            animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative lg:h-[600px] flex items-center justify-center"
-          >
-            {/* Abstract decorations */}
-            <div className="absolute top-10 right-10 w-24 h-24 bg-trace-accent/20 rounded-full blur-xl animate-pulse" />
-            <div className="absolute bottom-10 left-10 w-32 h-32 bg-trace-primary/20 rounded-full blur-2xl" />
-
-            {/* Main Glass Card */}
-            <div className="relative w-full max-w-md bg-white/60 backdrop-blur-2xl rounded-[2.5rem] border border-white p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] hover:-translate-y-2 transition-transform duration-700">
-              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-trace-primary/30 to-transparent opacity-50" />
-              
-              <div className="flex items-center justify-between mb-10">
-                <div>
-                  <h3 className="text-sm font-black text-trace-text/50 uppercase tracking-widest">Your Score</h3>
-                  <p className="text-xs font-semibold text-trace-text mt-1">Updated just now</p>
-                </div>
-                <span className="px-4 py-1.5 bg-[#E8F5E9] text-[#2E7D32] rounded-full text-xs font-black tracking-wide border border-[#C8E6C9]">EXCELLENT</span>
-              </div>
-
-              <div className="flex flex-col items-center justify-center mb-10 relative">
-                <svg className="w-48 h-48 drop-shadow-xl" viewBox="0 0 100 100">
-                  <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(27,67,50,0.1)" strokeWidth="6" />
-                  <motion.circle 
-                    initial={{ strokeDashoffset: 283 }}
-                    animate={{ strokeDashoffset: 73 }} // Represents ~74%
-                    transition={{ duration: 1.5, ease: "easeInOut", delay: 0.5 }}
-                    cx="50" cy="50" r="45" fill="none" stroke="var(--primary)" strokeWidth="6" strokeDasharray="282.7" strokeLinecap="round" className="origin-center -rotate-90" 
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-5xl font-black text-trace-primary tracking-tighter">742</span>
-                  <span className="text-xs font-bold text-trace-text/50 mt-1 uppercase tracking-widest">Top 15%</span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3 bg-white rounded-2xl p-4 shadow-sm border border-trace-light">
-                {[
-                  { label: 'Work', score: '8.5', color: 'text-trace-primary' },
-                  { label: 'Trade', score: '7.2', color: 'text-trace-accent' },
-                  { label: 'Finance', score: '8.8', color: 'text-[#2E7D32]' }
-                ].map((stat, i) => (
-                  <div key={i} className="text-center p-2 rounded-xl hover:bg-trace-surface transition-colors cursor-pointer">
-                    <p className="text-[10px] font-bold text-trace-text/50 uppercase tracking-wider mb-1">{stat.label}</p>
-                    <p className={`text-xl font-black ${stat.color}`}>{stat.score}</p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-6 flex justify-center">
-                <Button variant="ghost" className="text-trace-primary font-bold hover:bg-trace-primary/5 rounded-xl w-full">
-                  View Full Report <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+            <p className="text-lg font-semibold text-slate-950 mb-4">
+              The result: Your hustle becomes official. Your hustle becomes bankable. Your hustle becomes your future.
+            </p>
+            <p className="text-slate-700">
+              50,000+ workers are already using Trace to unlock opportunities they never thought possible.
+            </p>
           </motion.div>
         </div>
       </section>
 
-      {/* Why Trace Section */}
-      <section id="why-trace" className="relative z-10 py-24 bg-white">
+      {/* Three Pillars (Features) */}
+      <section id="features" className="relative z-10 py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-20">
-            <h2 className="text-4xl font-black text-trace-text mb-6">Built for the <span className="text-trace-primary">Real Economy</span></h2>
-            <p className="text-lg text-trace-text/70 font-medium">We designed Trace from the ground up to serve African informal workers, gig drivers, traders, and artisans.</p>
+          <div className="max-w-3xl mb-20">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-950 mb-6 leading-tight">
+              Three pillars of economic power.
+            </h2>
+            <p className="text-xl text-slate-700 leading-relaxed font-medium">
+              Trace connects three critical dimensions of the informal economy: access to work, business intelligence, and financial services.
+            </p>
           </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div className="grid lg:grid-cols-3 gap-10">
             {[
-              { icon: Shield, title: 'Privacy First', desc: 'Your data is bank-grade encrypted and strictly yours to control.' },
-              { icon: Zap, title: 'Instant Verification', desc: 'Get your economic identity verified in minutes via mobile.' },
-              { icon: Award, title: 'Score Builder', desc: 'Every gig and trade helps build your score over time.' },
-              { icon: Clock, title: '24/7 Access', desc: 'Opportunities and financial tools available around the clock.' },
-              { icon: Users, title: 'Community Trust', desc: 'Leverage peer verification to boost your standing.' },
-              { icon: TrendingUp, title: 'Growth Tools', desc: 'Analytics and insights to help you manage your hustle.' },
-            ].map((item, idx) => (
-              <motion.div 
-                key={idx}
+              {
+                key: 'work',
+                icon: Briefcase,
+                title: 'From gig to verified employment.',
+                intro: 'Browse nearby daily gigs, freelance projects, and formal job opportunities. Trace matches you based on your skills, availability, and location—then handles verification and direct payment to your wallet.',
+                items: [
+                  { label: 'Verified daily gigs', desc: 'Real work from vetted employers' },
+                  { label: 'Skill-based matching', desc: 'AI-powered job recommendations' },
+                  { label: 'Instant payouts', desc: 'Funds to your wallet in minutes' },
+                ],
+                color: 'bg-orange-500',
+                iconColor: 'text-white',
+              },
+              {
+                key: 'trade',
+                icon: TrendingUp,
+                title: 'Intelligence for traders, by traders.',
+                intro: 'Real-time market prices, supplier networks, and competitor intelligence. Track your revenue, forecast demand, and make data-driven decisions.',
+                items: [
+                  { label: 'Live market pricing', desc: 'Real prices from regional markets' },
+                  { label: 'Supplier network', desc: 'Direct access to bulk sellers' },
+                  { label: 'Revenue tracking', desc: 'See what sells and when' },
+                ],
+                color: 'bg-orange-500',
+                iconColor: 'text-white',
+              },
+              {
+                key: 'finance',
+                icon: PiggyBank,
+                title: 'Financial tools built for you.',
+                intro: 'Access credit, savings, and insurance designed for workers and traders without traditional bank accounts.',
+                items: [
+                  { label: 'Flexible micro-credit', desc: 'Borrow what you need, when you need it' },
+                  { label: 'Savings products', desc: 'Grow your money with your economic activity' },
+                  { label: 'Comprehensive protection', desc: 'Guard your income, tools, and inventory' },
+                ],
+                color: 'bg-orange-500',
+                iconColor: 'text-white',
+              },
+            ].map((col, i) => (
+              <motion.div
+                key={col.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: idx * 0.1 }}
-                className="group p-8 rounded-3xl bg-trace-surface hover:bg-white border border-transparent hover:border-trace-primary/10 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-500 cursor-pointer"
+                transition={{ delay: i * 0.08 }}
+                className="relative bg-white rounded-3xl p-8 border border-slate-100 shadow-sm"
               >
-                <div className="w-14 h-14 bg-white group-hover:bg-trace-primary rounded-2xl flex items-center justify-center mb-6 shadow-sm transition-colors duration-500">
-                  <item.icon className="w-6 h-6 text-trace-primary group-hover:text-white transition-colors" />
+                <div className="flex flex-col items-center text-center gap-4">
+                  <div className={`p-4 rounded-xl ${col.color} ${col.iconColor} shadow-md backdrop-blur-sm border border-white/10`}> 
+                    <col.icon className="w-8 h-8" />
+                  </div>
+
+                  <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 }} className="w-full">
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-slate-600 mb-1">{col.key === 'work' ? 'The Work Pillar' : col.key === 'trade' ? 'The Trade Pillar' : 'The Finance Pillar'}</h4>
+                    <h3 className="text-2xl font-black text-slate-900 mb-2">{col.title}</h3>
+                    <p className="text-sm text-slate-700 mb-3">{col.intro}</p>
+                    <ul className="space-y-3 text-left">
+                      {col.items.map((item, j) => (
+                        <motion.li key={j} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 + j * 0.08 }} className="flex gap-3 items-start">
+                          <CheckCircle className="w-5 h-5 text-orange-500 mt-1 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold text-slate-900">{item.label}</p>
+                            <p className="text-sm text-slate-600">{item.desc}</p>
+                          </div>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </motion.div>
                 </div>
-                <h3 className="text-xl font-bold text-trace-text mb-3 group-hover:text-trace-primary transition-colors">{item.title}</h3>
-                <p className="text-trace-text/70 leading-relaxed text-sm font-medium">{item.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Three Pillars (Features) */}
-      <section id="features" className="relative z-10 py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <h2 className="text-4xl font-black text-trace-text mb-6">Three Pillars of <br/> Economic Power</h2>
-            <p className="text-lg text-trace-text/70 font-medium">A complete ecosystem connecting your hard work to tangible financial and career growth.</p>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Work Pillar */}
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="group bg-white rounded-[2.5rem] p-8 shadow-sm hover:shadow-xl border border-trace-border/50 transition-all duration-500 flex flex-col"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-trace-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                <Briefcase className="w-8 h-8 text-trace-primary" />
-              </div>
-              <h3 className="text-2xl font-black text-trace-text mb-4">Work Opportunities</h3>
-              <p className="text-trace-text/70 mb-8 flex-1 leading-relaxed font-medium">Find gig work, daily wages, and employment opportunities matched accurately to your skills and location.</p>
-              
-              <ul className="space-y-4 mb-8">
-                {['Verified daily gigs', 'Skill-based matching', 'Instant digital payouts'].map((li, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-bold text-trace-text/80">
-                    <CheckCircle className="w-5 h-5 text-trace-primary" /> {li}
-                  </li>
-                ))}
-              </ul>
-              
-              <Button variant="outline" className="w-full rounded-xl border-trace-primary text-trace-primary hover:bg-trace-primary hover:text-white font-bold h-12">
-                Explore Work
-              </Button>
-            </motion.div>
-
-            {/* Trade Pillar */}
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="group bg-gradient-to-b from-[#FFFDF9] to-white rounded-[2.5rem] p-8 shadow-sm hover:shadow-xl border border-trace-accent/20 hover:border-trace-accent/50 transition-all duration-500 flex flex-col relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-trace-accent/10 rounded-full blur-3xl" />
-              <div className="w-16 h-16 rounded-2xl bg-trace-accent/10 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500 relative z-10">
-                <TrendingUp className="w-8 h-8 text-trace-accent" />
-              </div>
-              <h3 className="text-2xl font-black text-trace-text mb-4 relative z-10">Trade Intelligence</h3>
-              <p className="text-trace-text/70 mb-8 flex-1 leading-relaxed font-medium relative z-10">Market insights and business intelligence to boost your trading success and grow your local business footprint.</p>
-              
-              <ul className="space-y-4 mb-8 relative z-10">
-                {['Live market pricing', 'Supplier network access', 'Revenue tracking tools'].map((li, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-bold text-trace-text/80">
-                    <CheckCircle className="w-5 h-5 text-trace-accent" /> {li}
-                  </li>
-                ))}
-              </ul>
-              
-              <Button variant="outline" className="w-full rounded-xl border-trace-accent text-trace-accent hover:bg-trace-accent hover:text-white font-bold h-12 relative z-10">
-                View Trade Tools
-              </Button>
-            </motion.div>
-
-            {/* Finance Pillar */}
-            <motion.div 
-              whileHover={{ y: -10 }}
-              className="group bg-white rounded-[2.5rem] p-8 shadow-sm hover:shadow-xl border border-trace-border/50 transition-all duration-500 flex flex-col"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-[#E8F5E9] flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-500">
-                <PiggyBank className="w-8 h-8 text-[#2E7D32]" />
-              </div>
-              <h3 className="text-2xl font-black text-trace-text mb-4">Financial Gateway</h3>
-              <p className="text-trace-text/70 mb-8 flex-1 leading-relaxed font-medium">Access bespoke credit products, high-yield savings, and insurance tailored specifically for the informal sector.</p>
-              
-              <ul className="space-y-4 mb-8">
-                {['Score-based micro-loans', 'Auto-savings accounts', 'Asset insurance'].map((li, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm font-bold text-trace-text/80">
-                    <CheckCircle className="w-5 h-5 text-[#2E7D32]" /> {li}
-                  </li>
-                ))}
-              </ul>
-              
-              <Button variant="outline" className="w-full rounded-xl border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white font-bold h-12">
-                Unlock Finance
-              </Button>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* Impact Section */}
       <section id="impact" className="py-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-trace-primary" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-trace-primary via-[#0f281e] to-[#0a1a13]" />
+        <div className="absolute inset-0 bg-slate-950" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-slate-900 via-[#0f172a] to-black" />
         {/* Subtle grid pattern background */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" style={{ maskImage: 'radial-gradient(ellipse 60% 50% at 50% 50%, #000 70%, transparent 100%)' }} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
               <h2 className="text-4xl lg:text-5xl font-black text-white mb-6 leading-tight">Scale Your Impact. <br/><span className="text-trace-accent">Own Your Future.</span></h2>
               <p className="text-xl text-white/70 mb-10 font-medium leading-relaxed">
                 We are building the trust layer for the African economy. Join thousands of workers who have transformed their hustle into formal economic power.
               </p>
               
-              <Link href="/onboarding">
-                <Button className="bg-trace-accent hover:bg-[#e0981d] text-trace-primary font-black text-lg px-8 h-14 rounded-2xl shadow-[0_8px_30px_rgb(244,168,38,0.3)] hover:-translate-y-1 transition-all duration-300">
-                  Join the Movement <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <Link href="/onboarding">
+                  <Button className="bg-trace-accent hover:bg-[#e0981d] text-slate-950 font-black text-lg px-8 h-14 rounded-2xl shadow-[0_8px_30px_rgb(244,168,38,0.3)] hover:-translate-y-1 transition-all duration-300">
+                    Join the Movement <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+              </motion.div>
+            </motion.div>
             
-            <div className="grid grid-cols-2 gap-6">
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="grid grid-cols-2 gap-6"
+            >
               {[
-                { number: '50K+', label: 'Active Users' },
-                { number: '$2.5M', label: 'Gig Volume' },
-                { number: '$850K', label: 'Finance Accessed' },
-                { number: '4.9/5', label: 'App Rating' },
-              ].map((stat, i) => (
+                { icon: Users, label: 'Build Your Identity', desc: 'Create your economic record' },
+                { icon: TrendingUp, label: 'Access Opportunities', desc: 'Connect with real work' },
+                { icon: Shield, label: 'Own Your Data', desc: 'Control your information' },
+                { icon: Award, label: 'Unlock Potential', desc: 'Build your future' },
+              ].map((item, i) => (
                 <motion.div 
                   key={i}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
+                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/10 text-center"
+                  transition={{ delay: i * 0.15 }}
+                  className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/10 hover:border-orange-500/30 transition-colors"
                 >
-                  <p className="text-4xl lg:text-5xl font-black text-white mb-2 tracking-tighter">{stat.number}</p>
-                  <p className="text-sm font-bold uppercase tracking-wider text-trace-accent">{stat.label}</p>
+                  <motion.div
+                    animate={{ y: [0, -8, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.2 }}
+                  >
+                    <item.icon className="w-8 h-8 text-orange-400 mb-4" />
+                  </motion.div>
+                  <p className="text-lg font-bold text-white mb-1">{item.label}</p>
+                  <p className="text-sm text-white/60">{item.desc}</p>
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -348,10 +380,10 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
             <div className="lg:col-span-2">
               <Link href="/" className="flex items-center gap-3 mb-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-trace-primary">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500">
                   <span className="font-bold text-white text-lg font-mono">T</span>
                 </div>
-                <span className="text-xl font-black text-trace-primary tracking-tight">Trace</span>
+                <span className="text-xl font-black text-slate-950 tracking-tight">Trace</span>
               </Link>
               <p className="text-trace-text/60 mb-6 max-w-sm font-medium leading-relaxed">
                 Building the definitive economic identity platform for the African informal sector.
@@ -362,7 +394,7 @@ export default function LandingPage() {
               <h4 className="font-black text-trace-text mb-6 uppercase tracking-wider text-sm">Product</h4>
               <ul className="space-y-4">
                 {['Work', 'Trade', 'Finance', 'Score'].map(link => (
-                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-trace-primary font-medium transition-colors">{link}</a></li>
+                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-orange-500 font-medium transition-colors">{link}</a></li>
                 ))}
               </ul>
             </div>
@@ -371,7 +403,7 @@ export default function LandingPage() {
               <h4 className="font-black text-trace-text mb-6 uppercase tracking-wider text-sm">Company</h4>
               <ul className="space-y-4">
                 {['About Us', 'Careers', 'Blog', 'Contact'].map(link => (
-                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-trace-primary font-medium transition-colors">{link}</a></li>
+                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-orange-500 font-medium transition-colors">{link}</a></li>
                 ))}
               </ul>
             </div>
@@ -380,7 +412,7 @@ export default function LandingPage() {
               <h4 className="font-black text-trace-text mb-6 uppercase tracking-wider text-sm">Legal</h4>
               <ul className="space-y-4">
                 {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map(link => (
-                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-trace-primary font-medium transition-colors">{link}</a></li>
+                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-orange-500 font-medium transition-colors">{link}</a></li>
                 ))}
               </ul>
             </div>
@@ -392,9 +424,9 @@ export default function LandingPage() {
             </p>
             <div className="flex gap-4">
               {/* Social placeholders */}
-              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-primary/10 cursor-pointer transition-colors" />
-              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-primary/10 cursor-pointer transition-colors" />
-              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-primary/10 cursor-pointer transition-colors" />
+                <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-orange-500/10 cursor-pointer transition-colors" />
+              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-orange-500/10 cursor-pointer transition-colors" />
+              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-orange-500/10 cursor-pointer transition-colors" />
             </div>
           </div>
         </div>
