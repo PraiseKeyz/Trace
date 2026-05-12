@@ -6,8 +6,66 @@
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+model User {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  full_name           String?  @db.VarChar(255)
+  phone               String   @unique @db.VarChar(20)
+  email               String?  @unique @db.VarChar(255)
+  password_hash       String   @db.Text
+  role                String[] @default([])
+  state               String?  @db.VarChar(100)
+  city                String?  @db.VarChar(100)
+  latitude            Decimal? @db.Decimal(9, 6)
+  longitude           Decimal? @db.Decimal(9, 6)
+  squad_customer_id   String?  @db.VarChar(255)
+  virtual_account_no  String?  @db.VarChar(50)
+  is_phone_verified   Boolean  @default(false)
+  languages           String[] @default([])
+  preferred_language  String?  @default("en") @db.VarChar(20)
+  data_sharing_consent Boolean @default(false)
+  otp_code            String?  @db.Text
+  otp_expires_at      DateTime?
+  onboarding_complete Boolean? @default(false)
+  created_at          DateTime @default(now()) @db.Timestamp()
+  updated_at          DateTime @default(now()) @updatedAt @db.Timestamp()
+
+  economic_profile    EconomicProfile?
+
+  @@map("users")
+}
+
+model EconomicProfile {
+  id                       String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id                  String    @unique @db.Uuid
+  identity_score           Int       @default(0)
+  transaction_score        Decimal   @default(0) @db.Decimal(5, 2)
+  activity_score           Decimal   @default(0) @db.Decimal(5, 2)
+  vouch_score              Decimal   @default(0) @db.Decimal(5, 2)
+  profile_completeness     Decimal   @default(0) @db.Decimal(5, 2)
+  skills                   String[]  @default([])
+  trade_category           String?   @db.VarChar(100)
+  years_active             Int?
+  is_profile_verified      Boolean   @default(false)
+  total_transaction_volume Decimal   @default(0) @db.Decimal(15, 2)
+  total_transaction_count  Int       @default(0)
+  avg_monthly_volume       Decimal   @default(0) @db.Decimal(15, 2)
+  last_transaction_at      DateTime?
+  vouch_count              Int       @default(0)
+  verified_vouch_count     Int       @default(0)
+  risk_tier                String    @default("high") @db.VarChar(10)
+  is_finance_eligible      Boolean   @default(false)
+  max_recommended_loan     Decimal   @default(0) @db.Decimal(15, 2)
+  last_active              DateTime?
+  updated_at               DateTime  @default(now()) @updatedAt @db.Timestamp()
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@map("economic_profiles")
 }

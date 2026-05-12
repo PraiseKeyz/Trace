@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package trace;
+
+// ─── Scoring Service ──────────────────────────────────────────
+service ScoringService {
+  rpc ScoreUser (ScoreRequest) returns (ScoreResponse);
+}
+
+message ScoreRequest {
+  string user_id = 1;
+  float transaction_history_score = 2;
+  float platform_activity_score = 3;
+  float community_vouching_score = 4;
+  float profile_completeness_score = 5;
+}
+
+message ScoreResponse {
+  string user_id = 1;
+  float identity_score = 2;
+  string risk_tier = 3;
+}
+
+// ─── Matching Service ─────────────────────────────────────────
+service MatchingService {
+  rpc MatchOpportunities (MatchRequest) returns (MatchResponse);
+}
+
+message MatchRequest {
+  string user_id = 1;
+  repeated string skills = 2;
+  float latitude = 3;
+  float longitude = 4;
+  repeated string languages = 5;
+}
+
+message MatchedOpportunity {
+  string opportunity_id = 1;
+  float match_score = 2;
+  string title = 3;
+}
+
+message MatchResponse {
+  string user_id = 1;
+  repeated MatchedOpportunity opportunities = 2;
+}

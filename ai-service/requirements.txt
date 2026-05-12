@@ -14,3 +14,5 @@ sentence-transformers
 torch
 numpy
 scikit-learn
+grpcio
+grpcio-tools
