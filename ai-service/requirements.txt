@@ -9,3 +9,10 @@ python-dotenv==1.1.0
 redis==6.2.0
 psycopg2-binary==2.9.10
 sqlalchemy==2.0.41
+transformers
+sentence-transformers
+torch
+numpy
+scikit-learn
+grpcio
+grpcio-tools

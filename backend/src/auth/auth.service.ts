@@ -1,12 +1,12 @@
 import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as argon2 from 'argon2';
 import { randomInt } from 'crypto';
 import { OnboardingDto } from './dto/onboarding.dto';
-import { SmsService } from '../sms/sms.service';
+import { SmsService } from '@/sms/sms.service';
 
 @Injectable()
 export class AuthService {
@@ -96,6 +96,13 @@ export class AuthService {
         role: ['user'],
         onboarding_complete: true,
       },
+    });
+
+    // Bootstrap the economic profile with default values on first onboarding
+    await this.prisma.economicProfile.upsert({
+      where: { user_id: userId },
+      create: { user_id: userId },
+      update: {},
     });
 
     return {

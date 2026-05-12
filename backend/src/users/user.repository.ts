@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { SafeUser, SafeUserSelect } from '../common/constants/user-select.constant';
+import { PrismaService } from '@/prisma/prisma.service';
+import { SafeUser, SafeUserSelect } from '@/common/constants/user-select.constant';
 
 @Injectable()
 export class UserRepository {

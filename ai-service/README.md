@@ -45,7 +45,7 @@ ai-service/
 You can start the development server using Uvicorn:
 
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn main:app --reload
 ```
 
 Once running, you can access the automatic interactive API documentation at:
