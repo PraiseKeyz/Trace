@@ -25,7 +25,7 @@ jobs:
         with:
           context: ./backend
           push: true
-          tags: praisekeyz/squad-backend:latest
+          tags: praisekeyz6/trace:backend
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: praisekeyz/squad-frontend:latest
+          tags: praisekeyz6/trace:frontend
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}
@@ -46,7 +46,7 @@ jobs:
         with:
           context: ./ai-service
           push: true
-          tags: praisekeyz/squad-ai-service:latest
+          tags: praisekeyz6/trace:ai-service
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -54,56 +54,70 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Copy docker-compose to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "docker-compose.yml"
+          target: "/var/www/squad-hackathon"
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: |
-            DATABASE_URL=${{ secrets.DATABASE_URL }}
-            JWT_SECRET=${{ secrets.JWT_SECRET }}
-            AI_SERVICE_URL=${{ secrets.AI_SERVICE_URL }}
-            FRONTEND_URL=${{ secrets.FRONTEND_URL }}
-            BACKEND_URL=${{ secrets.BACKEND_URL }}
-            SQUAD_PRIVATE_KEY=${{ secrets.SQUAD_PRIVATE_KEY }}
-            SQUAD_PUBLIC_KEY=${{ secrets.SQUAD_PUBLIC_KEY }}
-            SQUAD_SECRET_KEY=${{ secrets.SQUAD_SECRET_KEY }}
-            TWILIO_ACCOUNT_SID=${{ secrets.TWILIO_ACCOUNT_SID }}
-            TWILIO_AUTH_TOKEN=${{ secrets.TWILIO_AUTH_TOKEN }}
-            TWILIO_PHONE_NUMBER=${{ secrets.TWILIO_PHONE_NUMBER }}
+          envs: DATABASE_URL,JWT_SECRET,AI_SERVICE_URL,FRONTEND_URL,BACKEND_URL,SQUAD_PRIVATE_KEY,SQUAD_PUBLIC_KEY,SQUAD_SECRET_KEY,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_PHONE_NUMBER
           script: |
             set -e
             cd /var/www/squad-hackathon
 
             # Create/Update .env file on the fly from GitHub Secrets
-            cat <<EOF > .env
-            DATABASE_URL=$DATABASE_URL
-            JWT_SECRET=$JWT_SECRET
-            AI_SERVICE_URL=$AI_SERVICE_URL
-            FRONTEND_URL=$FRONTEND_URL
-            BACKEND_URL=$BACKEND_URL
-            SQUAD_PRIVATE_KEY=$SQUAD_PRIVATE_KEY
-            SQUAD_PUBLIC_KEY=$SQUAD_PUBLIC_KEY
-            SQUAD_SECRET_KEY=$SQUAD_SECRET_KEY
-            TWILIO_ACCOUNT_SID=$TWILIO_ACCOUNT_SID
-            TWILIO_AUTH_TOKEN=$TWILIO_AUTH_TOKEN
-            TWILIO_PHONE_NUMBER=$TWILIO_PHONE_NUMBER
+            cat > .env <<EOF
+            DATABASE_URL=${DATABASE_URL}
+            JWT_SECRET=${JWT_SECRET}
+            AI_SERVICE_URL=${AI_SERVICE_URL}
+            FRONTEND_URL=${FRONTEND_URL}
+            BACKEND_URL=${BACKEND_URL}
+            SQUAD_PRIVATE_KEY=${SQUAD_PRIVATE_KEY}
+            SQUAD_PUBLIC_KEY=${SQUAD_PUBLIC_KEY}
+            SQUAD_SECRET_KEY=${SQUAD_SECRET_KEY}
+            TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+            TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+            TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER}
             PORT=5000
+            NODE_ENV=production
             EOF
 
-            # Create AI service env file if needed
+            # Create AI service env file
             mkdir -p ai-service
-            cat <<EOF > ai-service/.env
+            cat > ai-service/.env <<EOF
             PORT=8000
-            DATABASE_URL=$DATABASE_URL
+            DATABASE_URL=${DATABASE_URL}
             EOF
 
-            # Pull latest images
-            docker-compose pull
+            # Pull latest images from Docker Hub
+            docker compose pull
 
-            # Restart containers
-            docker-compose up -d
+            # Restart containers with zero-downtime swap
+            docker compose up -d --remove-orphans
 
-            # Clean up old images
+            # Clean up old dangling images
             docker image prune -f
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          AI_SERVICE_URL: ${{ secrets.AI_SERVICE_URL }}
+          FRONTEND_URL: ${{ secrets.FRONTEND_URL }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          SQUAD_PRIVATE_KEY: ${{ secrets.SQUAD_PRIVATE_KEY }}
+          SQUAD_PUBLIC_KEY: ${{ secrets.SQUAD_PUBLIC_KEY }}
+          SQUAD_SECRET_KEY: ${{ secrets.SQUAD_SECRET_KEY }}
+          TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}

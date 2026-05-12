@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   backend:
-    image: praisekeyz/trace-backend:latest
+    image: praisekeyz6/trace:backend
     container_name: trace-backend
     restart: always
     ports:
@@ -13,7 +13,7 @@ services:
       - ai-service
 
   frontend:
-    image: praisekeyz/trace-frontend:latest
+    image: praisekeyz6/trace:frontend
     container_name: trace-frontend
     restart: always
     ports:
@@ -22,7 +22,7 @@ services:
       - .env
 
   ai-service:
-    image: praisekeyz/trace-ai-service:latest
+    image: praisekeyz6/trace:ai-service
     container_name: trace-ai-service
     restart: always
     ports:
