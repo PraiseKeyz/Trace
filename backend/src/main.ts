@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import * as compression from 'compression';
+import compression from 'compression';
 
 import cookieParser from 'cookie-parser';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -34,6 +34,6 @@ async function bootstrap() {
     credentials: true,
   });
 
-  await app.listen(configService.get<number>('PORT') || 3000);
+  await app.listen(configService.get<number>('PORT') || 5000);
 }
 bootstrap();

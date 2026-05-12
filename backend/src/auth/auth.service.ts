@@ -98,6 +98,13 @@ export class AuthService {
       },
     });
 
+    // Bootstrap the economic profile with default values on first onboarding
+    await this.prisma.economicProfile.upsert({
+      where: { user_id: userId },
+      create: { user_id: userId },
+      update: {},
+    });
+
     return {
       message: 'Onboarding completed successfully',
       user: {

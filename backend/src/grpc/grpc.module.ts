@@ -15,7 +15,7 @@ import { GrpcService } from './grpc.service';
           transport: Transport.GRPC,
           options: {
             package: 'trace',
-            protoPath: join(__dirname, '../../proto/trace.proto'),
+            protoPath: join(process.cwd(), 'proto/trace.proto'),
             url: configService.get<string>('AI_SERVICE_URL') || 'localhost:50051',
           },
         }),
