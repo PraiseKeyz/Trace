@@ -1,53 +1,58 @@
 # Trace AI Microservice
 
-This is the AI/ML layer for the Trace economic platform. Built with Python and FastAPI, this service acts as the intelligence engine, handling score calculations, opportunity matching, and market intelligence generation. It is designed to be called internally by the Node.js backend.
+This service is the core intelligence engine for Trace. It handles identity scoring, opportunity matching, and trade intelligence generation. It exposes both a FastAPI (REST) interface and a high-performance gRPC server.
 
-## System Role
+## Architecture
 
-As defined in the Trace System Architecture, this service exposes endpoints to:
-1. **Identity Engine**: Evaluate trustworthiness and risk tier (`POST /score/calculate`) based on transaction history, activity, vouches, and profile completeness.
-2. **Matching Engine**: Provide intelligent ranking and matching of gig opportunities to users (`POST /match/opportunities`) leveraging skills, proximity, languages, and historical success.
-3. **Intelligence Engine**: Aggregate and generate market/trade intelligence (`POST /intelligence/generate`) providing demand index and insights.
+* **Framework:** FastAPI (REST) + grpcio (gRPC)
+* **Language:** Python 3
+* **Machine Learning:** Scikit-learn, Numpy, Pandas
+* **Internal Comm:** gRPC Server (listening on port 50051)
 
-## Project Structure
+## Setup Instructions
 
-```text
-ai-service/
-├── api/
-│   ├── intelligence.py   # Trade intelligence generation route
-│   ├── match.py          # Gig/opportunity matching route
-│   └── score.py          # Identity score calculation route
-├── core/
-│   └── config.py         # Environment variables & configurations
-├── main.py               # FastAPI application entry point
-├── requirements.txt      # Python dependencies
-├── Dockerfile            # Containerization instructions
-├── .env.example          # Example environment configurations
-└── .gitignore
-```
+### 1. Prerequisites
+- Python 3.10+
+- Virtual environment support
 
-## Setup and Installation
-
-1. Navigate to the `ai-service` directory.
-2. Create a virtual environment (optional but recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-3. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Copy the `.env.example` to `.env` and adjust the configuration as necessary.
-
-## Running the Service
-
-You can start the development server using Uvicorn:
+### 2. Installation
+Navigate to the `ai-service/` directory and run:
 
 ```bash
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+# Create a virtual environment
+python -m venv venv
+
+# Activate the virtual environment
+# Windows:
+.\venv\Scripts\Activate.ps1
+# Mac/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-Once running, you can access the automatic interactive API documentation at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+### 3. Generating gRPC Stubs
+If the `proto/trace.proto` file changes, you must regenerate the Python stubs. From the `ai-service/` directory:
+
+```bash
+python -m grpc_tools.protoc -I./proto --python_out=./api --grpc_python_out=./api ./proto/trace.proto
+```
+
+This will output `trace_pb2.py` and `trace_pb2_grpc.py` into the `api/` folder.
+
+### 4. Running the Application
+
+You can run the service in two ways:
+
+**Option A: gRPC Server (Required for NestJS Backend)**
+Runs the high-performance RPC server on port 50051.
+```bash
+python grpc_server.py
+```
+
+**Option B: REST API (For Testing/Standalone access)**
+Runs the FastAPI server on port 8000.
+```bash
+uvicorn main:app --reload
+```

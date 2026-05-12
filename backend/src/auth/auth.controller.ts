@@ -9,7 +9,7 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Throttle } from '@nestjs/throttler';
-import type { RequestWithUser } from '../common/interfaces/request-with-user.interface';
+import type { RequestWithUser } from '@/common/interfaces/request-with-user.interface';
 import type { Response } from 'express';
 
 @Controller('auth')

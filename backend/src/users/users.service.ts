@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '@/prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-import { SafeUser, SafeUserSelect } from '../common/constants/user-select.constant';
+import { SafeUser, SafeUserSelect } from '@/common/constants/user-select.constant';
 
 @Injectable()
 export class UsersService {
