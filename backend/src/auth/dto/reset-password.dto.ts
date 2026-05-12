@@ -1,12 +1,16 @@
 import { IsString, IsNotEmpty, MinLength } from 'class-validator';
 
-export class RegisterDto {
+export class ResetPasswordDto {
   @IsString()
   @IsNotEmpty()
   phone: string;
 
   @IsString()
   @IsNotEmpty()
+  otp: string;
+
+  @IsString()
+  @IsNotEmpty()
   @MinLength(6)
-  password: string;
+  newPassword: string;
 }
