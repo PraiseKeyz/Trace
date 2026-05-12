@@ -6,6 +6,8 @@ import { SmsModule } from './sms/sms.module';
 import { UsersModule } from './users/users.module';
 import { GrpcModule } from './grpc/grpc.module';
 import { EconomicProfileModule } from './economic-profile/economic-profile.module';
+import { TransactionsModule } from './transactions/transactions.module';
+import { OpportunitiesModule } from './opportunities/opportunities.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -27,6 +29,8 @@ import { APP_GUARD } from '@nestjs/core';
     UsersModule,
     GrpcModule,
     EconomicProfileModule,
+    TransactionsModule,
+    OpportunitiesModule,
   ],
   controllers: [AppController],
   providers: [

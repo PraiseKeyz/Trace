@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 // ─── Service interfaces (mirror the .proto definitions) ───────────────────────
 
-interface ScoreRequest {
+export interface ScoreRequest {
   user_id: string;
   transaction_history_score: number;
   platform_activity_score: number;
@@ -13,13 +13,13 @@ interface ScoreRequest {
   profile_completeness_score: number;
 }
 
-interface ScoreResponse {
+export interface ScoreResponse {
   user_id: string;
   identity_score: number;
   risk_tier: string;
 }
 
-interface MatchRequest {
+export interface MatchRequest {
   user_id: string;
   skills: string[];
   latitude: number;
@@ -27,22 +27,22 @@ interface MatchRequest {
   languages: string[];
 }
 
-interface MatchedOpportunity {
+export interface MatchedOpportunity {
   opportunity_id: string;
   match_score: number;
   title: string;
 }
 
-interface MatchResponse {
+export interface MatchResponse {
   user_id: string;
   opportunities: MatchedOpportunity[];
 }
 
-interface ScoringServiceClient {
+export interface ScoringServiceClient {
   ScoreUser(request: ScoreRequest): Observable<ScoreResponse>;
 }
 
-interface MatchingServiceClient {
+export interface MatchingServiceClient {
   MatchOpportunities(request: MatchRequest): Observable<MatchResponse>;
 }
 

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
+import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import { GrpcService } from '@/grpc/grpc.service';
 import { UpdateSkillsDto } from './dto/update-skills.dto';
 import { EconomicProfile } from '../../generated/prisma/client';
@@ -9,7 +9,7 @@ export class EconomicProfileService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly grpcService: GrpcService,
-  ) {}
+  ) { }
 
   // Called automatically when user completes onboarding
   async createInitialProfile(userId: string): Promise<EconomicProfile> {

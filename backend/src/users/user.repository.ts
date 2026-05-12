@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
+import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import { SafeUser, SafeUserSelect } from '@/common/constants/user-select.constant';
 
 @Injectable()
 export class UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async findById(id: string): Promise<SafeUser | null> {
     return this.prisma.user.findUnique({

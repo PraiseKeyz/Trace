@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    image: praisekeyz/trace-backend:latest
+    container_name: trace-backend
+    restart: always
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - ai-service
+
+  frontend:
+    image: praisekeyz/trace-frontend:latest
+    container_name: trace-frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+
+  ai-service:
+    image: praisekeyz/trace-ai-service:latest
+    container_name: trace-ai-service
+    restart: always
+    ports:
+      - "8000:8000"
+      - "50051:50051"
+    env_file:
+      - ai-service/.env

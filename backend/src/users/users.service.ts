@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '@/prisma/prisma.service';
+import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -7,7 +7,7 @@ import { SafeUser, SafeUserSelect } from '@/common/constants/user-select.constan
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   async getProfile(userId: string): Promise<SafeUser | null> {
     return this.prisma.user.findUnique({

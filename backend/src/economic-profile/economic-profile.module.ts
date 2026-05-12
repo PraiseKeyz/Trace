@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { EconomicProfileService } from './economic-profile.service';
 import { EconomicProfileController } from './economic-profile.controller';
 import { GrpcModule } from '@/grpc/grpc.module';
-import { PrismaModule } from '@/prisma/prisma.module';
+import { PrismaModule } from '@/opportunities/prisma/prisma.module';
 
 @Module({
   imports: [GrpcModule, PrismaModule],
@@ -10,4 +10,4 @@ import { PrismaModule } from '@/prisma/prisma.module';
   providers: [EconomicProfileService],
   exports: [EconomicProfileService],
 })
-export class EconomicProfileModule {}
+export class EconomicProfileModule { }
