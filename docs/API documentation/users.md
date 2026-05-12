@@ -1,6 +1,6 @@
 # Users API Documentation
 
-Base URL: `http://localhost:3000/users`
+Base URL: `http://localhost:5000/api/v1/users`
 
 > All endpoints require authentication via the `access_token` HttpOnly cookie.
 

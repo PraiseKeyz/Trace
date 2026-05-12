@@ -1,6 +1,6 @@
 # Economic Profile API Documentation
 
-Base URL: `http://localhost:3000/economic-profile`
+Base URL: `http://localhost:5000/api/v1/economic-profile`
 
 > All endpoints require authentication via the `access_token` HttpOnly cookie.
 

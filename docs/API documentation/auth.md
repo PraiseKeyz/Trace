@@ -1,6 +1,6 @@
 # Auth API Documentation
 
-Base URL: `http://localhost:3000/auth` (or your deployed backend URL)
+Base URL: `http://localhost:5000/api/v1/auth`
 
 ---
 
