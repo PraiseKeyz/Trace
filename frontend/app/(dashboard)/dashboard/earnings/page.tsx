@@ -12,9 +12,9 @@ export default function EarningsPage() {
   ]
 
   const sourceData = [
-    { name: 'Work Opportunities', value: 61500, color: '#1B4332' },
+    { name: 'Work Opportunities', value: 61500, color: '#111827' },
     { name: 'Trade Activities', value: 44500, color: '#F4A826' },
-    { name: 'Financial Services', value: 11500, color: '#40C057' },
+    { name: 'Financial Services', value: 11500, color: '#F97316' },
   ]
 
   const topEarners = [
@@ -49,9 +49,9 @@ export default function EarningsPage() {
               <p className="text-sm text-muted-foreground font-medium">Over 31 days</p>
             </div>
 
-            <div className="bg-gradient-to-br from-green-100 to-green-50 rounded-lg p-6 border border-green-200">
+            <div className="bg-gradient-to-br from-orange-100 to-orange-50 rounded-lg p-6 border border-orange-200">
               <p className="text-sm font-medium text-muted-foreground mb-2">Projected This Year</p>
-              <p className="text-4xl font-bold text-green-600 mb-2">₦1.41M</p>
+              <p className="text-4xl font-bold text-orange-600 mb-2">₦1.41M</p>
               <p className="text-sm text-muted-foreground font-medium">At current pace</p>
             </div>
           </div>
@@ -68,9 +68,9 @@ export default function EarningsPage() {
               <XAxis dataKey="week" stroke="#999" />
               <YAxis stroke="#999" />
               <Tooltip />
-              <Bar dataKey="work" fill="#1B4332" name="Work" />
+              <Bar dataKey="work" fill="#111827" name="Work" />
               <Bar dataKey="trade" fill="#F4A826" name="Trade" />
-              <Bar dataKey="finance" fill="#40C057" name="Finance" />
+              <Bar dataKey="finance" fill="#F97316" name="Finance" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -157,8 +157,8 @@ export default function EarningsPage() {
                   <p className="text-xs text-muted-foreground mt-1">You&apos;re 78% to your monthly goal</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                <Award className="text-green-600 flex-shrink-0 mt-1" size={20} />
+              <div className="flex items-start gap-4 p-4 bg-orange-50 rounded-lg border border-orange-200">
+                <Award className="text-orange-600 flex-shrink-0 mt-1" size={20} />
                 <div>
                   <p className="font-bold text-foreground text-sm">Top Performer</p>
                   <p className="text-xs text-muted-foreground mt-1">You&apos;re in top 5% this month</p>
@@ -178,7 +178,7 @@ export default function EarningsPage() {
                   <p className="font-bold text-foreground">{item.source}</p>
                   <p className="text-sm text-muted-foreground">{item.client} • {item.date}</p>
                 </div>
-                <p className="text-lg font-bold text-green-600">+₦{(item.amount / 1000).toFixed(1)}K</p>
+                <p className="text-lg font-bold text-orange-600">+₦{(item.amount / 1000).toFixed(1)}K</p>
               </div>
             ))}
           </div>
