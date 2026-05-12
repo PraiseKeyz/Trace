@@ -168,3 +168,47 @@ def calculate_identity_score(request: ScoreRequest) -> ScoreResponse:
         is_finance_eligible=is_finance_eligible,
         max_loan_amount=max_loan_amount,
     )
+
+
+def calculate_identity_score_from_subscores(
+    user_id: str,
+    transaction_score: float,
+    activity_score: float,
+    vouch_score: float,
+    profile_score: float,
+) -> ScoreResponse:
+    transaction_score = round(min(100, max(0, transaction_score)), 2)
+    activity_score = round(min(100, max(0, activity_score)), 2)
+    vouch_score = round(min(100, max(0, vouch_score)), 2)
+    profile_score = round(min(100, max(0, profile_score)), 2)
+
+    identity_score = int(round(
+        transaction_score * settings.WEIGHT_TRANSACTION_HISTORY +
+        activity_score * settings.WEIGHT_PLATFORM_ACTIVITY +
+        vouch_score * settings.WEIGHT_COMMUNITY_VOUCHING +
+        profile_score * settings.WEIGHT_PROFILE_COMPLETENESS
+    ))
+    identity_score = max(0, min(100, identity_score))
+
+    risk_tier, is_finance_eligible, max_loan_amount = _assign_risk_tier(identity_score)
+
+    logger.info(
+        f"Subscore-based score calculated for user {user_id}: "
+        f"{identity_score} ({risk_tier}) - "
+        f"T:{transaction_score} A:{activity_score} "
+        f"V:{vouch_score} P:{profile_score}"
+    )
+
+    return ScoreResponse(
+        user_id=user_id,
+        identity_score=identity_score,
+        breakdown=ScoreBreakdown(
+            transaction_score=transaction_score,
+            activity_score=activity_score,
+            vouch_score=vouch_score,
+            profile_score=profile_score,
+        ),
+        risk_tier=risk_tier,
+        is_finance_eligible=is_finance_eligible,
+        max_loan_amount=max_loan_amount,
+    )

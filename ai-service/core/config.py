@@ -13,6 +13,8 @@ class Settings(BaseSettings):
     # ── Server ───────────────────────────────────────────────────
     AI_SERVICE_HOST: str = "0.0.0.0"
     AI_SERVICE_PORT: int = 8000
+    GRPC_SERVICE_HOST: str = "[::]"
+    GRPC_SERVICE_PORT: int = 50051
 
     # ── Database (PostgreSQL) ────────────────────────────────────
     DATABASE_URL: str = "postgresql+asyncpg://postgres:password@localhost:5432/trace_db"
