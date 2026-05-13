@@ -6,7 +6,7 @@ services:
     container_name: trace-backend
     restart: always
     ports:
-      - "5001:5000"
+      - "5001:5001"
     env_file:
       - .env
     depends_on:
@@ -17,9 +17,9 @@ services:
     container_name: trace-frontend
     restart: always
     ports:
-      - "3001:3000"
+      - "3001:3001"
     env_file:
-      - .env
+      - frontend.env
 
   ai-service:
     image: praisekeyz6/trace:ai-service

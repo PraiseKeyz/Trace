@@ -38,6 +38,6 @@ COPY --from=builder /app/generated ./generated
 # Set environment to production
 ENV NODE_ENV=production
 
-EXPOSE 5000
+EXPOSE 5001
 
 CMD ["node", "dist/main"]
