@@ -72,7 +72,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: DATABASE_URL,JWT_SECRET,AI_SERVICE_URL,FRONTEND_URL,BACKEND_URL,SQUAD_PRIVATE_KEY,SQUAD_PUBLIC_KEY,SQUAD_SECRET_KEY,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_PHONE_NUMBER
+          envs: DATABASE_URL,JWT_SECRET,AI_SERVICE_URL,FRONTEND_URL,BACKEND_URL,SQUAD_PRIVATE_KEY,SQUAD_PUBLIC_KEY,SQUAD_SECRET_KEY,TWILIO_ACCOUNT_SID,TWILIO_AUTH_TOKEN,TWILIO_PHONE_NUMBER,DOCKERHUB_USERNAME,DOCKERHUB_TOKEN
           script: |
             set -e
             cd /var/www/squad-hackathon
@@ -101,6 +101,9 @@ jobs:
             DATABASE_URL=${DATABASE_URL}
             EOF
 
+            # Login to Docker Hub so the server can pull the private images
+            echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USERNAME} --password-stdin
+
             # Pull latest images from Docker Hub
             docker-compose pull
 
@@ -121,3 +124,5 @@ jobs:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_PHONE_NUMBER: ${{ secrets.TWILIO_PHONE_NUMBER }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
