@@ -6,14 +6,17 @@ WORKDIR /app
 # Install pnpm
 RUN npm install -g pnpm || { echo "Failed to install pnpm"; exit 1; }
 
-# Copy package files
-COPY package.json pnpm-lock.yaml ./
+# Copy package files AND prisma config (required by Prisma 7)
+COPY package.json pnpm-lock.yaml prisma.config.ts ./
 
-# Install dependencies
+# Install dependencies (includes prisma as devDependency)
 RUN pnpm install --frozen-lockfile || { echo "Failed to install dependencies"; exit 1; }
 
 # Copy source code and prisma schema
 COPY . .
+
+# Set a placeholder DATABASE_URL so prisma generate doesn't fail
+ENV DATABASE_URL=placeholder
 
 # Generate Prisma client
 RUN npx prisma generate || { echo "Failed to generate Prisma client"; exit 1; }
@@ -38,13 +41,15 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/proto ./proto
 COPY --from=builder /app/generated ./generated
 
-# Verify files were copied
-RUN test -f /app/dist/src/main.js || { echo "ERROR: dist/src/main.js missing in production image"; ls -la /app/dist/ || echo "dist directory does not exist"; exit 1; }
-RUN test -d /app/node_modules || { echo "ERROR: node_modules missing in production image"; exit 1; }
+# CRITICAL: Copy prisma.config.ts for migrate deploy at runtime
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
 
-# Set environment to production
+# Verify files
+RUN test -f /app/dist/src/main.js || { echo "ERROR: dist/src/main.js missing"; exit 1; }
+RUN test -d /app/node_modules || { echo "ERROR: node_modules missing"; exit 1; }
+
 ENV NODE_ENV=production
 
 EXPOSE 5001
 
-CMD ["node", "dist/src/main.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/main.js"]
