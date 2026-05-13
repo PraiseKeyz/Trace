@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import type { RequestWithUser } from '@/common/interfaces/request-with-user.interface';
 import { SquadService } from './squad.service';
@@ -8,10 +8,12 @@ import { LookupAccountDto } from './dto/lookup-account.dto';
 import { TransferDto } from './dto/transfer.dto';
 import { RequeryTransferDto } from './dto/requery-transfer.dto';
 import { ListTransfersDto } from './dto/list-transfers.dto';
+import { RefundDto } from './dto/refund.dto';
+import { QueryVaTransactionsDto } from './dto/query-va-transactions.dto';
 
 @Controller('squad')
 export class SquadController {
-  constructor(private readonly squadService: SquadService) {}
+  constructor(private readonly squadService: SquadService) { }
 
   @Get('banks')
   getBanks() {
@@ -56,4 +58,83 @@ export class SquadController {
   listTransfers(@Query() query: ListTransfersDto) {
     return this.squadService.listTransfers(query);
   }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('transactions/verify/:ref')
+  verifyTransaction(@Param('ref') ref: string) {
+    return this.squadService.verifyTransaction(ref);
+  }
+
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('wallet/balance')
+  getWalletBalance(@Query('currency_id') currencyId?: string) {
+    return this.squadService.getWalletBalance(currencyId);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Post('refunds')
+  refund(@Body() dto: RefundDto) {
+    return this.squadService.refund(dto);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Get('virtual-accounts/transactions/customer/:customerIdentifier')
+  queryVaTransactionsByCustomer(
+    @Param('customerIdentifier') customerIdentifier: string,
+  ) {
+    return this.squadService.queryVaTransactionsByCustomer(customerIdentifier);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('virtual-accounts/transactions')
+  queryAllMerchantTransactions(@Query() query: QueryVaTransactionsDto) {
+    return this.squadService.queryAllMerchantTransactions(query);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('virtual-accounts/customer/account/:accountNumber')
+  getCustomerByVirtualAccount(@Param('accountNumber') accountNumber: string) {
+    return this.squadService.getCustomerByVirtualAccount(accountNumber);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('virtual-accounts/customer/identifier/:identifier')
+  getCustomerByIdentifier(@Param('identifier') identifier: string) {
+    return this.squadService.getCustomerByIdentifier(identifier);
+  }
+
+
+  @UseGuards(JwtAuthGuard)
+  @Post('escrow/:opportunityId/lock')
+  lockEscrow(
+    @Req() req: RequestWithUser,
+    @Param('opportunityId') opportunityId: string,
+  ) {
+    return this.squadService.lockEscrow(opportunityId, req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('escrow/:opportunityId/release')
+  releaseEscrow(
+    @Req() req: RequestWithUser,
+    @Param('opportunityId') opportunityId: string,
+  ) {
+    return this.squadService.releaseEscrow(opportunityId, req.user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('escrow/:opportunityId/cancel')
+  cancelEscrow(
+    @Req() req: RequestWithUser,
+    @Param('opportunityId') opportunityId: string,
+    @Body('reason') reason: string,
+  ) {
+    return this.squadService.cancelEscrow(opportunityId, req.user.id, reason);
+  }
 }
+

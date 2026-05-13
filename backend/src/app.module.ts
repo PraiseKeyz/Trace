@@ -9,8 +9,9 @@ import { EconomicProfileModule } from './economic-profile/economic-profile.modul
 import { TransactionsModule } from './transactions/transactions.module';
 import { OpportunitiesModule } from './opportunities/opportunities.module';
 import { SquadModule } from './squad/squad.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { BullModule } from '@nestjs/bullmq';
 import { APP_GUARD } from '@nestjs/core';
 
 @Module({
@@ -24,6 +25,19 @@ import { APP_GUARD } from '@nestjs/core';
       ttl: 60000,  // 60 seconds
       limit: 10,
     }]),
+
+    // Global BullMQ connection — uses Redis for async job processing
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST') ?? 'localhost',
+          port: configService.get<number>('REDIS_PORT') ?? 6379,
+          password: configService.get<string>('REDIS_PASSWORD') ?? undefined,
+        },
+      }),
+    }),
 
     AuthModule,
     SmsModule,
@@ -45,3 +59,4 @@ import { APP_GUARD } from '@nestjs/core';
   ],
 })
 export class AppModule {}
+
