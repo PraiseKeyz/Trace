@@ -102,10 +102,10 @@ jobs:
             EOF
 
             # Pull latest images from Docker Hub
-            docker compose pull
+            docker-compose pull
 
             # Restart containers with zero-downtime swap
-            docker compose up -d --remove-orphans
+            docker-compose up -d --remove-orphans
 
             # Clean up old dangling images
             docker image prune -f
