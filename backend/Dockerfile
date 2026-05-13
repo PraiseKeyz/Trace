@@ -3,8 +3,8 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Install pnpm
-RUN npm install -g pnpm || { echo "Failed to install pnpm"; exit 1; }
+# Enable corepack for pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate || { echo "Failed to install pnpm"; exit 1; }
 
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
