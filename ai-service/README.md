@@ -1,53 +1,179 @@
-# Trace AI Microservice
+# Trace — AI Microservice
 
-This is the AI/ML layer for the Trace economic platform. Built with Python and FastAPI, this service acts as the intelligence engine, handling score calculations, opportunity matching, and market intelligence generation. It is designed to be called internally by the Node.js backend.
+The AI/ML layer for the Trace platform. Built with Python and FastAPI, this service handles identity score calculation, opportunity matching, and market intelligence generation. It is called internally by the NestJS backend over both gRPC and HTTP.
 
-## System Role
+---
 
-As defined in the Trace System Architecture, this service exposes endpoints to:
-1. **Identity Engine**: Evaluate trustworthiness and risk tier (`POST /score/calculate`) based on transaction history, activity, vouches, and profile completeness.
-2. **Matching Engine**: Provide intelligent ranking and matching of gig opportunities to users (`POST /match/opportunities`) leveraging skills, proximity, languages, and historical success.
-3. **Intelligence Engine**: Aggregate and generate market/trade intelligence (`POST /intelligence/generate`) providing demand index and insights.
+## Tech Stack
+
+| | |
+|--|--|
+| Framework | FastAPI |
+| Language | Python 3.10+ |
+| Embeddings | AfroXLM-R (`Davlan/afro-xlmr-large`) — supports 17 African languages |
+| ML | scikit-learn, sentence-transformers, PyTorch |
+| gRPC Server | grpcio + grpcio-tools |
+| Database | PostgreSQL (SQLAlchemy async) |
+| Cache | Redis |
+| Server | Uvicorn |
+
+---
+
+## Setup
+
+### 1. Create a virtual environment
+
+```bash
+python -m venv venv
+source venv/bin/activate       # Windows: venv\Scripts\activate
+```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Environment Variables
+
+Create `ai-service/.env`:
+
+```env
+DATABASE_URL="postgresql+asyncpg://user:pass@host:5432/db"
+REDIS_URL="redis://localhost:6379/0"
+BACKEND_URL="http://localhost:5001"
+
+# Embedding model (downloads on first run, ~1.2GB)
+EMBEDDING_MODEL_NAME="Davlan/afro-xlmr-large"
+MODEL_DEVICE="cpu"   # or "cuda" if GPU available
+```
+
+### 4. Run
+
+```bash
+# Runs both FastAPI (port 8000) and gRPC server (port 50051)
+python run_services.py
+```
+
+Or run them separately:
+
+```bash
+# FastAPI only
+uvicorn main:app --reload --port 8000
+
+# gRPC only
+python grpc_server.py
+```
+
+API docs available at [http://localhost:8000/docs](http://localhost:8000/docs) (Swagger UI)
+
+---
+
+## Services
+
+### 1. Identity Engine
+
+Calculates a user's Economic Identity Score (0–1000) from four weighted signals:
+
+| Signal | Weight | What It Measures |
+|--------|--------|-----------------|
+| Transaction History | 40% | Volume, frequency, consistency, recency |
+| Community Vouching | 25% | Verified peer vouches (3x weight if verified) |
+| Platform Activity | 20% | Gigs completed, logins, applications |
+| Profile Completeness | 15% | Identity depth and verification |
+
+Output includes `identity_score`, per-component scores, `risk_tier`, and `max_recommended_loan`.
+
+**Risk Tiers:**
+
+| Score | Tier | Max Loan |
+|-------|------|----------|
+| 0–299 | High | Not eligible |
+| 300–549 | Medium | ₦50,000 |
+| 550–749 | Low | ₦200,000 |
+| 750–1000 | Very Low | ₦500,000 |
+
+### 2. Matching Engine
+
+Ranks open opportunities for a given user using:
+
+| Factor | Weight |
+|--------|--------|
+| Skill Overlap | 40% |
+| Proximity | 25% |
+| Historical Success Rate | 20% |
+| Language Match | 15% |
+
+Skill similarity is computed using AfroXLM-R embeddings, enabling semantic understanding across 17 African languages. Proximity is scored via Haversine distance (max 100 km radius). Results are returned as a ranked list with per-opportunity match scores.
+
+### 3. Intelligence Engine
+
+Generates market intelligence for trade categories by location:
+- **Demand index** — current transaction volume vs. 4-week rolling average
+- **Trend** — rising / stable / falling
+- **Confidence level** — High (50+ transactions), Medium (15+), Low
+- Plain-language insights per category
+
+---
+
+## HTTP API Endpoints
+
+| Method | Route | Description |
+|--------|-------|-------------|
+| GET | `/` | Service info |
+| GET | `/health` | Health check (model, DB, Redis status) |
+| POST | `/score/calculate` | Calculate identity score |
+| POST | `/match/opportunities` | Match user to opportunities |
+| POST | `/match/embed` | Get text embeddings |
+| POST | `/match/skill-similarity` | Compare user skills to requirements |
+| POST | `/intelligence/generate` | Generate market intelligence |
+
+---
+
+## gRPC API
+
+The gRPC server runs on port `50051`. The contract is defined in `proto/trace.proto` (shared with the backend).
+
+Services exposed:
+- `ScoringService.CalculateScore` — called by backend on score recalculation
+- `MatchingService.MatchOpportunities` — called by backend on work-matcher requests
+
+The proto file is identical between `backend/proto/trace.proto` and `ai-service/proto/trace.proto`.
+
+---
 
 ## Project Structure
 
-```text
+```
 ai-service/
-├── api/
-│   ├── intelligence.py   # Trade intelligence generation route
-│   ├── match.py          # Gig/opportunity matching route
-│   └── score.py          # Identity score calculation route
+├── main.py                   # FastAPI app, lifespan (model loading)
+├── grpc_server.py            # Async gRPC server
+├── run_services.py           # Runs FastAPI + gRPC concurrently
 ├── core/
-│   └── config.py         # Environment variables & configurations
-├── main.py               # FastAPI application entry point
-├── requirements.txt      # Python dependencies
-├── Dockerfile            # Containerization instructions
-├── .env.example          # Example environment configurations
-└── .gitignore
+│   ├── config.py             # Pydantic Settings — all env vars + model config
+│   ├── embeddings.py         # AfroXLM-R loading, LRU cache, similarity
+│   ├── database.py           # SQLAlchemy async engine
+│   ├── cache.py              # Redis connection pool
+│   ├── models.py             # SQLAlchemy ORM models
+│   └── schemas.py            # Pydantic request/response schemas
+├── engines/
+│   ├── identity_engine.py    # Score calculation
+│   ├── matching_engine.py    # Opportunity ranking
+│   ├── intelligence_engine.py # Market intelligence
+│   └── retraining_engine.py  # Periodic model retraining
+├── api/
+│   ├── score.py              # /score/* routes
+│   ├── match.py              # /match/* routes
+│   └── intelligence.py       # /intelligence/* routes
+├── proto/trace.proto         # gRPC service definitions
+├── requirements.txt
+└── Dockerfile
 ```
 
-## Setup and Installation
+---
 
-1. Navigate to the `ai-service` directory.
-2. Create a virtual environment (optional but recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-3. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Copy the `.env.example` to `.env` and adjust the configuration as necessary.
+## Notes
 
-## Running the Service
-
-You can start the development server using Uvicorn:
-
-```bash
-uvicorn main:app --reload
-```
-
-Once running, you can access the automatic interactive API documentation at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+- AfroXLM-R downloads automatically on first run (~1.2 GB). Set `MODEL_DEVICE=cuda` if a GPU is available to speed up embedding generation.
+- Redis is required. The service will fail to start without a reachable Redis instance.
+- The gRPC server must be reachable by the backend before any scoring or matching endpoints are called.
