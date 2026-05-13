@@ -21,8 +21,8 @@ RUN npx prisma generate || { echo "Failed to generate Prisma client"; exit 1; }
 # Build the application
 RUN pnpm run build || { echo "Failed to build application"; exit 1; }
 
-# Verify dist/main.js exists
-RUN test -f /app/dist/main.js || { echo "ERROR: dist/main.js not found after build"; ls -la /app/dist/; exit 1; }
+# Verify dist/src/main.js exists
+RUN test -f /app/dist/src/main.js || { echo "ERROR: dist/src/main.js not found after build"; ls -la /app/dist/; exit 1; }
 
 # Stage 2: Production
 FROM node:20-alpine
@@ -39,7 +39,7 @@ COPY --from=builder /app/proto ./proto
 COPY --from=builder /app/generated ./generated
 
 # Verify files were copied
-RUN test -f /app/dist/main.js || { echo "ERROR: dist/main.js missing in production image"; ls -la /app/dist/ || echo "dist directory does not exist"; exit 1; }
+RUN test -f /app/dist/src/main.js || { echo "ERROR: dist/src/main.js missing in production image"; ls -la /app/dist/ || echo "dist directory does not exist"; exit 1; }
 RUN test -d /app/node_modules || { echo "ERROR: node_modules missing in production image"; exit 1; }
 
 # Set environment to production
@@ -47,4 +47,4 @@ ENV NODE_ENV=production
 
 EXPOSE 5001
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]
