@@ -13,11 +13,11 @@ import {
 
 export class InitiatePaymentDto {
   @IsEmail()
-  email: string;
+  email!: string;
 
   @IsNumber()
   @Min(1)
-  amount: number;
+  amount!: number;
 
   @IsIn(['inline'])
   initiate_type: 'inline' = 'inline';
@@ -30,10 +30,10 @@ export class InitiatePaymentDto {
   transaction_ref?: string;
 
   @IsString()
-  customer_name: string;
+  customer_name!: string;
 
   @IsUrl({ require_tld: false })
-  callback_url: string;
+  callback_url!: string;
 
   @IsArray()
   @IsString({ each: true })
