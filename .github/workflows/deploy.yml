@@ -20,6 +20,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Build and push AI Service
+        uses: docker/build-push-action@v4
+        with:
+          context: ./ai-service
+          push: true
+          tags: praisekeyz6/trace:ai-service
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Build and push Backend
         uses: docker/build-push-action@v4
         with:
@@ -38,15 +47,6 @@ jobs:
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
             NEXT_PUBLIC_FRONTEND_URL=${{ secrets.NEXT_PUBLIC_FRONTEND_URL }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build and push AI Service
-        uses: docker/build-push-action@v4
-        with:
-          context: ./ai-service
-          push: true
-          tags: praisekeyz6/trace:ai-service
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
