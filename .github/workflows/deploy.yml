@@ -106,9 +106,11 @@ jobs:
 
             # Pull latest images from Docker Hub
             docker-compose pull
+            docker-compose images
+            docker images | grep praisekeyz6/trace || true
 
-            # Restart containers with zero-downtime swap
-            docker-compose up -d --remove-orphans
+            # Restart containers with zero-downtime swap and force recreate to ensure the new images are used
+            docker-compose up -d --remove-orphans --force-recreate
 
             # Clean up old dangling images
             docker image prune -f

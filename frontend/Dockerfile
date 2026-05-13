@@ -29,6 +29,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Install pnpm in the runtime image as well
+RUN npm install -g pnpm
+
 # Copy necessary files from builder
 COPY --from=builder /app/next.config.mjs ./
 COPY --from=builder /app/public ./public
