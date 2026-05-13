@@ -1,68 +1,77 @@
 # Trace Backend Service
 
-This is the main Node.js/NestJS backend for the Trace platform. It serves as the primary gateway for all client requests, handles database persistence via Prisma/PostgreSQL, manages Squad payment integration, and acts as a gRPC client to the Python AI service.
+NestJS backend for Trace. It handles authentication, economic profiles, opportunities, transactions, Squad payment integration, Squad webhooks, and gRPC calls to the Python AI service.
 
-## Architecture
+## Setup
 
-* **Framework:** NestJS
-* **Language:** TypeScript
-* **Database:** PostgreSQL via Prisma ORM
-* **Authentication:** Phone-based OTP (Twilio) + JWT + HttpOnly Cookies
-* **Internal Comm:** gRPC (to communicate with the Python AI microservice)
+```bash
+npm install
+npx prisma db push
+npx prisma generate
+npm run start:dev
+```
 
-## Setup Instructions
+The API runs at:
 
-### 1. Prerequisites
-- Node.js >= 18
-- PostgreSQL Database (running locally or Neon serverless)
-- Python AI Service running (for gRPC features)
+```text
+http://localhost:5000/api/v1
+```
 
-### 2. Environment Variables
-Create a `.env` file in the `backend/` directory:
+## Environment Variables
+
 ```env
 DATABASE_URL="postgresql://user:pass@host:5432/db?schema=public"
 JWT_SECRET="your_secure_random_string"
 NODE_ENV="development"
+PORT=5000
+FRONTEND_URL="http://localhost:3000"
 
-# Twilio Settings
-TWILIO_ACCOUNT_SID="your_sid"
-TWILIO_AUTH_TOKEN="your_token"
+TWILIO_ACCOUNT_SID="your_twilio_sid"
+TWILIO_AUTH_TOKEN="your_twilio_auth_token"
 TWILIO_PHONE_NUMBER="+1234567890"
 
-# AI Service Settings
 AI_SERVICE_URL="localhost:50051"
+
+SQUAD_SECRET_KEY="your_squad_secret_key"
+SQUAD_BASE_URL="https://sandbox-api-d.squadco.com"
 ```
 
-### 3. Installation
+## Squad Services
+
+Implemented:
+
+- `GET /api/v1/squad/banks` - returns Nigerian banks and bank codes from `src/squad/data/nigerian-banks.json`.
+- `POST /api/v1/squad/virtual-accounts` - creates a Squad virtual account for the authenticated user.
+- `POST /api/v1/squad/payment-links` - generates a Squad payment link.
+- `POST /api/v1/squad/accounts/resolve` - resolves a bank account name.
+- `POST /api/v1/squad/transfers` - transfers funds to a bank account.
+- `POST /api/v1/squad/transfers/requery` - checks transfer status.
+- `GET /api/v1/squad/transfers` - lists transfers.
+- `POST /api/v1/webhooks/squad` - receives Squad webhook events.
+
+The webhook validates `x-squad-encrypted-body`, records the transaction, updates economic profile transaction totals, and triggers score recalculation for successful payments. Duplicate successful webhook retries are handled idempotently.
+
+## Onboarding Virtual Account Flow
+
+`POST /api/v1/auth/onboard` still completes Trace onboarding. If the request includes the Squad-required identity data, the backend also creates a virtual account and saves Squad identifiers on the user.
+
+Virtual-account fields:
+
+```json
+{
+  "email": "user@example.com",
+  "bvn": "22222222222",
+  "dob": "31/12/1990",
+  "address": "1 Market Road, Lagos",
+  "gender": "1",
+  "firstName": "Tunde",
+  "lastName": "Adebayo",
+  "beneficiaryAccount": "0123456789"
+}
+```
+
+## Build
+
 ```bash
-npm install
+npm.cmd run build
 ```
-
-### 4. Database Setup
-```bash
-# Push the schema to the database
-npx prisma db push
-
-# Generate the Prisma Client
-npx prisma generate
-```
-
-### 5. Running the Application
-```bash
-# Development mode
-npm run start:dev
-
-# Production mode
-npm run build
-npm run start:prod
-```
-
-## gRPC Integration
-
-The backend communicates with the `ai-service` via gRPC for high-performance, strongly-typed internal calls. 
-
-1. The shared contract is located at `proto/trace.proto`.
-2. The `GrpcModule` handles connection pooling to `localhost:50051` (or whatever `AI_SERVICE_URL` is set to).
-3. The `GrpcService` provides strongly typed methods to call the Python AI models (e.g. `this.grpcService.scoreUser(request)`).
-
-*Note: Ensure the Python AI service is running before making requests that rely on AI logic, or the gRPC calls will fail.*

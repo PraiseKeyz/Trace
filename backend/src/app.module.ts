@@ -8,6 +8,7 @@ import { GrpcModule } from './grpc/grpc.module';
 import { EconomicProfileModule } from './economic-profile/economic-profile.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { OpportunitiesModule } from './opportunities/opportunities.module';
+import { SquadModule } from './squad/squad.module';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
@@ -31,6 +32,7 @@ import { APP_GUARD } from '@nestjs/core';
     EconomicProfileModule,
     TransactionsModule,
     OpportunitiesModule,
+    SquadModule,
   ],
   controllers: [AppController],
   providers: [
