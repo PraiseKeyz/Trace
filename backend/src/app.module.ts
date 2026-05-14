@@ -8,8 +8,10 @@ import { GrpcModule } from './grpc/grpc.module';
 import { EconomicProfileModule } from './economic-profile/economic-profile.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { OpportunitiesModule } from './opportunities/opportunities.module';
-import { ConfigModule } from '@nestjs/config';
+import { SquadModule } from './squad/squad.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { BullModule } from '@nestjs/bullmq';
 import { APP_GUARD } from '@nestjs/core';
 
 @Module({
@@ -24,6 +26,19 @@ import { APP_GUARD } from '@nestjs/core';
       limit: 10,
     }]),
 
+    // Global BullMQ connection — uses Redis for async job processing
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST') ?? 'localhost',
+          port: configService.get<number>('REDIS_PORT') ?? 6379,
+          password: configService.get<string>('REDIS_PASSWORD') ?? undefined,
+        },
+      }),
+    }),
+
     AuthModule,
     SmsModule,
     UsersModule,
@@ -31,6 +46,7 @@ import { APP_GUARD } from '@nestjs/core';
     EconomicProfileModule,
     TransactionsModule,
     OpportunitiesModule,
+    SquadModule,
   ],
   controllers: [AppController],
   providers: [
@@ -43,3 +59,4 @@ import { APP_GUARD } from '@nestjs/core';
   ],
 })
 export class AppModule {}
+

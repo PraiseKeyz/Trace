@@ -197,3 +197,67 @@ src/
 ├── app.module.ts
 └── main.ts                # Bootstrap, CORS, global pipes/filters
 ```
+
+## Squad Integration
+
+The backend now includes a dedicated Squad module for the payment flows required by the Trace architecture.
+
+Implemented services:
+
+- Virtual account creation.
+- Payment link generation.
+- Bank account resolution.
+- Account transfer.
+- Transfer requery.
+- Transfer listing.
+- Nigerian bank list endpoint backed by a local JSON bank-code file.
+- Squad webhook signature validation.
+- Webhook transaction persistence.
+- Economic profile transaction-stat updates after successful Squad payments.
+- Score recalculation trigger after successful Squad webhook events.
+
+## Squad Endpoints
+
+All routes below are under `/api/v1`.
+
+```text
+GET  /squad/banks
+POST /squad/virtual-accounts
+POST /squad/payment-links
+POST /squad/accounts/resolve
+POST /squad/transfers
+POST /squad/transfers/requery
+GET  /squad/transfers
+POST /webhooks/squad
+```
+
+Authenticated Squad routes use the same JWT auth guard as the rest of the backend. The webhook route is public and validates `x-squad-encrypted-body`.
+
+## Onboarding and Virtual Accounts
+
+`POST /api/v1/auth/onboard` updates the user profile and creates the initial economic profile. If the request includes Squad-required identity fields, it also creates a Squad virtual account and stores the returned customer identifier/account number on the user record.
+
+Required fields for virtual account creation:
+
+```json
+{
+  "email": "user@example.com",
+  "bvn": "22222222222",
+  "dob": "31/12/1990",
+  "address": "1 Market Road, Lagos",
+  "gender": "1",
+  "firstName": "Tunde",
+  "lastName": "Adebayo"
+}
+```
+
+## Verification
+
+Build the backend:
+
+```bash
+cd backend
+npm.cmd run build
+```
+
+On Windows PowerShell, `npm.cmd` avoids execution-policy issues with `npm.ps1`.
