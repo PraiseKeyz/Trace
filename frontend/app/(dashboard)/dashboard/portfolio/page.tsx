@@ -44,9 +44,9 @@ export default function PortfolioPage() {
 
           {/* Key Metrics */}
           <div className="grid sm:grid-cols-3 gap-6">
-            <div className="bg-gradient-to-br from-blue-100 to-blue-50 rounded-lg p-6 border border-blue-200">
+            <div className="bg-gradient-to-br from-trace-primary/10 to-trace-surface rounded-lg p-6 border border-trace-border">
               <div className="flex items-center gap-3 mb-2">
-                <Wallet className="text-blue-600" size={24} />
+                <Wallet className="text-trace-primary" size={24} />
                 <p className="text-sm font-medium text-muted-foreground">Total Assets</p>
               </div>
               <p className="text-3xl font-bold text-foreground">₦{(totalAssets / 1000).toFixed(0)}K</p>

@@ -27,7 +27,7 @@ export default function ReferralsPage() {
     { tier: 'Bronze', referrals: '1-5', bonus: '₦500/person', color: 'bg-amber-100' },
     { tier: 'Silver', referrals: '6-15', bonus: '₦1,000/person', color: 'bg-gray-100' },
     { tier: 'Gold', referrals: '16-50', bonus: '₦2,000/person', color: 'bg-yellow-100' },
-    { tier: 'Platinum', referrals: '50+', bonus: '₦5,000/person', color: 'bg-blue-100' },
+    { tier: 'Platinum', referrals: '50+', bonus: '₦5,000/person', color: 'bg-trace-primary/10' },
   ]
 
   return (

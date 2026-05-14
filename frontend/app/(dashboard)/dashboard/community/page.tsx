@@ -204,7 +204,7 @@ export default function CommunityPage() {
                           <span className="text-xs font-bold text-trace-primary">Score: {member.score}</span>
                           <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
                             member.badge === 'Elite' ? 'bg-yellow-100 text-yellow-700' :
-                            member.badge === 'Pro' ? 'bg-blue-100 text-blue-700' :
+                            member.badge === 'Pro' ? 'bg-trace-primary/10 text-trace-primary' :
                             'bg-green-100 text-green-700'
                           }`}>
                             {member.badge}
@@ -251,7 +251,7 @@ export default function CommunityPage() {
                   <span className="text-xs px-3 py-1 bg-trace-primary/10 text-trace-primary rounded-full font-bold">Score: {member.score}</span>
                   <span className={`text-xs px-3 py-1 rounded-full font-bold ${
                     member.badge === 'Elite' ? 'bg-yellow-100 text-yellow-700' :
-                    member.badge === 'Pro' ? 'bg-blue-100 text-blue-700' :
+                    member.badge === 'Pro' ? 'bg-trace-primary/10 text-trace-primary' :
                     'bg-green-100 text-green-700'
                   }`}>
                     {member.badge}

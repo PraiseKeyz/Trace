@@ -49,8 +49,8 @@ export default function Hero() {
           transition={{ duration: 0.75, ease: 'easeOut' }}
           className="max-w-2xl"
         >
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white px-4 py-2 shadow-sm">
-            <span className="h-2 w-2 rounded-full bg-orange-500" />
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-trace-accent/20 bg-white px-4 py-2 shadow-sm">
+            <span className="h-2 w-2 rounded-full bg-trace-accent" />
             <span className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Fintech for the real economy</span>
           </div>
 
@@ -58,7 +58,7 @@ export default function Hero() {
             Your hustle has a footprint.
           </h1>
 
-          <p className="mt-6 text-3xl font-semibold tracking-tight text-orange-500 sm:text-4xl">
+          <p className="mt-6 text-3xl font-semibold tracking-tight text-trace-accent sm:text-4xl">
             We make it visible.
           </p>
 
@@ -68,12 +68,12 @@ export default function Hero() {
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Link href="/onboarding">
-              <Button className="h-14 rounded-2xl bg-orange-500 px-7 font-bold text-white shadow-[0_18px_40px_rgba(249,115,22,0.22)] transition hover:bg-orange-600 hover:-translate-y-0.5">
+              <Button className="h-14 rounded-2xl bg-trace-accent px-7 font-bold text-white shadow-[0_18px_40px_rgba(249,115,22,0.22)] transition hover:bg-trace-accent/90 hover:-translate-y-0.5">
                 Get Started <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </Link>
             <Link href="#why-trace" className="inline-flex items-center">
-              <Button variant="outline" className="h-14 rounded-2xl border-slate-300 bg-white px-7 font-bold text-slate-900 transition hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600">
+              <Button variant="outline" className="h-14 rounded-2xl border-slate-300 bg-white px-7 font-bold text-slate-900 transition hover:border-trace-accent/40 hover:bg-trace-accent/5 hover:text-trace-accent/90">
                 See How It Works
               </Button>
             </Link>
@@ -82,7 +82,7 @@ export default function Hero() {
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-slate-700">
             {['Squad Powered', 'Verified Identities', 'Zero Bank History Required'].map((item) => (
               <div key={item} className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 text-orange-500" />
+                <CheckCircle2 className="h-4 w-4 text-trace-accent" />
                 <span>{item}</span>
               </div>
             ))}
@@ -138,7 +138,7 @@ export default function Hero() {
                     type="button"
                     onClick={() => setActiveIndex(index)}
                     aria-label={`Go to slide ${index + 1}`}
-                    className={`h-2.5 rounded-full transition-all duration-300 ${index === activeIndex ? 'w-7 bg-orange-500' : 'w-2.5 bg-slate-400/50 hover:bg-slate-200/70'}`}
+                    className={`h-2.5 rounded-full transition-all duration-300 ${index === activeIndex ? 'w-7 bg-trace-accent' : 'w-2.5 bg-slate-400/50 hover:bg-slate-200/70'}`}
                   />
                 ))}
               </div>

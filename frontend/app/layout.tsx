@@ -30,6 +30,7 @@ export const metadata: Metadata = {
 }
 
 import { AuthProvider } from '@/context/auth-context'
+import { Providers } from '@/lib/providers'
 import { Toaster } from 'sonner'
 
 export default function RootLayout({
@@ -40,11 +41,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-background">
       <body className="font-sans antialiased bg-trace-surface">
-        <AuthProvider>
-          {children}
-          <Toaster position="top-center" richColors />
-          {process.env.NODE_ENV === 'production' && <Analytics />}
-        </AuthProvider>
+        <Providers>
+          <AuthProvider>
+            {children}
+            <Toaster position="top-right" richColors expand={false} closeButton />
+            {process.env.NODE_ENV === 'production' && <Analytics />}
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   )

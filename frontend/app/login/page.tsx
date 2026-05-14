@@ -104,24 +104,6 @@ export default function LoginPage() {
               </Button>
             </form>
 
-            <div className="relative mb-8">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-trace-border"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-muted-foreground">Or continue with</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <Button variant="outline" className="h-12 border-trace-border">
-                Google
-              </Button>
-              <Button variant="outline" className="h-12 border-trace-border">
-                WhatsApp
-              </Button>
-            </div>
-
             <p className="text-center text-muted-foreground">
               Don&apos;t have an account?{' '}
               <Link href="/onboarding" className="text-trace-primary font-bold hover:underline">

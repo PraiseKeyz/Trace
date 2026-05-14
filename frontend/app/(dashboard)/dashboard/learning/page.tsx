@@ -47,7 +47,7 @@ export default function LearningPage() {
       lessons: 6,
       duration: '2h',
       completed: 6,
-      color: 'from-blue-100 to-blue-50'
+      color: 'from-trace-primary/10 to-trace-surface'
     },
   ]
 

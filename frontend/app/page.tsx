@@ -35,27 +35,27 @@ export default function LandingPage() {
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-orange-500 to-orange-600 shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-all duration-300">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-trace-accent to-trace-accent/90 shadow-lg shadow-trace-accent/20 group-hover:scale-105 transition-all duration-300">
               <span className="font-bold text-white text-lg font-mono">T</span>
             </div>
             <div>
               <span className="text-xl font-black text-slate-950 tracking-tight">Trace</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-orange-500 block -mt-1">Economic Identity</span>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-trace-accent block -mt-1">Economic Identity</span>
             </div>
           </Link>
           <nav className="hidden md:flex gap-10 items-center">
             {['Why Trace', 'Features', 'Impact'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-bold text-slate-700 hover:text-orange-500 transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-orange-500 after:transition-all hover:after:w-full">
+              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-bold text-slate-700 hover:text-trace-accent transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-trace-accent after:transition-all hover:after:w-full">
                 {item}
               </a>
             ))}
           </nav>
           <div className="flex gap-4 items-center">
-            <Link href="/login" className="text-sm font-bold text-trace-text hover:text-orange-500 transition-colors">
+            <Link href="/login" className="text-sm font-bold text-trace-text hover:text-trace-accent transition-colors">
               Sign In
             </Link>
             <Link href="/onboarding">
-              <Button className="bg-orange-500 hover:bg-orange-600 text-white rounded-full px-6 font-bold shadow-lg shadow-orange-500/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
+              <Button className="bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full px-6 font-bold shadow-lg shadow-trace-accent/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                 Get Started
               </Button>
             </Link>
@@ -94,7 +94,7 @@ export default function LandingPage() {
               >
                 <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Shield className="w-6 h-6 text-orange-500" />
+                    <Shield className="w-6 h-6 text-trace-accent" />
                   </motion.div>
                   Bank-grade security, on your terms.
                 </h3>
@@ -111,7 +111,7 @@ export default function LandingPage() {
               >
                 <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Zap className="w-6 h-6 text-orange-500" />
+                    <Zap className="w-6 h-6 text-trace-accent" />
                   </motion.div>
                   Verify instantly. No paperwork.
                 </h3>
@@ -128,7 +128,7 @@ export default function LandingPage() {
               >
                 <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Award className="w-6 h-6 text-orange-500" />
+                    <Award className="w-6 h-6 text-trace-accent" />
                   </motion.div>
                   Every transaction builds your score.
                 </h3>
@@ -153,7 +153,7 @@ export default function LandingPage() {
               >
                 <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Clock className="w-6 h-6 text-orange-500" />
+                    <Clock className="w-6 h-6 text-trace-accent" />
                   </motion.div>
                   Always on, always accessible.
                 </h3>
@@ -170,7 +170,7 @@ export default function LandingPage() {
               >
                 <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Users className="w-6 h-6 text-orange-500" />
+                    <Users className="w-6 h-6 text-trace-accent" />
                   </motion.div>
                   Community vouches build trust.
                 </h3>
@@ -187,7 +187,7 @@ export default function LandingPage() {
               >
                 <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
                   <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <TrendingUp className="w-6 h-6 text-orange-500" />
+                    <TrendingUp className="w-6 h-6 text-trace-accent" />
                   </motion.div>
                   Tools to grow, not just survive.
                 </h3>
@@ -202,7 +202,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-gradient-to-br from-orange-50 to-white border border-orange-200 rounded-3xl p-12 text-center"
+            className="bg-gradient-to-br from-trace-accent/5 to-white border border-trace-accent/20 rounded-3xl p-12 text-center"
           >
             <p className="text-lg font-semibold text-slate-950 mb-4">
               The result: Your hustle becomes official. Your hustle becomes bankable. Your hustle becomes your future.
@@ -238,7 +238,7 @@ export default function LandingPage() {
                   { label: 'Skill-based matching', desc: 'AI-powered job recommendations' },
                   { label: 'Instant payouts', desc: 'Funds to your wallet in minutes' },
                 ],
-                color: 'bg-orange-500',
+                color: 'bg-trace-accent',
                 iconColor: 'text-white',
               },
               {
@@ -251,7 +251,7 @@ export default function LandingPage() {
                   { label: 'Supplier network', desc: 'Direct access to bulk sellers' },
                   { label: 'Revenue tracking', desc: 'See what sells and when' },
                 ],
-                color: 'bg-orange-500',
+                color: 'bg-trace-accent',
                 iconColor: 'text-white',
               },
               {
@@ -264,7 +264,7 @@ export default function LandingPage() {
                   { label: 'Savings products', desc: 'Grow your money with your economic activity' },
                   { label: 'Comprehensive protection', desc: 'Guard your income, tools, and inventory' },
                 ],
-                color: 'bg-orange-500',
+                color: 'bg-trace-accent',
                 iconColor: 'text-white',
               },
             ].map((col, i) => (
@@ -288,7 +288,7 @@ export default function LandingPage() {
                     <ul className="space-y-3 text-left">
                       {col.items.map((item, j) => (
                         <motion.li key={j} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 + j * 0.08 }} className="flex gap-3 items-start">
-                          <CheckCircle className="w-5 h-5 text-orange-500 mt-1 flex-shrink-0" />
+                          <CheckCircle className="w-5 h-5 text-trace-accent mt-1 flex-shrink-0" />
                           <div>
                             <p className="font-semibold text-slate-900">{item.label}</p>
                             <p className="text-sm text-slate-600">{item.desc}</p>
@@ -357,13 +357,13 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, scale: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.15 }}
-                  className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/10 hover:border-orange-500/30 transition-colors"
+                  className="bg-white/10 backdrop-blur-md rounded-3xl p-8 border border-white/10 hover:border-trace-accent/30 transition-colors"
                 >
                   <motion.div
                     animate={{ y: [0, -8, 0] }}
                     transition={{ duration: 3, repeat: Infinity, delay: i * 0.2 }}
                   >
-                    <item.icon className="w-8 h-8 text-orange-400 mb-4" />
+                    <item.icon className="w-8 h-8 text-trace-accent/80 mb-4" />
                   </motion.div>
                   <p className="text-lg font-bold text-white mb-1">{item.label}</p>
                   <p className="text-sm text-white/60">{item.desc}</p>
@@ -380,7 +380,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
             <div className="lg:col-span-2">
               <Link href="/" className="flex items-center gap-3 mb-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-500">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-trace-accent">
                   <span className="font-bold text-white text-lg font-mono">T</span>
                 </div>
                 <span className="text-xl font-black text-slate-950 tracking-tight">Trace</span>
@@ -394,7 +394,7 @@ export default function LandingPage() {
               <h4 className="font-black text-trace-text mb-6 uppercase tracking-wider text-sm">Product</h4>
               <ul className="space-y-4">
                 {['Work', 'Trade', 'Finance', 'Score'].map(link => (
-                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-orange-500 font-medium transition-colors">{link}</a></li>
+                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-trace-accent font-medium transition-colors">{link}</a></li>
                 ))}
               </ul>
             </div>
@@ -403,7 +403,7 @@ export default function LandingPage() {
               <h4 className="font-black text-trace-text mb-6 uppercase tracking-wider text-sm">Company</h4>
               <ul className="space-y-4">
                 {['About Us', 'Careers', 'Blog', 'Contact'].map(link => (
-                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-orange-500 font-medium transition-colors">{link}</a></li>
+                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-trace-accent font-medium transition-colors">{link}</a></li>
                 ))}
               </ul>
             </div>
@@ -412,7 +412,7 @@ export default function LandingPage() {
               <h4 className="font-black text-trace-text mb-6 uppercase tracking-wider text-sm">Legal</h4>
               <ul className="space-y-4">
                 {['Privacy Policy', 'Terms of Service', 'Cookie Policy'].map(link => (
-                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-orange-500 font-medium transition-colors">{link}</a></li>
+                  <li key={link}><a href="#" className="text-trace-text/60 hover:text-trace-accent font-medium transition-colors">{link}</a></li>
                 ))}
               </ul>
             </div>
@@ -424,9 +424,9 @@ export default function LandingPage() {
             </p>
             <div className="flex gap-4">
               {/* Social placeholders */}
-                <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-orange-500/10 cursor-pointer transition-colors" />
-              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-orange-500/10 cursor-pointer transition-colors" />
-              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-orange-500/10 cursor-pointer transition-colors" />
+                <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-accent/10 cursor-pointer transition-colors" />
+              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-accent/10 cursor-pointer transition-colors" />
+              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-accent/10 cursor-pointer transition-colors" />
             </div>
           </div>
         </div>

@@ -16,17 +16,14 @@ import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
-    // Global config — all modules can now inject ConfigService without importing ConfigModule themselves
     ConfigModule.forRoot({ isGlobal: true }),
 
-    // Global rate limiter: max 10 requests per 60 seconds per IP
     ThrottlerModule.forRoot([{
       name: 'global',
-      ttl: 60000,  // 60 seconds
+      ttl: 60000,
       limit: 10,
     }]),
 
-    // Global BullMQ connection — uses Redis for async job processing
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

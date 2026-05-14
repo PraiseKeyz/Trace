@@ -55,7 +55,7 @@ const scoreComponents = [
   { label: 'Work History', percentage: 25, color: 'bg-trace-primary' },
   { label: 'Financial Activity', percentage: 20, color: 'bg-trace-accent' },
   { label: 'Reliability', percentage: 15, color: 'bg-green-500' },
-  { label: 'Profile Completeness', percentage: 8, color: 'bg-blue-500' },
+  { label: 'Profile Completeness', percentage: 8, color: 'bg-trace-accent' },
 ]
 
 export default function FinanceGatewayPage() {

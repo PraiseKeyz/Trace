@@ -180,17 +180,17 @@ export default function OnboardingPage() {
   }, [formData])
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-trace-surface">
       {/* Header */}
-      <header className="border-b border-trace-border sticky top-0 z-40 bg-white">
+      <header className="border-b border-trace-border sticky top-0 z-40 bg-trace-surface">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <Link href="/" className="flex items-center gap-3 w-fit">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-trace-accent to-trace-accent/80">
-              <span className="font-bold text-white text-lg">T</span>
+          <Link href="/" className="flex items-center gap-3 w-fit group">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-trace-accent to-trace-accent/90 shadow-lg shadow-trace-accent/20 group-hover:scale-105 transition-all duration-300">
+              <span className="font-bold text-white text-lg font-mono">T</span>
             </div>
             <div>
-              <span className="text-xl font-bold text-trace-accent block">Trace</span>
-              <span className="text-xs text-muted-foreground">Economic Identity</span>
+              <span className="text-xl font-black text-slate-950 tracking-tight block">Trace</span>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-trace-accent block -mt-1">Economic Identity</span>
             </div>
           </Link>
         </div>
@@ -205,36 +205,40 @@ export default function OnboardingPage() {
               <p className="text-xs font-medium text-muted-foreground">Step {currentIndex + 1} of {sections.length}</p>
             </div>
             
-            {/* Progress Bar */}
-            <div className="w-full bg-trace-border rounded-full h-2 mb-8">
-              <div
-                className="bg-trace-accent h-2 rounded-full transition-all duration-500"
-                style={{ width: `${percent}%` }}
-              ></div>
-            </div>
-
-            {/* Step Indicators */}
-            <div className="flex gap-2 justify-center flex-wrap">
+            {/* Step Indicators with Arrows */}
+            <div className="flex items-center justify-center flex-wrap mb-8">
               {sections.map((section, idx) => {
                 const Icon = section.icon
                 const isActive = currentSection === section.id
                 const isCompleted = idx < currentIndex
                 
                 return (
-                  <button
-                    key={section.id}
-                    onClick={() => setCurrentSection(section.id)}
-                    className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
-                      isActive
-                        ? 'bg-trace-accent text-white ring-2 ring-trace-accent/30 ring-offset-2'
-                        : isCompleted
-                        ? 'bg-trace-accent/20 text-trace-accent'
-                        : 'bg-trace-light text-muted-foreground hover:bg-trace-border'
-                    }`}
-                    title={section.label}
-                  >
-                    <Icon size={20} />
-                  </button>
+                  <div key={section.id} className="flex items-center">
+                    <div className="flex flex-col items-center gap-2">
+                      <button
+                        onClick={() => setCurrentSection(section.id)}
+                        className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
+                          isActive
+                            ? 'bg-slate-950 text-white ring-2 ring-slate-950/30 ring-offset-2 scale-110 shadow-lg'
+                            : isCompleted
+                            ? 'bg-slate-200 text-slate-950 hover:bg-slate-300'
+                            : 'bg-trace-light text-muted-foreground hover:bg-trace-border'
+                        }`}
+                        title={section.label}
+                      >
+                        <Icon size={20} />
+                      </button>
+                      {/* Optional label underneath for better UX on desktop */}
+                      <span className={`text-[10px] uppercase tracking-wider font-bold hidden sm:block ${isActive ? 'text-slate-950' : 'text-muted-foreground'}`}>
+                        {section.id}
+                      </span>
+                    </div>
+                    {idx < sections.length - 1 && (
+                      <div className="mx-2 sm:mx-4 flex items-center justify-center -mt-6 sm:-mt-6">
+                        <ArrowRight size={20} className={`transition-colors duration-300 ${isCompleted ? 'text-trace-accent' : 'text-trace-border'}`} />
+                      </div>
+                    )}
+                  </div>
                 )
               })}
             </div>
@@ -259,7 +263,7 @@ export default function OnboardingPage() {
                       placeholder="John"
                       value={formData.firstName}
                       onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border"
+                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                       required
                     />
                     {errors.firstName && <p className="text-xs text-red-600 mt-1">{errors.firstName}</p>}
@@ -272,7 +276,7 @@ export default function OnboardingPage() {
                       placeholder="Doe"
                       value={formData.lastName}
                       onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border"
+                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                       required
                     />
                     {errors.lastName && <p className="text-xs text-red-600 mt-1">{errors.lastName}</p>}
@@ -287,7 +291,7 @@ export default function OnboardingPage() {
                     placeholder="+234 901 234 5678"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border"
+                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                     required
                   />
                   {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
@@ -299,7 +303,7 @@ export default function OnboardingPage() {
                     name="userType"
                     value={formData.userType}
                     onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground"
+                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
                     required
                   >
                     <option value="">Select your primary role</option>
@@ -330,7 +334,7 @@ export default function OnboardingPage() {
                     placeholder="you@example.com"
                     value={formData.email}
                     onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border"
+                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                     required
                   />
                 </div>
@@ -343,7 +347,7 @@ export default function OnboardingPage() {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border"
+                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                     required
                   />
                   {errors.password && <p className="text-xs text-red-600 mt-1">{errors.password}</p>}
@@ -358,7 +362,7 @@ export default function OnboardingPage() {
                     placeholder="••••••••"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border"
+                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                     required
                   />
                   {errors.confirmPassword && <p className="text-xs text-red-600 mt-1">{errors.confirmPassword}</p>}
@@ -388,7 +392,7 @@ export default function OnboardingPage() {
                     name="country"
                     value={formData.country}
                     onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground"
+                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
                     required
                   >
                     <option value="">Select your country</option>
@@ -410,7 +414,7 @@ export default function OnboardingPage() {
                       placeholder="e.g., Lagos"
                       value={formData.state}
                       onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border"
+                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                       required
                     />
                     {errors.state && <p className="text-xs text-red-600 mt-1">{errors.state}</p>}
@@ -423,7 +427,7 @@ export default function OnboardingPage() {
                       placeholder="e.g., Ikeja"
                       value={formData.city}
                       onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border"
+                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                       required
                     />
                     {errors.city && <p className="text-xs text-red-600 mt-1">{errors.city}</p>}
@@ -446,7 +450,7 @@ export default function OnboardingPage() {
                     name="primaryIncome"
                     value={formData.primaryIncome}
                     onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground"
+                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
                     required
                   >
                     <option value="">Select primary income source</option>
@@ -467,7 +471,7 @@ export default function OnboardingPage() {
                     placeholder="e.g., Sales, Marketing, Customer Service"
                     value={formData.skills.join(', ')}
                     onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border"
+                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                   />
                   {errors.skills && <p className="text-xs text-red-600 mt-1">{errors.skills}</p>}
                 </div>
@@ -478,7 +482,7 @@ export default function OnboardingPage() {
                     name="experience"
                     value={formData.experience}
                     onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground"
+                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
                   >
                     <option value="">Select experience level</option>
                     <option value="0-1">Less than 1 year</option>
@@ -506,7 +510,7 @@ export default function OnboardingPage() {
                     placeholder="e.g., John&apos;s Trading Co."
                     value={formData.businessName}
                     onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border"
+                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
                   />
                 </div>
 
@@ -516,7 +520,7 @@ export default function OnboardingPage() {
                     name="businessCategory"
                     value={formData.businessCategory}
                     onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground"
+                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
                   >
                     <option value="">Select category</option>
                     <option value="retail">Retail/Reselling</option>
@@ -534,7 +538,7 @@ export default function OnboardingPage() {
                     name="monthlyIncome"
                     value={formData.monthlyIncome}
                     onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground"
+                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
                     required
                   >
                     <option value="">Select range</option>
@@ -563,7 +567,7 @@ export default function OnboardingPage() {
                     name="paymentMethod"
                     value={formData.paymentMethod}
                     onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground"
+                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
                     required
                   >
                     <option value="">Select payment method</option>
@@ -582,7 +586,7 @@ export default function OnboardingPage() {
                     name="agreeTerms"
                     checked={formData.agreeTerms}
                     onChange={handleInputChange}
-                    className="rounded border-trace-border mt-1"
+                    className="rounded border-trace-border mt-1 focus-visible:ring-trace-accent focus:ring-trace-accent text-trace-accent"
                     required
                   />
                   <label htmlFor="terms" className="text-sm text-foreground">
@@ -607,7 +611,7 @@ export default function OnboardingPage() {
                   }
                 }}
                 disabled={currentSection === 'personal'}
-                className="h-12 border-trace-border flex-1"
+                className="h-12 border-trace-border rounded-full hover:bg-slate-50 flex-1"
               >
                 Back
               </Button>
@@ -615,7 +619,7 @@ export default function OnboardingPage() {
                 <Button
                   type="button"
                   onClick={handleContinue}
-                  className="h-12 bg-trace-accent hover:bg-trace-accent/90 font-bold flex-1"
+                  className="h-12 bg-slate-950 hover:bg-trace-accent text-white rounded-full font-bold flex-1"
                 >
                   Continue <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -623,7 +627,7 @@ export default function OnboardingPage() {
                 <Button
                   type="submit"
                   disabled={isLoading || !formData.agreeTerms}
-                  className="h-12 bg-trace-accent hover:bg-trace-accent/90 font-bold flex-1"
+                  className="h-12 bg-slate-950 hover:bg-trace-accent text-white rounded-full font-bold flex-1"
                 >
                   {isLoading ? 'Creating your account...' : 'Complete Setup'} <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>

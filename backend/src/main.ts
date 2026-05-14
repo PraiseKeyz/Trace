@@ -34,7 +34,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
 
   app.enableCors({
-    origin: configService.get<string>('FRONTEND_URL'),
+    origin: configService.get<string>('FRONTEND_URL') || "http://localhost:3000",
     credentials: true,
   });
 

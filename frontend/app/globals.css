@@ -10,7 +10,7 @@
   --card-foreground: #1A1A1A;
   --popover: #FFFFFF;
   --popover-foreground: #1A1A1A;
-  --primary: #111827;
+  --primary: #020617;
   --primary-foreground: #FFFFFF;
   --secondary: #F4A826;
   --secondary-foreground: #1A1A1A;
@@ -22,21 +22,21 @@
   --destructive-foreground: #FFFFFF;
   --border: #D4CCC2;
   --input: #FFFFFF;
-  --ring: #111827;
-  --chart-1: #111827;
+  --ring: #020617;
+  --chart-1: #020617;
   --chart-2: #F4A826;
-  --chart-3: #40C057;
-  --chart-4: #3B82F6;
-  --chart-5: #8B5CF6;
+  --chart-3: #2D6A4F;
+  --chart-4: #40C057;
+  --chart-5: #F4A826;
   --radius: 0.625rem;
   --sidebar: #FFFFFF;
   --sidebar-foreground: #1A1A1A;
-  --sidebar-primary: #111827;
+  --sidebar-primary: #020617;
   --sidebar-primary-foreground: #FFFFFF;
   --sidebar-accent: #F4A826;
   --sidebar-accent-foreground: #1A1A1A;
   --sidebar-border: #D4CCC2;
-  --sidebar-ring: #111827;
+  --sidebar-ring: #020617;
 }
 
 .dark {
@@ -77,7 +77,7 @@
 @theme inline {
   --font-sans: 'Geist', 'Geist Fallback';
   --font-mono: 'Geist Mono', 'Geist Mono Fallback';
-  --color-trace-primary: #111827;
+  --color-trace-primary: #020617;
   --color-trace-accent: #F97316;
   --color-trace-surface: #F9F6F0;
   --color-trace-text: #1A1A1A;

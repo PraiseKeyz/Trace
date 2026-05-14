@@ -30,7 +30,7 @@ export default function TransactionsPage() {
   const stats = [
     { label: 'Total Income', value: '₦45,100', change: '+12.5%', color: 'bg-green-100' },
     { label: 'Total Expenses', value: '₦19,000', change: '-3.2%', color: 'bg-red-100' },
-    { label: 'Net Balance', value: '₦26,100', change: '+22.8%', color: 'bg-blue-100' },
+    { label: 'Net Balance', value: '₦26,100', change: '+22.8%', color: 'bg-trace-primary/10' },
   ]
 
   return (
