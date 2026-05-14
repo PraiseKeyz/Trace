@@ -4,7 +4,8 @@ import type { NextRequest } from 'next/server'
 const PROTECTED_PREFIX = '/dashboard'
 const AUTH_COOKIE = 'access_token'
 
-const PUBLIC_ONLY_ROUTES = ['/login', '/onboarding']
+// /signup is public-only — authenticated users already have an account
+const PUBLIC_ONLY_ROUTES = ['/login', '/signup']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -20,7 +21,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // Has token → skip login/onboarding, send to dashboard
+  // Has token → skip login page, send to dashboard
   if (isPublicOnly && token) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
@@ -29,5 +30,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/onboarding'],
+  matcher: ['/dashboard/:path*', '/login', '/signup'],
 }

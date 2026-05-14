@@ -31,6 +31,6 @@ export const economicProfileKey = ['economic-profile', 'me'] as const
 export function useEconomicProfile() {
   return useQuery({
     queryKey: economicProfileKey,
-    queryFn: () => api.get<EconomicProfile>('/economic-profile/my-profile', { silent: true }),
+    queryFn: () => api.get<EconomicProfile>('/economic-profile/me', { silent: true }),
   })
 }

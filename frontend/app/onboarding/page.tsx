@@ -1,645 +1,704 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
-import { ArrowRight, CheckCircle, User, Lock, MapPin, Briefcase, Store, Wallet } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ArrowRight, ArrowLeft, User, MapPin, Briefcase, CheckCircle, ShoppingBag, Languages } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
+import { Country, State, City } from 'country-state-city'
+import { cn } from '@/lib/utils'
 
-type OnboardingSection = 'personal' | 'account' | 'location' | 'work' | 'business' | 'finance'
+// ── Types ─────────────────────────────────────────────────────────────────────
 
-interface OnboardingFormData {
+type Persona = 'trader' | 'gig_worker'
+type Step = 'personal' | 'location' | 'language' | 'work'
+
+const STEPS: { id: Step; label: string; icon: React.ElementType; title: string; subtitle: string }[] = [
+  {
+    id: 'personal',
+    label: 'Personal',
+    icon: User,
+    title: 'Tell us about yourself',
+    subtitle: 'This personalises your experience and builds your economic identity.',
+  },
+  {
+    id: 'location',
+    label: 'Location',
+    icon: MapPin,
+    title: 'Where are you based?',
+    subtitle: 'We match you with nearby opportunities and relevant financial products.',
+  },
+  {
+    id: 'language',
+    label: 'Languages',
+    icon: Languages,
+    title: 'What languages do you speak?',
+    subtitle: 'We use this to match you with opportunities in your language — including African languages.',
+  },
+  {
+    id: 'work',
+    label: 'Work & Skills',
+    icon: Briefcase,
+    title: 'Your work & expertise',
+    subtitle: 'This powers your economic score and surfaces the right opportunities for you.',
+  },
+]
+
+// ── Language data (AfroXLM-R supported + major African languages) ─────────────
+
+const LANGUAGES: { code: string; label: string; region: string }[] = [
+  // International
+  { code: 'en',  label: 'English',           region: 'International' },
+  { code: 'fr',  label: 'French',            region: 'International' },
+  { code: 'ar',  label: 'Arabic',            region: 'International' },
+  { code: 'pt',  label: 'Portuguese',        region: 'International' },
+  // West Africa
+  { code: 'yo',  label: 'Yoruba',            region: 'West Africa' },
+  { code: 'ha',  label: 'Hausa',             region: 'West Africa' },
+  { code: 'ig',  label: 'Igbo',              region: 'West Africa' },
+  { code: 'pcm', label: 'Naija (Pidgin)',    region: 'West Africa' },
+  { code: 'wo',  label: 'Wolof',             region: 'West Africa' },
+  { code: 'tw',  label: 'Twi / Akan',        region: 'West Africa' },
+  { code: 'ff',  label: 'Fula / Fulani',     region: 'West Africa' },
+  { code: 'ee',  label: 'Ewe',               region: 'West Africa' },
+  // East Africa
+  { code: 'sw',  label: 'Swahili',           region: 'East Africa' },
+  { code: 'am',  label: 'Amharic',           region: 'East Africa' },
+  { code: 'om',  label: 'Oromo',             region: 'East Africa' },
+  { code: 'so',  label: 'Somali',            region: 'East Africa' },
+  { code: 'ti',  label: 'Tigrinya',          region: 'East Africa' },
+  { code: 'lg',  label: 'Luganda',           region: 'East Africa' },
+  // Southern Africa
+  { code: 'zu',  label: 'Zulu',              region: 'Southern Africa' },
+  { code: 'xh',  label: 'Xhosa',             region: 'Southern Africa' },
+  { code: 'af',  label: 'Afrikaans',         region: 'Southern Africa' },
+  { code: 'sn',  label: 'Shona',             region: 'Southern Africa' },
+  { code: 'st',  label: 'Sesotho',           region: 'Southern Africa' },
+  // Central Africa
+  { code: 'ln',  label: 'Lingala',           region: 'Central Africa' },
+  { code: 'mg',  label: 'Malagasy',          region: 'Central Africa' },
+]
+
+const LANGUAGE_REGIONS = [...new Set(LANGUAGES.map(l => l.region))]
+
+// ── Persona + category + skill data ──────────────────────────────────────────
+
+const TRADE_CATEGORIES: Record<Persona, { value: string; label: string }[]> = {
+  trader: [
+    { value: 'retail',      label: 'Retail & Reselling' },
+    { value: 'food',        label: 'Food & Beverage' },
+    { value: 'transport',   label: 'Transport & Logistics' },
+    { value: 'agriculture', label: 'Agriculture & Farming' },
+    { value: 'crafts',      label: 'Crafts & Handmade' },
+    { value: 'services',    label: 'Services & Repairs' },
+    { value: 'other',       label: 'Other' },
+  ],
+  gig_worker: [
+    { value: 'tech',      label: 'Tech & Digital Services' },
+    { value: 'gig',       label: 'Gig & Freelance Work' },
+    { value: 'services',  label: 'Services & Repairs' },
+    { value: 'creative',  label: 'Creative & Media' },
+    { value: 'other',     label: 'Other' },
+  ],
+}
+
+const SKILLS_MAP: Record<Persona, Record<string, string[]>> = {
+  trader: {
+    retail:      ['Customer Service', 'Inventory Management', 'Product Sourcing', 'Negotiation', 'Cash Flow Management', 'Social Media Marketing', 'Digital Payments', 'Supplier Relations'],
+    food:        ['Food Preparation', 'Customer Service', 'Inventory Management', 'Cash Flow Management', 'Food Safety', 'Supplier Relations', 'Menu Planning', 'Packaging & Delivery'],
+    transport:   ['Driving', 'Route Planning', 'Vehicle Maintenance', 'Dispatch', 'Customer Service', 'Fleet Management', 'Logistics'],
+    agriculture: ['Crop Management', 'Livestock Care', 'Irrigation', 'Harvesting', 'Market Research', 'Supply Chain', 'Agro-processing'],
+    crafts:      ['Tailoring', 'Weaving', 'Pottery', 'Woodwork', 'Jewelry Making', 'Product Photography', 'Online Selling'],
+    services:    ['Customer Service', 'Plumbing', 'Electrical Work', 'Carpentry', 'Cleaning', 'Bookkeeping', 'Technical Repairs'],
+    other:       ['Customer Service', 'Bookkeeping', 'Cash Flow Management', 'Social Media Marketing', 'Digital Payments', 'Negotiation'],
+  },
+  gig_worker: {
+    tech:     ['Web Development', 'Mobile Development', 'Graphic Design', 'Video Editing', 'Content Writing', 'Digital Marketing', 'Data Entry', 'Social Media Management', 'UI/UX Design', 'SEO'],
+    gig:      ['Customer Support', 'Translation', 'Research', 'Transcription', 'Virtual Assistance', 'Data Entry', 'Content Writing', 'Proofreading'],
+    services: ['Plumbing', 'Electrical Work', 'Carpentry', 'Tailoring', 'Photography', 'Cleaning', 'Catering', 'Teaching', 'Hair Styling', 'Auto Repair'],
+    creative: ['Photography', 'Videography', 'Graphic Design', 'Music Production', 'Copywriting', 'Animation', 'Content Creation', 'Voice Over'],
+    other:    ['Customer Support', 'Teaching', 'Research', 'Data Entry', 'Translation', 'Virtual Assistance'],
+  },
+}
+
+// ── Form state ────────────────────────────────────────────────────────────────
+
+interface FormData {
   firstName: string
   lastName: string
   email: string
-  phone: string
-  password: string
-  confirmPassword: string
-  userType: string
-  country: string
-  state: string
+  countryCode: string   // ISO code e.g. "NG"
+  stateCode: string     // ISO code e.g. "LA"
   city: string
-  primaryIncome: string
+  languages: string[]   // language codes e.g. ["en", "yo"]
+  persona: Persona | ''
+  tradeCategory: string
   skills: string[]
-  experience: string
-  monthlyIncome: string
-  paymentMethod: string
-  businessName: string
-  businessCategory: string
-  agreeTerms: boolean
+  yearsActive: string
 }
 
+const INITIAL: FormData = {
+  firstName: '', lastName: '', email: '',
+  countryCode: '', stateCode: '', city: '',
+  languages: [],
+  persona: '', tradeCategory: '', skills: [], yearsActive: '',
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
+
 export default function OnboardingPage() {
-  const { register, completeOnboarding } = useAuth()
-  const [formData, setFormData] = useState<OnboardingFormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    userType: '',
-    country: '',
-    state: '',
-    city: '',
-    primaryIncome: '',
-    skills: [],
-    experience: '',
-    monthlyIncome: '',
-    paymentMethod: '',
-    businessName: '',
-    businessCategory: '',
-    agreeTerms: false,
-  })
+  const { user, isLoading, completeOnboarding } = useAuth()
+  const router = useRouter()
 
-  const [isLoading, setIsLoading] = useState(false)
-  const [currentSection, setCurrentSection] = useState<OnboardingSection>('personal')
-  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [step, setStep] = useState<Step>('personal')
+  const [form, setForm] = useState<FormData>(INITIAL)
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const sections = [
-    { id: 'personal', label: 'Personal', icon: User },
-    { id: 'account', label: 'Account', icon: Lock },
-    { id: 'location', label: 'Location', icon: MapPin },
-    { id: 'work', label: 'Work', icon: Briefcase },
-    { id: 'business', label: 'Business', icon: Store },
-    { id: 'finance', label: 'Finance', icon: Wallet },
-  ] as const
+  useEffect(() => {
+    if (isLoading) return
+    if (!user) { router.replace('/signup'); return }
+    if (!user.isPhoneVerified) { router.replace('/verify'); return }
+    if (user.onboardingComplete) { router.replace('/dashboard'); return }
+  }, [user, isLoading, router])
 
-  const updateField = <K extends keyof OnboardingFormData>(name: K, value: OnboardingFormData[K]) => {
-    setFormData(prev => ({
+  // ── Country / State / City data ──────────────────────────────────────────
+
+  const allCountries = useMemo(() => Country.getAllCountries(), [])
+
+  const statesForCountry = useMemo(
+    () => form.countryCode ? State.getStatesOfCountry(form.countryCode) : [],
+    [form.countryCode]
+  )
+
+  const citiesForState = useMemo(
+    () => form.countryCode && form.stateCode
+      ? City.getCitiesOfState(form.countryCode, form.stateCode)
+      : [],
+    [form.countryCode, form.stateCode]
+  )
+
+  // ── Derived ──────────────────────────────────────────────────────────────
+
+  const stepIndex = STEPS.findIndex((s) => s.id === step)
+  const currentStep = STEPS[stepIndex]
+  const progress = Math.round(((stepIndex + 1) / STEPS.length) * 100)
+
+  const availableCategories = form.persona ? TRADE_CATEGORIES[form.persona] : []
+  const availableSkills = form.persona && form.tradeCategory
+    ? SKILLS_MAP[form.persona][form.tradeCategory] ?? []
+    : []
+
+  // ── Field helpers ─────────────────────────────────────────────────────────
+
+  const set = (field: keyof FormData) => (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setForm((p) => ({ ...p, [field]: e.target.value }))
+    setErrors((p) => { const n = { ...p }; delete n[field]; return n })
+  }
+
+  const setCountry = (code: string) => {
+    setForm(p => ({ ...p, countryCode: code, stateCode: '', city: '' }))
+    setErrors(p => { const n = { ...p }; delete n.countryCode; return n })
+  }
+
+  const setStateCode = (code: string) => {
+    setForm(p => ({ ...p, stateCode: code, city: '' }))
+    setErrors(p => { const n = { ...p }; delete n.stateCode; return n })
+  }
+
+  const setPersona = (p: Persona) => {
+    setForm((prev) => ({ ...prev, persona: p, tradeCategory: '', skills: [] }))
+    setErrors((prev) => { const n = { ...prev }; delete n.persona; return n })
+  }
+
+  const setTradeCategory = (cat: string) => {
+    setForm((prev) => ({ ...prev, tradeCategory: cat, skills: [] }))
+    setErrors((prev) => { const n = { ...prev }; delete n.tradeCategory; return n })
+  }
+
+  const toggleSkill = (skill: string) => {
+    setForm((prev) => ({
       ...prev,
-      [name]: value,
+      skills: prev.skills.includes(skill)
+        ? prev.skills.filter((s) => s !== skill)
+        : prev.skills.length < 8 ? [...prev.skills, skill] : prev.skills,
     }))
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, type } = e.target
-    const field = name as keyof OnboardingFormData
-    
-    if (type === 'checkbox') {
-      const checked = (e.target as HTMLInputElement).checked
-      updateField(field, checked as OnboardingFormData[typeof field])
-    } else if (field === 'skills') {
-      const skillArray = e.target.value.split(',').map((s: string) => s.trim()).filter((s: string) => s)
-      updateField('skills', skillArray)
-    } else {
-      updateField(field, e.target.value as OnboardingFormData[typeof field])
+  const toggleLanguage = (code: string) => {
+    setForm(prev => ({
+      ...prev,
+      languages: prev.languages.includes(code)
+        ? prev.languages.filter(l => l !== code)
+        : [...prev.languages, code],
+    }))
+    setErrors(p => { const n = { ...p }; delete n.languages; return n })
+  }
+
+  const inputClass = (field: keyof FormData) =>
+    `h-12 bg-white border-trace-border focus-visible:border-slate-950 focus-visible:ring-slate-950/20${errors[field] ? ' border-red-400' : ''}`
+
+  const selectClass = (hasError?: boolean) =>
+    `w-full h-12 px-4 bg-white border rounded-lg font-medium text-foreground outline-none transition focus:ring-2 focus:ring-trace-accent/30 focus:border-trace-accent${hasError ? ' border-red-400' : ' border-trace-border'}`
+
+  // ── Validation ────────────────────────────────────────────────────────────
+
+  const validate = (): boolean => {
+    const e: Partial<Record<keyof FormData, string>> = {}
+
+    if (step === 'personal') {
+      if (!form.firstName.trim()) e.firstName = 'First name is required'
+      if (!form.lastName.trim()) e.lastName = 'Last name is required'
+      if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+        e.email = 'Enter a valid email address'
     }
+    if (step === 'location') {
+      if (!form.countryCode) e.countryCode = 'Please select your country'
+      if (statesForCountry.length > 0 && !form.stateCode) e.stateCode = 'Please select your state / region'
+    }
+    if (step === 'language') {
+      if (form.languages.length === 0) e.languages = 'Please select at least one language'
+    }
+    if (step === 'work') {
+      if (!form.persona) e.persona = 'Please choose your work type'
+      if (!form.tradeCategory) e.tradeCategory = 'Please select a category'
+    }
+
+    setErrors(e)
+    return Object.keys(e).length === 0
+  }
+
+  // ── Navigation ────────────────────────────────────────────────────────────
+
+  const handleContinue = () => {
+    if (!validate()) return
+    const next = STEPS[stepIndex + 1]
+    if (next) setStep(next.id)
+  }
+
+  const handleBack = () => {
+    const prev = STEPS[stepIndex - 1]
+    if (prev) setStep(prev.id)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match')
-      return
-    }
-    setIsLoading(true)
+    if (!validate()) return
+    setIsSubmitting(true)
     try {
-      await register({
-        phone: formData.phone,
-        password: formData.password,
-      })
+      const selectedCountry = Country.getCountryByCode(form.countryCode)
+      const selectedState  = form.stateCode
+        ? State.getStateByCodeAndCountry(form.stateCode, form.countryCode)
+        : null
+
+      const stateLabel = selectedState?.name !== undefined ? selectedState.name : form.stateCode
+      const cityTrimmed = form.city.trim()
+      const cityLabel = cityTrimmed !== '' ? cityTrimmed : (selectedState?.name ?? '')
 
       await completeOnboarding({
-        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
-        state: formData.state,
-        city: formData.city,
+        persona: form.persona || undefined,
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        fullName: `${form.firstName.trim()} ${form.lastName.trim()}`,
+        email: form.email.trim() || undefined,
+        state: stateLabel,
+        city: cityLabel,
+        languages: form.languages,
+        skills: form.skills,
+        tradeCategory: form.tradeCategory || undefined,
+        yearsActive: form.yearsActive ? parseInt(form.yearsActive, 10) : undefined,
       })
-
-      localStorage.removeItem('onboardingDraft')
-    } catch (error) {
-      // Error handled by register function (toast)
+    } catch {
+      // ApiClient handles toast
     } finally {
-      setIsLoading(false)
+      setIsSubmitting(false)
     }
   }
 
-  // Helpers
-  const currentIndex = sections.findIndex(s => s.id === currentSection)
-  const percent = Math.round(((currentIndex + 1) / sections.length) * 100)
+  // ── Loading ────────────────────────────────────────────────────────────────
 
-  const validateSection = (sectionId: string) => {
-    const newErrors: Record<string, string> = {}
-    if (sectionId === 'personal') {
-      if (!formData.firstName) newErrors.firstName = 'First name is required'
-      if (!formData.lastName) newErrors.lastName = 'Last name is required'
-      if (!formData.phone) newErrors.phone = 'Phone number is required'
-      if (!formData.userType) newErrors.userType = 'Please select your role'
-    }
-    if (sectionId === 'account') {
-      if (!formData.email) newErrors.email = 'Email is required'
-      if (!formData.password || formData.password.length < 8) newErrors.password = 'Password must be at least 8 characters'
-      if (formData.password && !/\d/.test(formData.password)) newErrors.password = 'Password must include a number'
-      if (formData.password && !/[^A-Za-z0-9]/.test(formData.password)) newErrors.password = 'Password must include a symbol'
-      if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match'
-    }
-    if (sectionId === 'location') {
-      if (!formData.country) newErrors.country = 'Country is required'
-      if (!formData.state) newErrors.state = 'State is required'
-      if (!formData.city) newErrors.city = 'City is required'
-    }
-    if (sectionId === 'work') {
-      if (!formData.primaryIncome) newErrors.primaryIncome = 'Select your primary income source'
-      if (!formData.skills || formData.skills.length === 0) newErrors.skills = 'List at least one skill'
-    }
-    if (sectionId === 'business') {
-      if (!formData.monthlyIncome) newErrors.monthlyIncome = 'Select estimated monthly income'
-    }
-    if (sectionId === 'finance') {
-      if (!formData.paymentMethod) newErrors.paymentMethod = 'Select a payment method'
-      if (!formData.agreeTerms) newErrors.agreeTerms = 'You must agree to the terms'
-    }
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-trace-surface flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-trace-accent border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
-  const handleContinue = () => {
-    if (!validateSection(currentSection)) return
-    const idx = sections.findIndex(s => s.id === currentSection)
-    if (idx < sections.length - 1) setCurrentSection(sections[idx + 1].id)
-  }
-
-  // Persist draft to localStorage (omit passwords)
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem('onboardingDraft')
-      if (raw) {
-        const parsed = JSON.parse(raw)
-        setFormData(prev => ({ ...prev, ...parsed, password: '', confirmPassword: '' }))
-      }
-    } catch (e) {}
-  }, [])
-
-  useEffect(() => {
-    try {
-      const { password, confirmPassword, ...rest } = formData
-      localStorage.setItem('onboardingDraft', JSON.stringify(rest))
-    } catch (e) {}
-  }, [formData])
+  // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen bg-trace-surface">
       {/* Header */}
-      <header className="border-b border-trace-border sticky top-0 z-40 bg-trace-surface">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <Link href="/" className="flex items-center gap-3 w-fit group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-trace-accent to-trace-accent/90 shadow-lg shadow-trace-accent/20 group-hover:scale-105 transition-all duration-300">
+      <header className="border-b border-trace-border bg-trace-surface sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-5 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 w-fit">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950">
               <span className="font-bold text-white text-lg font-mono">T</span>
             </div>
             <div>
-              <span className="text-xl font-black text-slate-950 tracking-tight block">Trace</span>
+              <span className="text-xl font-black text-slate-950 block tracking-tight">Trace</span>
               <span className="text-[10px] uppercase font-bold tracking-widest text-trace-accent block -mt-1">Economic Identity</span>
             </div>
           </Link>
+          <p className="text-sm text-muted-foreground">
+            Step <span className="font-bold text-slate-950">{stepIndex + 1}</span> of {STEPS.length}
+          </p>
         </div>
       </header>
 
       <div className="min-h-[calc(100vh-80px)] flex items-center justify-center px-4 py-12">
-        <div className="w-full max-w-2xl">
-          {/* Progress Indicator */}
-          <div className="mb-12">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-foreground text-sm">SETUP PROGRESS</h3>
-              <p className="text-xs font-medium text-muted-foreground">Step {currentIndex + 1} of {sections.length}</p>
+        <div className="w-full max-w-lg">
+
+          {/* Progress */}
+          <div className="mb-10">
+            <div className="flex justify-between items-center mb-3">
+              <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Setting up your profile</p>
+              <p className="text-xs font-bold text-slate-950">{progress}%</p>
             </div>
-            
-            {/* Step Indicators with Arrows */}
-            <div className="flex items-center justify-center flex-wrap mb-8">
-              {sections.map((section, idx) => {
-                const Icon = section.icon
-                const isActive = currentSection === section.id
-                const isCompleted = idx < currentIndex
-                
+            <div className="h-1.5 bg-trace-light rounded-full overflow-hidden mb-6">
+              <div className="h-full bg-trace-accent rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {STEPS.map((s, i) => {
+                const Icon = s.icon
+                const isActive = s.id === step
+                const isDone = i < stepIndex
                 return (
-                  <div key={section.id} className="flex items-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <button
-                        onClick={() => setCurrentSection(section.id)}
-                        className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
-                          isActive
-                            ? 'bg-slate-950 text-white ring-2 ring-slate-950/30 ring-offset-2 scale-110 shadow-lg'
-                            : isCompleted
-                            ? 'bg-slate-200 text-slate-950 hover:bg-slate-300'
-                            : 'bg-trace-light text-muted-foreground hover:bg-trace-border'
-                        }`}
-                        title={section.label}
-                      >
-                        <Icon size={20} />
-                      </button>
-                      {/* Optional label underneath for better UX on desktop */}
-                      <span className={`text-[10px] uppercase tracking-wider font-bold hidden sm:block ${isActive ? 'text-slate-950' : 'text-muted-foreground'}`}>
-                        {section.id}
-                      </span>
-                    </div>
-                    {idx < sections.length - 1 && (
-                      <div className="mx-2 sm:mx-4 flex items-center justify-center -mt-6 sm:-mt-6">
-                        <ArrowRight size={20} className={`transition-colors duration-300 ${isCompleted ? 'text-trace-accent' : 'text-trace-border'}`} />
-                      </div>
-                    )}
+                  <div key={s.id} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 ${
+                    isActive ? 'bg-trace-accent text-white' : isDone ? 'bg-trace-light text-slate-950' : 'bg-white border border-trace-border text-muted-foreground'
+                  }`}>
+                    {isDone ? <CheckCircle size={12} /> : <Icon size={12} />}
+                    <span>{s.label}</span>
                   </div>
                 )
               })}
             </div>
           </div>
 
-          {/* Form Container */}
-          <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Personal Section */}
-            {currentSection === 'personal' && (
-              <div className="space-y-6 animate-in fade-in duration-300">
-                <div>
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Tell us about yourself</h2>
-                  <p className="text-muted-foreground">We&apos;ll use this to personalize your experience</p>
-                </div>
+          {/* Step header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-black text-slate-950 mb-2">{currentStep.title}</h1>
+            <p className="text-muted-foreground">{currentStep.subtitle}</p>
+          </div>
 
-                <div className="grid sm:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+
+            {/* ── PERSONAL ── */}
+            {step === 'personal' && (
+              <div className="space-y-5 animate-in fade-in duration-300">
+                <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-bold text-foreground mb-2">First Name</label>
-                    <Input
-                      type="text"
-                      name="firstName"
-                      placeholder="John"
-                      value={formData.firstName}
-                      onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                      required
-                    />
-                    {errors.firstName && <p className="text-xs text-red-600 mt-1">{errors.firstName}</p>}
+                    <Input type="text" placeholder="John" value={form.firstName} onChange={set('firstName')} className={inputClass('firstName')} />
+                    {errors.firstName && <p className="text-xs text-red-500 mt-1">{errors.firstName}</p>}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-foreground mb-2">Last Name</label>
-                    <Input
-                      type="text"
-                      name="lastName"
-                      placeholder="Doe"
-                      value={formData.lastName}
-                      onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                      required
-                    />
-                    {errors.lastName && <p className="text-xs text-red-600 mt-1">{errors.lastName}</p>}
+                    <Input type="text" placeholder="Doe" value={form.lastName} onChange={set('lastName')} className={inputClass('lastName')} />
+                    {errors.lastName && <p className="text-xs text-red-500 mt-1">{errors.lastName}</p>}
                   </div>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Phone Number</label>
-                  <Input
-                    type="tel"
-                    name="phone"
-                    placeholder="+234 901 234 5678"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                    required
-                  />
-                  {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Who are you?</label>
-                  <select
-                    name="userType"
-                    value={formData.userType}
-                    onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
-                    required
-                  >
-                    <option value="">Select your primary role</option>
-                    <option value="trader">Trader/Merchant</option>
-                    <option value="gig">Gig Worker</option>
-                    <option value="both">Both Trader & Gig Worker</option>
-                    <option value="freelancer">Freelancer</option>
-                    <option value="other">Other</option>
-                  </select>
-                  {errors.userType && <p className="text-xs text-red-600 mt-1">{errors.userType}</p>}
+                  <label className="block text-sm font-bold text-foreground mb-2">
+                    Email Address <span className="font-normal text-muted-foreground">(optional)</span>
+                  </label>
+                  <Input type="email" placeholder="you@example.com" value={form.email} onChange={set('email')} className={inputClass('email')} />
+                  {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+                  <p className="text-xs text-muted-foreground mt-1.5">Used for financial product notifications</p>
                 </div>
               </div>
             )}
 
-            {/* Account Section */}
-            {currentSection === 'account' && (
-              <div className="space-y-6 animate-in fade-in duration-300">
-                <div>
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Create your account</h2>
-                  <p className="text-muted-foreground">Secure your Trace account with a strong password</p>
-                </div>
+            {/* ── LOCATION ── */}
+            {step === 'location' && (
+              <div className="space-y-5 animate-in fade-in duration-300">
 
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Email Address</label>
-                  <Input
-                    type="email"
-                    name="email"
-                    placeholder="you@example.com"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Password</label>
-                  <Input
-                    type="password"
-                    name="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                    required
-                  />
-                  {errors.password && <p className="text-xs text-red-600 mt-1">{errors.password}</p>}
-                  <p className="text-xs text-muted-foreground mt-2">At least 8 characters with numbers and symbols</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Confirm Password</label>
-                  <Input
-                    type="password"
-                    name="confirmPassword"
-                    placeholder="••••••••"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                    required
-                  />
-                  {errors.confirmPassword && <p className="text-xs text-red-600 mt-1">{errors.confirmPassword}</p>}
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-trace-accent/5 rounded-lg border border-trace-accent/20">
-                  <CheckCircle size={20} className="text-trace-accent shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-trace-accent">Your data is secure</p>
-                    <p className="text-xs text-muted-foreground">We encrypt all information and never share without permission</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Location Section */}
-            {currentSection === 'location' && (
-              <div className="space-y-6 animate-in fade-in duration-300">
-                <div>
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Where are you based?</h2>
-                  <p className="text-muted-foreground">This helps us match you with relevant opportunities</p>
-                </div>
-
+                {/* Country */}
                 <div>
                   <label className="block text-sm font-bold text-foreground mb-2">Country</label>
                   <select
-                    name="country"
-                    value={formData.country}
-                    onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
-                    required
+                    value={form.countryCode}
+                    onChange={e => setCountry(e.target.value)}
+                    className={selectClass(!!errors.countryCode)}
                   >
                     <option value="">Select your country</option>
-                    <option value="ng">Nigeria</option>
-                    <option value="gh">Ghana</option>
-                    <option value="ke">Kenya</option>
-                    <option value="za">South Africa</option>
-                    <option value="other">Other</option>
+                    {allCountries.map(c => (
+                      <option key={c.isoCode} value={c.isoCode}>
+                        {c.flag} {c.name}
+                      </option>
+                    ))}
                   </select>
-                  {errors.country && <p className="text-xs text-red-600 mt-1">{errors.country}</p>}
+                  {errors.countryCode && <p className="text-xs text-red-500 mt-1">{errors.countryCode}</p>}
                 </div>
 
-                <div className="grid sm:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-bold text-foreground mb-2">State/Region</label>
-                    <Input
-                      type="text"
-                      name="state"
-                      placeholder="e.g., Lagos"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                      required
-                    />
-                    {errors.state && <p className="text-xs text-red-600 mt-1">{errors.state}</p>}
+                {/* State — only shown if country has states */}
+                {statesForCountry.length > 0 && (
+                  <div className="animate-in fade-in duration-200">
+                    <label className="block text-sm font-bold text-foreground mb-2">State / Region</label>
+                    <select
+                      value={form.stateCode}
+                      onChange={e => setStateCode(e.target.value)}
+                      className={selectClass(!!errors.stateCode)}
+                    >
+                      <option value="">Select state / region</option>
+                      {statesForCountry.map(s => (
+                        <option key={s.isoCode} value={s.isoCode}>{s.name}</option>
+                      ))}
+                    </select>
+                    {errors.stateCode && <p className="text-xs text-red-500 mt-1">{errors.stateCode}</p>}
                   </div>
-                  <div>
+                )}
+
+                {/* City — dropdown if available, text input as fallback */}
+                {form.stateCode && (
+                  <div className="animate-in fade-in duration-200">
+                    <label className="block text-sm font-bold text-foreground mb-2">
+                      City <span className="font-normal text-muted-foreground">(optional)</span>
+                    </label>
+                    {citiesForState.length > 0 ? (
+                      <select
+                        value={form.city}
+                        onChange={set('city')}
+                        className={selectClass()}
+                      >
+                        <option value="">Select city (optional)</option>
+                        {citiesForState.map(c => (
+                          <option key={c.name} value={c.name}>{c.name}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <Input
+                        type="text"
+                        placeholder="Enter your city"
+                        value={form.city}
+                        onChange={set('city')}
+                        className={inputClass('city')}
+                      />
+                    )}
+                  </div>
+                )}
+
+                {/* No-states fallback (some countries like Vatican etc.) */}
+                {form.countryCode && statesForCountry.length === 0 && (
+                  <div className="animate-in fade-in duration-200">
                     <label className="block text-sm font-bold text-foreground mb-2">City</label>
                     <Input
                       type="text"
-                      name="city"
-                      placeholder="e.g., Ikeja"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                      required
+                      placeholder="Enter your city"
+                      value={form.city}
+                      onChange={set('city')}
+                      className={inputClass('city')}
                     />
-                    {errors.city && <p className="text-xs text-red-600 mt-1">{errors.city}</p>}
                   </div>
-                </div>
+                )}
               </div>
             )}
 
-            {/* Work Section */}
-            {currentSection === 'work' && (
+            {/* ── LANGUAGE ── */}
+            {step === 'language' && (
               <div className="space-y-6 animate-in fade-in duration-300">
-                <div>
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Tell us about your work</h2>
-                  <p className="text-muted-foreground">This helps us recommend relevant opportunities</p>
+                <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                  Our AI uses <span className="font-bold">AfroXLM-R</span> — a model trained on African languages — to match you with opportunities in your language.
                 </div>
 
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Primary Income Source</label>
-                  <select
-                    name="primaryIncome"
-                    value={formData.primaryIncome}
-                    onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
-                    required
-                  >
-                    <option value="">Select primary income source</option>
-                    <option value="trading">Trading/Reselling</option>
-                    <option value="services">Services</option>
-                    <option value="gig">Gig Work</option>
-                    <option value="employment">Employment</option>
-                    <option value="other">Other</option>
-                  </select>
-                  {errors.primaryIncome && <p className="text-xs text-red-600 mt-1">{errors.primaryIncome}</p>}
-                </div>
+                {errors.languages && (
+                  <p className="text-xs text-red-500">{errors.languages}</p>
+                )}
 
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Skills (comma-separated)</label>
-                  <Input
-                    type="text"
-                    name="skills"
-                    placeholder="e.g., Sales, Marketing, Customer Service"
-                    value={formData.skills.join(', ')}
-                    onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                  />
-                  {errors.skills && <p className="text-xs text-red-600 mt-1">{errors.skills}</p>}
-                </div>
+                {LANGUAGE_REGIONS.map(region => (
+                  <div key={region}>
+                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">{region}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {LANGUAGES.filter(l => l.region === region).map(lang => {
+                        const selected = form.languages.includes(lang.code)
+                        return (
+                          <button
+                            key={lang.code}
+                            type="button"
+                            onClick={() => toggleLanguage(lang.code)}
+                            className={cn(
+                              'px-3 py-1.5 rounded-full text-sm font-medium border transition-all duration-150',
+                              selected
+                                ? 'bg-trace-accent text-white border-trace-accent'
+                                : 'bg-white text-slate-700 border-trace-border hover:border-trace-accent/60'
+                            )}
+                          >
+                            {lang.label}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                ))}
 
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Years of Experience</label>
-                  <select
-                    name="experience"
-                    value={formData.experience}
-                    onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
-                  >
-                    <option value="">Select experience level</option>
-                    <option value="0-1">Less than 1 year</option>
-                    <option value="1-3">1-3 years</option>
-                    <option value="3-5">3-5 years</option>
-                    <option value="5+">5+ years</option>
-                  </select>
-                </div>
+                {form.languages.length > 0 && (
+                  <p className="text-xs text-trace-accent font-semibold">
+                    {form.languages.length} language{form.languages.length > 1 ? 's' : ''} selected
+                  </p>
+                )}
               </div>
             )}
 
-            {/* Business Section */}
-            {currentSection === 'business' && (
+            {/* ── WORK ── */}
+            {step === 'work' && (
               <div className="space-y-6 animate-in fade-in duration-300">
+
+                {/* 1. Persona picker */}
                 <div>
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Your business</h2>
-                  <p className="text-muted-foreground">Tell us about your trading or business activities</p>
+                  <label className="block text-sm font-bold text-foreground mb-3">What best describes you?</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setPersona('trader')}
+                      className={`relative flex flex-col items-start gap-2 p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                        form.persona === 'trader'
+                          ? 'border-trace-accent bg-trace-accent/5'
+                          : 'border-trace-border bg-white hover:border-trace-accent/40'
+                      }`}
+                    >
+                      {form.persona === 'trader' && (
+                        <CheckCircle size={16} className="absolute top-3 right-3 text-trace-accent" />
+                      )}
+                      <div className="w-10 h-10 bg-trace-accent/10 rounded-lg flex items-center justify-center">
+                        <ShoppingBag size={20} className="text-trace-accent" />
+                      </div>
+                      <div>
+                        <p className="font-black text-slate-950 text-sm">I run a trade</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Retail, food, crafts & more</p>
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setPersona('gig_worker')}
+                      className={`relative flex flex-col items-start gap-2 p-4 rounded-xl border-2 text-left transition-all duration-200 ${
+                        form.persona === 'gig_worker'
+                          ? 'border-trace-accent bg-trace-accent/5'
+                          : 'border-trace-border bg-white hover:border-trace-accent/40'
+                      }`}
+                    >
+                      {form.persona === 'gig_worker' && (
+                        <CheckCircle size={16} className="absolute top-3 right-3 text-trace-accent" />
+                      )}
+                      <div className="w-10 h-10 bg-slate-950/5 rounded-lg flex items-center justify-center">
+                        <Briefcase size={20} className="text-slate-950" />
+                      </div>
+                      <div>
+                        <p className="font-black text-slate-950 text-sm">I seek work / gigs</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">Tech, services, freelance</p>
+                      </div>
+                    </button>
+                  </div>
+                  {errors.persona && <p className="text-xs text-red-500 mt-2">{errors.persona}</p>}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Business Name (optional)</label>
-                  <Input
-                    type="text"
-                    name="businessName"
-                    placeholder="e.g., John&apos;s Trading Co."
-                    value={formData.businessName}
-                    onChange={handleInputChange}
-                    className="h-12 bg-trace-surface border-trace-border focus-visible:border-trace-accent focus-visible:ring-trace-accent/20"
-                  />
-                </div>
+                {/* 2. Trade category */}
+                {form.persona && (
+                  <div className="animate-in fade-in duration-300">
+                    <label className="block text-sm font-bold text-foreground mb-2">
+                      {form.persona === 'trader' ? 'Trade Category' : 'Work Category'}
+                    </label>
+                    <select
+                      value={form.tradeCategory}
+                      onChange={(e) => setTradeCategory(e.target.value)}
+                      className={selectClass(!!errors.tradeCategory)}
+                    >
+                      <option value="">Select a category</option>
+                      {availableCategories.map((c) => (
+                        <option key={c.value} value={c.value}>{c.label}</option>
+                      ))}
+                    </select>
+                    {errors.tradeCategory && <p className="text-xs text-red-500 mt-1">{errors.tradeCategory}</p>}
+                  </div>
+                )}
 
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Business Category</label>
-                  <select
-                    name="businessCategory"
-                    value={formData.businessCategory}
-                    onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
-                  >
-                    <option value="">Select category</option>
-                    <option value="retail">Retail/Reselling</option>
-                    <option value="food">Food & Beverage</option>
-                    <option value="service">Services</option>
-                    <option value="craft">Crafts & Handmade</option>
-                    <option value="tech">Tech/Digital</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
+                {/* 3. Skill chips */}
+                {availableSkills.length > 0 && (
+                  <div className="animate-in fade-in duration-300">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="block text-sm font-bold text-foreground">
+                        Skills <span className="font-normal text-muted-foreground">(pick up to 8)</span>
+                      </label>
+                      {form.skills.length > 0 && (
+                        <span className="text-xs font-bold text-trace-accent">{form.skills.length} selected</span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {availableSkills.map((skill) => {
+                        const selected = form.skills.includes(skill)
+                        const maxed = form.skills.length >= 8 && !selected
+                        return (
+                          <button
+                            key={skill}
+                            type="button"
+                            disabled={maxed}
+                            onClick={() => toggleSkill(skill)}
+                            className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all duration-150 ${
+                              selected
+                                ? 'bg-trace-accent text-white border-trace-accent'
+                                : maxed
+                                ? 'bg-white text-muted-foreground border-trace-border opacity-40 cursor-not-allowed'
+                                : 'bg-white text-slate-950 border-trace-border hover:border-trace-accent/60'
+                            }`}
+                          >
+                            {skill}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
 
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Estimated Monthly Income</label>
-                  <select
-                    name="monthlyIncome"
-                    value={formData.monthlyIncome}
-                    onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
-                    required
-                  >
-                    <option value="">Select range</option>
-                    <option value="0-50k">₦0 - ₦50,000</option>
-                    <option value="50-100k">₦50,000 - ₦100,000</option>
-                    <option value="100-250k">₦100,000 - ₦250,000</option>
-                    <option value="250-500k">₦250,000 - ₦500,000</option>
-                    <option value="500k+">₦500,000+</option>
-                  </select>
-                  {errors.monthlyIncome && <p className="text-xs text-red-600 mt-1">{errors.monthlyIncome}</p>}
-                </div>
-              </div>
-            )}
+                {/* 4. Years active */}
+                {form.tradeCategory && (
+                  <div className="animate-in fade-in duration-300">
+                    <label className="block text-sm font-bold text-foreground mb-2">
+                      Years in this field <span className="font-normal text-muted-foreground">(optional)</span>
+                    </label>
+                    <select value={form.yearsActive} onChange={set('yearsActive')} className={selectClass()}>
+                      <option value="">Select experience</option>
+                      <option value="0">Less than 1 year</option>
+                      <option value="1">1 – 2 years</option>
+                      <option value="3">3 – 5 years</option>
+                      <option value="6">6 – 10 years</option>
+                      <option value="11">10+ years</option>
+                    </select>
+                  </div>
+                )}
 
-            {/* Finance Section */}
-            {currentSection === 'finance' && (
-              <div className="space-y-6 animate-in fade-in duration-300">
-                <div>
-                  <h2 className="text-3xl font-bold text-foreground mb-2">Financial information</h2>
-                  <p className="text-muted-foreground">This helps us connect you with relevant financial products</p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">Preferred Payment Method</label>
-                  <select
-                    name="paymentMethod"
-                    value={formData.paymentMethod}
-                    onChange={handleInputChange}
-                    className="w-full h-12 px-4 bg-trace-surface border border-trace-border rounded-lg font-medium text-foreground outline-none focus-visible:border-trace-accent focus-visible:ring-trace-accent/20 focus-visible:ring-2"
-                    required
-                  >
-                    <option value="">Select payment method</option>
-                    <option value="bank">Bank Transfer</option>
-                    <option value="wallet">Mobile Wallet</option>
-                    <option value="ussd">USSD</option>
-                    <option value="cash">Cash Pickup</option>
-                  </select>
-                  {errors.paymentMethod && <p className="text-xs text-red-600 mt-1">{errors.paymentMethod}</p>}
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-trace-accent/5 rounded-lg border border-trace-accent/20">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    name="agreeTerms"
-                    checked={formData.agreeTerms}
-                    onChange={handleInputChange}
-                    className="rounded border-trace-border mt-1 focus-visible:ring-trace-accent focus:ring-trace-accent text-trace-accent"
-                    required
-                  />
-                  <label htmlFor="terms" className="text-sm text-foreground">
-                    I agree to Trace&apos;s{' '}
-                    <a href="#" className="text-trace-accent font-bold hover:underline">Terms of Service</a>
-                    {' '}and{' '}
-                    <a href="#" className="text-trace-accent font-bold hover:underline">Privacy Policy</a>
+                {/* Consent */}
+                <div className="flex items-start gap-3 p-4 bg-white rounded-xl border border-trace-border">
+                  <input type="checkbox" id="consent" checked readOnly className="mt-1 h-4 w-4 rounded border-trace-border accent-trace-accent" />
+                  <label htmlFor="consent" className="text-sm text-foreground leading-relaxed">
+                    I allow Trace to use my economic activity data to calculate my identity score and match me with relevant opportunities and financial products.
                   </label>
                 </div>
               </div>
             )}
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-between gap-4 pt-8">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => {
-                  const currentIndex = sections.findIndex(s => s.id === currentSection)
-                  if (currentIndex > 0) {
-                    setCurrentSection(sections[currentIndex - 1].id)
-                  }
-                }}
-                disabled={currentSection === 'personal'}
-                className="h-12 border-trace-border rounded-full hover:bg-slate-50 flex-1"
-              >
-                Back
-              </Button>
-              {currentSection !== 'finance' ? (
-                <Button
-                  type="button"
-                  onClick={handleContinue}
-                  className="h-12 bg-slate-950 hover:bg-trace-accent text-white rounded-full font-bold flex-1"
-                >
+            {/* Navigation */}
+            <div className="flex gap-3 pt-2">
+              {stepIndex > 0 && (
+                <Button type="button" variant="outline" onClick={handleBack} className="h-12 border-trace-border rounded-full px-6">
+                  <ArrowLeft className="h-4 w-4 mr-2" /> Back
+                </Button>
+              )}
+              {step !== 'work' ? (
+                <Button type="button" onClick={handleContinue} className="h-12 bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full font-bold flex-1 shadow-lg shadow-trace-accent/20">
                   Continue <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               ) : (
-                <Button
-                  type="submit"
-                  disabled={isLoading || !formData.agreeTerms}
-                  className="h-12 bg-slate-950 hover:bg-trace-accent text-white rounded-full font-bold flex-1"
-                >
-                  {isLoading ? 'Creating your account...' : 'Complete Setup'} <ArrowRight className="ml-2 h-5 w-5" />
+                <Button type="submit" disabled={isSubmitting} className="h-12 bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full font-bold flex-1 shadow-lg shadow-trace-accent/20">
+                  {isSubmitting ? 'Setting up your profile…' : 'Launch My Dashboard'}
+                  {!isSubmitting && <ArrowRight className="ml-2 h-5 w-5" />}
                 </Button>
               )}
             </div>
-
-            {currentSection === 'finance' && (
-              <p className="text-center text-sm text-muted-foreground">
-                Already have an account?{' '}
-                <Link href="/login" className="text-trace-accent font-bold hover:underline">Sign in</Link>
-              </p>
-            )}
           </form>
         </div>
       </div>

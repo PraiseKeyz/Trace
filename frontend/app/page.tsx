@@ -54,7 +54,7 @@ export default function LandingPage() {
             <Link href="/login" className="text-sm font-bold text-trace-text hover:text-trace-accent transition-colors">
               Sign In
             </Link>
-            <Link href="/onboarding">
+            <Link href="/signup">
               <Button className="bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full px-6 font-bold shadow-lg shadow-trace-accent/20 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300">
                 Get Started
               </Button>
@@ -330,7 +330,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                <Link href="/onboarding">
+                <Link href="/signup">
                   <Button className="bg-trace-accent hover:bg-[#e0981d] text-slate-950 font-black text-lg px-8 h-14 rounded-2xl shadow-[0_8px_30px_rgb(244,168,38,0.3)] hover:-translate-y-1 transition-all duration-300">
                     Join the Movement <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>

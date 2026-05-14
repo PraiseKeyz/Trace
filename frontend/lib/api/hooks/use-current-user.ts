@@ -8,9 +8,9 @@ export interface CurrentUser {
   email?: string
   state?: string
   city?: string
-  latitude?: number
-  longitude?: number
-  role?: string
+  persona?: 'trader' | 'gig_worker'
+  virtual_account_no?: string
+  squad_customer_id?: string
   is_phone_verified: boolean
   onboarding_complete: boolean
 }
@@ -21,6 +21,6 @@ export function useCurrentUser() {
   return useQuery({
     queryKey: currentUserKey,
     queryFn: () => api.get<CurrentUser>('/users/me', { silent: true }),
-    staleTime: 1000 * 60 * 5, // user data stays fresh for 5 min
+    staleTime: 1000 * 60 * 5,
   })
 }

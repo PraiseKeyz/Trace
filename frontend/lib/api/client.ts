@@ -98,7 +98,7 @@ export class ApiClient {
 
         if (response.status === 401) {
           this.handleError(error, silent)
-          const authPaths = ['/login', '/onboarding']
+          const authPaths = ['/login', '/signup', '/verify', '/onboarding']
           const onAuthPage = typeof window !== 'undefined' &&
             authPaths.some((p) => window.location.pathname.startsWith(p))
           if (!onAuthPage && typeof window !== 'undefined') {

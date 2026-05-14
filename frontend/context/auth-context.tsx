@@ -9,11 +9,13 @@ import { toast } from 'sonner'
 
 interface User {
   id: string
-  fullName?: string
   phone: string
+  fullName?: string
   email?: string
   role?: string
-  onboardingComplete?: boolean
+  persona?: 'trader' | 'gig_worker'
+  isPhoneVerified: boolean
+  onboardingComplete: boolean
 }
 
 interface RegisterPayload {
@@ -22,11 +24,19 @@ interface RegisterPayload {
 }
 
 interface OnboardingPayload {
+  persona?: 'trader' | 'gig_worker'
   fullName?: string
+  firstName?: string
+  lastName?: string
+  email?: string
   state?: string
   city?: string
   latitude?: number
   longitude?: number
+  languages?: string[]
+  skills?: string[]
+  tradeCategory?: string
+  yearsActive?: number
 }
 
 interface AuthApiUser {
@@ -39,6 +49,7 @@ interface AuthApiUser {
   latitude?: number
   longitude?: number
   role?: string
+  persona?: string
   squad_customer_id?: string | null
   virtual_account_no?: string | null
   is_phone_verified?: boolean
@@ -57,6 +68,8 @@ interface AuthContextType {
   isAuthenticated: boolean
   login: (phone: string, password: string) => Promise<void>
   register: (data: RegisterPayload) => Promise<void>
+  verifyOtp: (otp: string) => Promise<void>
+  resendOtp: () => Promise<void>
   completeOnboarding: (data: OnboardingPayload) => Promise<void>
   logout: () => Promise<void>
 }
@@ -71,7 +84,9 @@ function mapUser(raw: AuthApiUser): User {
     phone: raw.phone,
     email: raw.email,
     fullName: raw.full_name,
-    onboardingComplete: raw.onboardingComplete ?? raw.onboarding_complete,
+    persona: raw.persona as 'trader' | 'gig_worker' | undefined,
+    isPhoneVerified: raw.is_phone_verified ?? false,
+    onboardingComplete: raw.onboardingComplete ?? raw.onboarding_complete ?? false,
   }
 }
 
@@ -101,27 +116,63 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await api.post<{ user: AuthApiUser }>('/auth/login', { phone, password })
     const next = mapUser(data.user)
     setUser(next)
+
+    if (!next.isPhoneVerified) {
+      // Account created but OTP never confirmed
+      toast.info('Please verify your phone number to continue.')
+      router.push('/verify')
+      return
+    }
+
+    if (!next.onboardingComplete) {
+      // Phone verified but profile not filled in yet
+      toast.info('Welcome back! Let\'s finish setting up your profile.')
+      router.push('/onboarding')
+      return
+    }
+
     toast.success('Welcome back!')
-    router.push(next.onboardingComplete ? '/dashboard' : '/onboarding')
+    router.push('/dashboard')
   }
 
   const register = async (payload: RegisterPayload) => {
     const data = await api.post<{ user: AuthApiUser }>('/auth/register', payload)
     setUser(mapUser(data.user))
-    toast.success('Account created! Please verify your phone.')
+    // Page handles navigation to verify step — no router.push here
+  }
+
+  const verifyOtp = async (otp: string) => {
+    if (!user?.phone) throw new Error('No phone number on record')
+    await api.post('/auth/verify-otp', { phone: user.phone, otp })
+    // Refresh user so isPhoneVerified becomes true
+    await checkAuth()
+    toast.success('Phone verified! Let\'s set up your profile.')
+  }
+
+  const resendOtp = async () => {
+    if (!user?.phone) throw new Error('No phone number on record')
+    await api.post('/auth/resend-otp', { phone: user.phone })
+    toast.success('A new OTP has been sent to your phone.')
   }
 
   const completeOnboarding = async (payload: OnboardingPayload) => {
-    await api.post('/auth/onboard', payload)
+    const { skills, tradeCategory, yearsActive, ...userPayload } = payload
+    await api.post('/auth/onboard', userPayload)
+    if (skills?.length || tradeCategory || yearsActive !== undefined) {
+      await api.patch('/economic-profile/me/skills', {
+        skills,
+        trade_category: tradeCategory,
+        years_active: yearsActive,
+      }, { silent: true })
+    }
     await checkAuth()
-    toast.success('You are all set!')
+    toast.success('You\'re all set! Welcome to Trace.')
     router.push('/dashboard')
   }
 
   const logout = async () => {
     await api.post('/auth/logout', undefined, { silent: true })
     setUser(null)
-    toast.success('Logged out successfully.')
     router.push('/login')
   }
 
@@ -133,6 +184,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: !!user,
         login,
         register,
+        verifyOtp,
+        resendOtp,
         completeOnboarding,
         logout,
       }}

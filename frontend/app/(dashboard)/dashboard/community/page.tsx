@@ -1,297 +1,430 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Heart, MessageCircle, Share2, Star, Users, TrendingUp, Award } from 'lucide-react'
-import { Input } from '@/components/ui/input'
+import {
+  HandshakeIcon,
+  ShieldCheck,
+  Loader2,
+  Trash2,
+  Search,
+  UserCheck,
+  ChevronRight,
+  Briefcase,
+  ShoppingBag,
+  Star,
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
+import {
+  useReceivedVouches,
+  useGivenVouches,
+  useCreateVouch,
+  useRemoveVouch,
+  useLookupUser,
+  type Vouch,
+} from '@/lib/api/hooks/use-vouches'
+import { useAuth } from '@/context/auth-context'
+import { useEconomicProfile } from '@/lib/api/hooks/use-economic-profile'
 
-export default function CommunityPage() {
-  const [tab, setTab] = useState('feed')
-  const [liked, setLiked] = useState<number[]>([])
+// ── Weight badge ──────────────────────────────────────────────────────────────
 
-  const toggleLike = (id: number) => {
-    setLiked(prev => prev.includes(id) ? prev.filter(l => l !== id) : [...prev, id])
+const WEIGHT_CONFIG = {
+  1: { label: 'Basic', className: 'bg-slate-100 text-slate-600' },
+  2: { label: 'Trusted', className: 'bg-orange-100 text-orange-700' },
+  3: { label: 'Strong', className: 'bg-blue-100 text-blue-700' },
+  5: { label: 'Partner', className: 'bg-amber-100 text-amber-700' },
+} as const
+
+function WeightBadge({ weight }: { weight: number }) {
+  const cfg = WEIGHT_CONFIG[weight as keyof typeof WEIGHT_CONFIG] ?? WEIGHT_CONFIG[1]
+  return (
+    <div className="flex items-center gap-1">
+      <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-bold', cfg.className)}>
+        {weight}x · {cfg.label}
+      </span>
+      {weight >= 5 && <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />}
+    </div>
+  )
+}
+
+function PersonaIcon({ persona }: { persona?: string }) {
+  if (persona === 'trader') return <ShoppingBag className="h-4 w-4 text-slate-400" />
+  if (persona === 'gig_worker') return <Briefcase className="h-4 w-4 text-slate-400" />
+  return null
+}
+
+function formatDate(iso: string) {
+  return new Date(iso).toLocaleDateString('en-NG', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+// ── Received Vouches ──────────────────────────────────────────────────────────
+
+function ReceivedTab() {
+  const { data: vouches, isLoading } = useReceivedVouches()
+  const { data: profile } = useEconomicProfile()
+
+  const totalWeight = vouches?.reduce((sum, v) => sum + Number(v.weight), 0) ?? 0
+
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="animate-pulse rounded-2xl border border-border bg-white p-5">
+            <div className="flex gap-4">
+              <div className="h-10 w-10 rounded-full bg-slate-200" />
+              <div className="flex-1 space-y-2">
+                <div className="h-4 w-32 rounded bg-slate-200" />
+                <div className="h-3 w-48 rounded bg-slate-200" />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
   }
 
-  const posts = [
-    {
-      id: 1,
-      author: 'Amara Okafor',
-      avatar: '👩',
-      handle: '@amara_okafor',
-      score: 820,
-      time: '2h ago',
-      content: 'Just hit my ₦500K savings goal! Thanks to Trace for keeping me accountable. Next target: ₦1M by end of year! 🎯',
-      likes: 245,
-      comments: 32,
-      shares: 18,
-      image: '📈'
-    },
-    {
-      id: 2,
-      author: 'Marcus Osei',
-      avatar: '👨',
-      handle: '@marcus_trades',
-      score: 715,
-      time: '4h ago',
-      content: 'The trade intelligence feature just saved me from a bad bulk order. Market analysis showed declining prices. Smart decision!',
-      likes: 189,
-      comments: 24,
-      shares: 12,
-      image: '💡'
-    },
-    {
-      id: 3,
-      author: 'Blessing Adebayo',
-      avatar: '👩',
-      handle: '@blessing_biz',
-      score: 765,
-      time: '6h ago',
-      content: 'Started my second business thanks to the credit I got from Trace. Score: 765, Approved Limit: ₦200K. Grateful! 🙏',
-      likes: 412,
-      comments: 56,
-      shares: 34,
-      image: '🎉'
-    },
-  ]
-
-  const topMembers = [
-    { name: 'Amara Okafor', handle: '@amara_okafor', score: 920, avatar: '👩', badge: 'Elite' },
-    { name: 'Marcus Osei', handle: '@marcus_trades', score: 875, avatar: '👨', badge: 'Pro' },
-    { name: 'Blessing Adebayo', handle: '@blessing_biz', score: 845, avatar: '👩', badge: 'Pro' },
-    { name: 'Chisom Ezeh', handle: '@chisom_digital', score: 810, avatar: '👨', badge: 'Gold' },
-    { name: 'Joy Nwosu', handle: '@joy_entrepreneur', score: 795, avatar: '👩', badge: 'Gold' },
-  ]
-
-  const discussions = [
-    { title: 'Best practices for growing trade business', replies: 247, views: 3421, category: 'Trading' },
-    { title: 'How to optimize your Economic Identity Score', replies: 189, views: 2854, category: 'Score Tips' },
-    { title: 'Success stories: From gig worker to business owner', replies: 312, views: 5124, category: 'Inspiration' },
-    { title: 'Financial products comparison: Which loan is best?', replies: 156, views: 2301, category: 'Finance' },
-  ]
+  if (!vouches?.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
+          <ShieldCheck className="h-8 w-8 text-slate-400" />
+        </div>
+        <h3 className="font-semibold text-slate-800 mb-1">No vouches yet</h3>
+        <p className="text-sm text-slate-500 max-w-xs">
+          When peers in the community vouch for you, they&apos;ll appear here. Build your network and transaction history to receive higher-weight vouches.
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <header className="bg-white border-b border-trace-border sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          <h1 className="text-3xl font-bold text-foreground mb-6">Community</h1>
-
-          {/* Tabs */}
-          <div className="flex gap-8 border-b border-trace-border">
-            {['feed', 'members', 'discussions'].map(t => (
-              <button
-                key={t}
-                onClick={() => setTab(t)}
-                className={`py-3 font-bold transition ${
-                  tab === t
-                    ? 'border-b-2 border-trace-primary text-trace-primary'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {t.charAt(0).toUpperCase() + t.slice(1)}
-              </button>
-            ))}
+      {/* Stats strip */}
+      <div className="grid grid-cols-3 gap-4">
+        {[
+          { label: 'Total Vouches', value: vouches.length },
+          { label: 'Weighted Total', value: `${totalWeight.toFixed(1)}x` },
+          { label: 'Vouch Score', value: profile?.vouch_score != null ? Number(profile.vouch_score).toFixed(1) : '—' },
+        ].map(s => (
+          <div key={s.label} className="rounded-2xl border border-border bg-white px-4 py-4 text-center">
+            <p className="text-2xl font-bold text-slate-900">{s.value}</p>
+            <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
           </div>
+        ))}
+      </div>
+
+      {/* List */}
+      <div className="space-y-3">
+        {vouches.map(v => (
+          <VouchCard key={v.id} vouch={v} mode="received" />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── Given Vouches ─────────────────────────────────────────────────────────────
+
+function GivenTab() {
+  const { data: vouches, isLoading } = useGivenVouches()
+  const { mutate: removeVouch, isPending } = useRemoveVouch()
+
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {[1, 2].map(i => (
+          <div key={i} className="animate-pulse rounded-2xl border border-border bg-white p-5">
+            <div className="h-4 w-40 rounded bg-slate-200 mb-2" />
+            <div className="h-3 w-56 rounded bg-slate-200" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (!vouches?.length) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-100">
+          <HandshakeIcon className="h-8 w-8 text-slate-400" />
         </div>
-      </header>
+        <h3 className="font-semibold text-slate-800 mb-1">You haven&apos;t vouched for anyone yet</h3>
+        <p className="text-sm text-slate-500 max-w-xs">
+          Switch to the &ldquo;Vouch Someone&rdquo; tab to support a peer and strengthen their economic identity.
+        </p>
+      </div>
+    )
+  }
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {tab === 'feed' && (
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Main Feed */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Compose Post */}
-              <div className="bg-white rounded-lg p-6 border border-trace-border">
-                <div className="flex items-start gap-4">
-                  <div className="text-3xl">👤</div>
-                  <div className="flex-1">
-                    <textarea
-                      placeholder="Share your success, ask for advice, or discuss with the community..."
-                      className="w-full px-4 py-3 bg-trace-surface border border-trace-border rounded-lg resize-none text-foreground placeholder-muted-foreground focus:outline-none focus:border-trace-primary"
-                      rows={3}
-                    />
-                    <div className="flex items-center justify-between mt-4">
-                      <div className="flex gap-2">
-                        <button className="p-2 hover:bg-trace-surface rounded-lg transition">📸</button>
-                        <button className="p-2 hover:bg-trace-surface rounded-lg transition">🎥</button>
-                        <button className="p-2 hover:bg-trace-surface rounded-lg transition">😊</button>
-                      </div>
-                      <button className="px-6 py-2 bg-trace-primary text-white rounded-lg font-bold hover:bg-trace-primary/90 transition">
-                        Post
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+  const handleRemove = (id: string) => {
+    removeVouch(id, {
+      onSuccess: () => toast.success('Vouch removed'),
+    })
+  }
 
-              {/* Posts */}
-              {posts.map((post) => (
-                <div key={post.id} className="bg-white rounded-lg border border-trace-border overflow-hidden hover:border-trace-primary/50 transition">
-                  {/* Post Header */}
-                  <div className="p-6 border-b border-trace-border/50">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl">{post.avatar}</span>
-                        <div>
-                          <p className="font-bold text-foreground">{post.author}</p>
-                          <p className="text-xs text-muted-foreground">{post.handle} • Score: {post.score}</p>
-                        </div>
-                      </div>
-                      <p className="text-xs text-muted-foreground">{post.time}</p>
-                    </div>
-                  </div>
+  return (
+    <div className="space-y-3">
+      {vouches.map(v => (
+        <VouchCard
+          key={v.id}
+          vouch={v}
+          mode="given"
+          onRemove={() => handleRemove(v.id)}
+          removing={isPending}
+        />
+      ))}
+    </div>
+  )
+}
 
-                  {/* Post Content */}
-                  <div className="px-6 py-4">
-                    <p className="text-foreground leading-relaxed mb-4">{post.content}</p>
-                    {post.image && <div className="text-5xl mb-4">{post.image}</div>}
-                  </div>
+// ── Vouch Card ────────────────────────────────────────────────────────────────
 
-                  {/* Post Stats */}
-                  <div className="px-6 py-3 border-t border-trace-border/50 bg-trace-surface/30 text-xs text-muted-foreground flex justify-between">
-                    <span>{post.likes} likes</span>
-                    <span>{post.comments} comments</span>
-                    <span>{post.shares} shares</span>
-                  </div>
+function VouchCard({
+  vouch,
+  mode,
+  onRemove,
+  removing,
+}: {
+  vouch: Vouch
+  mode: 'received' | 'given'
+  onRemove?: () => void
+  removing?: boolean
+}) {
+  const person = mode === 'received' ? vouch.voucher : vouch.recipient
+  const displayName = person?.full_name ?? person?.phone ?? '—'
 
-                  {/* Post Actions */}
-                  <div className="px-6 py-4 border-t border-trace-border/50 flex items-center justify-between">
-                    <button
-                      onClick={() => toggleLike(post.id)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
-                        liked.includes(post.id)
-                          ? 'bg-red-100 text-red-600'
-                          : 'text-muted-foreground hover:bg-trace-surface'
-                      }`}
-                    >
-                      <Heart size={18} fill={liked.includes(post.id) ? 'currentColor' : 'none'} /> Like
-                    </button>
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-muted-foreground hover:bg-trace-surface transition">
-                      <MessageCircle size={18} /> Comment
-                    </button>
-                    <button className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-muted-foreground hover:bg-trace-surface transition">
-                      <Share2 size={18} /> Share
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+  return (
+    <div className="rounded-2xl border border-border bg-white p-5">
+      <div className="flex items-start gap-4">
+        {/* Avatar */}
+        <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 font-bold text-sm">
+          {displayName.charAt(0).toUpperCase()}
+        </div>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-1 space-y-6">
-              {/* Search */}
-              <div className="relative">
-                <Search size={18} className="absolute left-3 top-3 text-muted-foreground" />
-                <Input
-                  placeholder="Search community..."
-                  className="pl-10 bg-white border-trace-border"
-                />
-              </div>
-
-              {/* Top Members */}
-              <div className="bg-white rounded-lg border border-trace-border p-6">
-                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
-                  <Award size={20} /> Top Members
-                </h3>
-                <div className="space-y-3">
-                  {topMembers.map((member, idx) => (
-                    <div key={idx} className="flex items-start gap-3 pb-3 border-b border-trace-border/50 last:border-0 last:pb-0">
-                      <span className="text-2xl">{member.avatar}</span>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-bold text-foreground text-sm">{member.name}</p>
-                        <p className="text-xs text-muted-foreground">{member.handle}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs font-bold text-trace-primary">Score: {member.score}</span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${
-                            member.badge === 'Elite' ? 'bg-yellow-100 text-yellow-700' :
-                            member.badge === 'Pro' ? 'bg-trace-primary/10 text-trace-primary' :
-                            'bg-green-100 text-green-700'
-                          }`}>
-                            {member.badge}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Community Stats */}
-              <div className="bg-white rounded-lg border border-trace-border p-6">
-                <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
-                  <Users size={20} /> Community Stats
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Total Members</p>
-                    <p className="text-2xl font-bold text-trace-primary">50,432</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Posts Today</p>
-                    <p className="text-2xl font-bold text-trace-accent">1,234</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-1">Active Now</p>
-                    <p className="text-2xl font-bold text-green-600">428</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-semibold text-slate-900 truncate">{displayName}</span>
+            <PersonaIcon persona={person?.persona} />
           </div>
-        )}
-
-        {tab === 'members' && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {topMembers.map((member, idx) => (
-              <div key={idx} className="bg-white rounded-lg border border-trace-border p-6 text-center hover:border-trace-primary/50 transition cursor-pointer">
-                <span className="text-6xl block mb-4">{member.avatar}</span>
-                <h3 className="font-bold text-foreground mb-1">{member.name}</h3>
-                <p className="text-sm text-muted-foreground mb-4">{member.handle}</p>
-                <div className="flex justify-center gap-2 mb-4">
-                  <span className="text-xs px-3 py-1 bg-trace-primary/10 text-trace-primary rounded-full font-bold">Score: {member.score}</span>
-                  <span className={`text-xs px-3 py-1 rounded-full font-bold ${
-                    member.badge === 'Elite' ? 'bg-yellow-100 text-yellow-700' :
-                    member.badge === 'Pro' ? 'bg-trace-primary/10 text-trace-primary' :
-                    'bg-green-100 text-green-700'
-                  }`}>
-                    {member.badge}
-                  </span>
-                </div>
-                <button className="w-full px-4 py-2 border border-trace-primary text-trace-primary rounded-lg font-bold hover:bg-trace-primary/5 transition">
-                  View Profile
-                </button>
-              </div>
-            ))}
+          <div className="flex items-center gap-3 mt-1.5 flex-wrap">
+            <WeightBadge weight={Number(vouch.weight)} />
+            <span className="text-xs text-slate-400">{formatDate(vouch.created_at)}</span>
           </div>
-        )}
+          {vouch.message && (
+            <p className="mt-2 text-sm text-slate-600 italic">&ldquo;{vouch.message}&rdquo;</p>
+          )}
+        </div>
 
-        {tab === 'discussions' && (
-          <div className="bg-white rounded-lg border border-trace-border overflow-hidden">
-            <div className="bg-trace-primary text-white px-6 py-4 font-bold">Popular Discussions</div>
-            <div className="divide-y divide-trace-border">
-              {discussions.map((discussion, idx) => (
-                <div key={idx} className="p-6 hover:bg-trace-surface/30 transition cursor-pointer">
-                  <div className="flex items-start gap-4">
-                    <div>
-                      <h3 className="font-bold text-foreground mb-2 hover:text-trace-primary transition">
-                        {discussion.title}
-                      </h3>
-                      <span className="inline-block text-xs px-3 py-1 bg-trace-primary/10 text-trace-primary rounded-full font-bold mb-3">
-                        {discussion.category}
-                      </span>
-                      <p className="text-sm text-muted-foreground">
-                        💬 {discussion.replies} replies • 👁️ {discussion.views} views
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {mode === 'given' && onRemove && (
+          <button
+            onClick={onRemove}
+            disabled={removing}
+            className="flex-shrink-0 rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-50"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
         )}
       </div>
     </div>
   )
 }
 
+// ── Vouch Someone ─────────────────────────────────────────────────────────────
 
+function VouchSomeoneTab() {
+  const { user } = useAuth()
+  const [phone, setPhone] = useState('')
+  const [searchPhone, setSearchPhone] = useState('')
+  const [message, setMessage] = useState('')
+  const [vouched, setVouched] = useState(false)
+
+  const { data: found, isLoading: searching, error: lookupError } = useLookupUser(searchPhone)
+  const { mutate: createVouch, isPending } = useCreateVouch()
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (phone.trim() === user?.phone) {
+      toast.error('You cannot vouch for yourself')
+      return
+    }
+    setVouched(false)
+    setSearchPhone(phone.trim())
+  }
+
+  const handleVouch = () => {
+    if (!found) return
+    createVouch(
+      { recipient_id: found.id, message: message.trim() || undefined },
+      {
+        onSuccess: () => {
+          toast.success(`You vouched for ${found.full_name ?? 'this user'}`)
+          setVouched(true)
+          setPhone('')
+          setSearchPhone('')
+          setMessage('')
+        },
+      }
+    )
+  }
+
+  const WEIGHT_EXPLANATION = [
+    { range: '0 transactions', weight: '1x', label: 'Basic', className: 'bg-slate-100 text-slate-600' },
+    { range: '1–2 transactions', weight: '2x', label: 'Trusted', className: 'bg-orange-100 text-orange-700' },
+    { range: '3–5 transactions', weight: '3x', label: 'Strong', className: 'bg-blue-100 text-blue-700' },
+    { range: '6+ transactions', weight: '5x', label: 'Partner', className: 'bg-amber-100 text-amber-700' },
+  ]
+
+  return (
+    <div className="grid gap-8 lg:grid-cols-5">
+      {/* Form */}
+      <div className="lg:col-span-3 space-y-6">
+        <div className="rounded-2xl border border-border bg-white p-6">
+          <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+            <Search className="h-5 w-5 text-trace-accent" />
+            Find by phone number
+          </h3>
+
+          <form onSubmit={handleSearch} className="flex gap-2">
+            <input
+              type="tel"
+              placeholder="e.g. 08012345678"
+              value={phone}
+              onChange={e => setPhone(e.target.value.replace(/[^\d+]/g, ''))}
+              className="flex-1 rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
+            />
+            <Button type="submit" className="bg-trace-accent hover:bg-trace-accent/90 text-white" disabled={phone.length < 10}>
+              {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronRight className="h-4 w-4" />}
+            </Button>
+          </form>
+
+          {/* Result */}
+          {searchPhone && !searching && (
+            <div className="mt-4">
+              {lookupError || !found ? (
+                <div className="rounded-xl border border-border bg-slate-50 px-4 py-3 text-sm text-slate-500">
+                  No user found with that phone number.
+                </div>
+              ) : vouched ? (
+                <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 font-medium flex items-center gap-2">
+                  <UserCheck className="h-4 w-4" />
+                  You've vouched for {found.full_name ?? 'this user'}.
+                </div>
+              ) : (
+                <div className="rounded-xl border border-border bg-slate-50 p-4 space-y-4">
+                  {/* Found user card */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 font-bold text-slate-600 text-sm">
+                      {(found.full_name ?? 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-slate-900">{found.full_name ?? 'Unknown'}</p>
+                      <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                        <PersonaIcon persona={found.persona} />
+                        <span className="capitalize">{found.persona?.replace('_', ' ') ?? 'User'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-600 mb-1.5">
+                      Add a message <span className="font-normal text-slate-400">(optional)</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder="Why are you vouching for this person?"
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
+                      maxLength={500}
+                      className="w-full rounded-xl border border-border px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
+                    />
+                  </div>
+
+                  <Button
+                    onClick={handleVouch}
+                    className="w-full bg-trace-accent hover:bg-trace-accent/90 text-white"
+                    disabled={isPending}
+                  >
+                    {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <HandshakeIcon className="h-4 w-4 mr-2" />}
+                    {isPending ? 'Vouching…' : `Vouch for ${found.full_name ?? 'this user'}`}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Weight explainer */}
+      <div className="lg:col-span-2">
+        <div className="rounded-2xl border border-border bg-white p-6">
+          <h3 className="font-semibold text-slate-900 mb-1">How vouch weight works</h3>
+          <p className="text-xs text-slate-500 mb-5">
+            Vouches from people you&apos;ve actually transacted with carry more weight — they signal real trust, not just familiarity.
+          </p>
+          <div className="space-y-3">
+            {WEIGHT_EXPLANATION.map(w => (
+              <div key={w.weight} className="flex items-center justify-between gap-2">
+                <span className="text-xs text-slate-600">{w.range}</span>
+                <span className={cn('rounded-full px-2.5 py-0.5 text-xs font-bold flex-shrink-0', w.className)}>
+                  {w.weight} · {w.label}
+                </span>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-slate-400 border-t border-border pt-4">
+            Your vouch weight is calculated automatically from successful transactions between you and the recipient.
+          </p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── Page ──────────────────────────────────────────────────────────────────────
+
+const TABS = [
+  { key: 'received', label: 'Vouches Received' },
+  { key: 'given',    label: 'Vouches Given' },
+  { key: 'vouch',   label: 'Vouch Someone' },
+] as const
+
+type Tab = (typeof TABS)[number]['key']
+
+export default function CommunityPage() {
+  const [tab, setTab] = useState<Tab>('received')
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div>
+        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">Community</h1>
+        <p className="text-slate-500">Vouch for peers you trust and build a network of verified relationships.</p>
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-1 rounded-xl bg-slate-100 p-1 w-fit">
+        {TABS.map(t => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            className={cn(
+              'rounded-lg px-5 py-2 text-sm font-semibold transition-all',
+              tab === t.key
+                ? 'bg-white text-slate-900 shadow-sm'
+                : 'text-slate-500 hover:text-slate-700'
+            )}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab content */}
+      {tab === 'received' && <ReceivedTab />}
+      {tab === 'given'    && <GivenTab />}
+      {tab === 'vouch'    && <VouchSomeoneTab />}
+    </div>
+  )
+}

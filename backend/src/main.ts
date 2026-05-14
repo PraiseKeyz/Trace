@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 import compression from 'compression';
 
 import cookieParser from 'cookie-parser';
@@ -36,6 +37,11 @@ async function bootstrap() {
   app.enableCors({
     origin: configService.get<string>('FRONTEND_URL') || "http://localhost:3000",
     credentials: true,
+  });
+
+  // Serve static files from the uploads directory
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: '/api/v1/uploads/',
   });
 
   await app.listen(configService.get<number>('PORT') || 5000);
