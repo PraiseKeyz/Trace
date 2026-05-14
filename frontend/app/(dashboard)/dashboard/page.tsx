@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   ArrowRight,
   Briefcase,
@@ -73,9 +75,16 @@ function ScoreSkeleton() {
 }
 
 export default function DashboardPage() {
-  const { data: user } = useCurrentUser()
+  const router = useRouter()
+  const { data: user, isLoading: userLoading } = useCurrentUser()
   const { data: profile, isLoading: profileLoading } = useEconomicProfile()
   const { data: transactions, isLoading: txLoading } = useTransactions()
+
+  useEffect(() => {
+    if (!userLoading && user && !user.onboarding_complete) {
+      router.replace('/onboarding')
+    }
+  }, [user, userLoading, router])
 
   const firstName = user?.full_name?.split(' ')[0] ?? 'there'
   const score = profile?.identity_score ?? 0

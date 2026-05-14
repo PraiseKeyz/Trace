@@ -1,9 +1,9 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import {
-  BarChart3,
   Briefcase,
   PiggyBank,
   Settings,
@@ -14,6 +14,8 @@ import {
   LogOut,
   Bell,
   User,
+  PlusCircle,
+  ClipboardList,
 } from 'lucide-react'
 import { Button } from './ui/button'
 import { cn } from '@/lib/utils'
@@ -28,19 +30,21 @@ const TIER_LABEL: Record<string, string> = {
 }
 
 const SIDEBAR_NAV = [
-  { name: 'Dashboard',       href: '/dashboard',                 icon: LayoutDashboard },
-  { name: 'Work Matcher',    href: '/dashboard/work-matcher',    icon: Briefcase },
-  { name: 'Portfolio',       href: '/dashboard/portfolio',       icon: Wallet },
-  { name: 'Transactions',    href: '/dashboard/transactions',    icon: ArrowLeftRight },
-  { name: 'Quick Cash', href: '/dashboard/finance-gateway', icon: PiggyBank },
-  { name: 'Community',       href: '/dashboard/community',       icon: Users },
-  { name: 'Settings',        href: '/dashboard/settings',        icon: Settings },
+  { name: 'Dashboard',    href: '/dashboard',                 icon: LayoutDashboard },
+  { name: 'Work Matcher', href: '/dashboard/work-matcher',    icon: Briefcase },
+  { name: 'Post a Job',   href: '/dashboard/post-job',        icon: PlusCircle },
+  { name: 'My Jobs',      href: '/dashboard/my-jobs',         icon: ClipboardList },
+  { name: 'Portfolio',    href: '/dashboard/portfolio',       icon: Wallet },
+  { name: 'Transactions', href: '/dashboard/transactions',    icon: ArrowLeftRight },
+  { name: 'Quick Cash',   href: '/dashboard/finance-gateway', icon: PiggyBank },
+  { name: 'Community',    href: '/dashboard/community',       icon: Users },
+  { name: 'Settings',     href: '/dashboard/settings',        icon: Settings },
 ]
 
 const BOTTOM_TABS_TRADER = [
   { name: 'Home',      href: '/dashboard',                 icon: LayoutDashboard },
-  { name: 'Portfolio', href: '/dashboard/portfolio',       icon: Wallet },
-  { name: 'Cash',   href: '/dashboard/finance-gateway', icon: PiggyBank },
+  { name: 'My Jobs',   href: '/dashboard/my-jobs',         icon: ClipboardList },
+  { name: 'Cash',      href: '/dashboard/finance-gateway', icon: PiggyBank },
   { name: 'Community', href: '/dashboard/community',       icon: Users },
   { name: 'Me',        href: '/dashboard/settings',        icon: User },
 ]
@@ -48,7 +52,7 @@ const BOTTOM_TABS_TRADER = [
 const BOTTOM_TABS_GIG = [
   { name: 'Home',      href: '/dashboard',                 icon: LayoutDashboard },
   { name: 'Work',      href: '/dashboard/work-matcher',    icon: Briefcase },
-  { name: 'Cash',   href: '/dashboard/finance-gateway', icon: PiggyBank },
+  { name: 'Cash',      href: '/dashboard/finance-gateway', icon: PiggyBank },
   { name: 'Community', href: '/dashboard/community',       icon: Users },
   { name: 'Me',        href: '/dashboard/settings',        icon: User },
 ]
@@ -56,8 +60,8 @@ const BOTTOM_TABS_GIG = [
 const BOTTOM_TABS_ALL = [
   { name: 'Home',      href: '/dashboard',                 icon: LayoutDashboard },
   { name: 'Work',      href: '/dashboard/work-matcher',    icon: Briefcase },
-  { name: 'Cash',   href: '/dashboard/finance-gateway', icon: PiggyBank },
-  { name: 'Community', href: '/dashboard/community',       icon: Users },
+  { name: 'Jobs',      href: '/dashboard/my-jobs',         icon: ClipboardList },
+  { name: 'Cash',      href: '/dashboard/finance-gateway', icon: PiggyBank },
   { name: 'Me',        href: '/dashboard/settings',        icon: User },
 ]
 
@@ -82,9 +86,7 @@ export function DashboardSidebar() {
       {/* ── Mobile Top Bar ─────────────────────────────────────────── */}
       <div className="fixed top-0 left-0 right-0 z-40 flex h-14 items-center justify-between bg-white border-b border-trace-border px-5 lg:hidden">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950">
-            <BarChart3 className="h-5 w-5 text-trace-accent" />
-          </div>
+          <Image src="/trace-logo.svg" alt="Trace" width={32} height={32} className="rounded-lg" />
           <span className="text-lg font-black text-slate-950 tracking-tight">Trace</span>
         </div>
         <button className="relative p-2 rounded-full hover:bg-trace-surface transition-colors">
@@ -116,9 +118,7 @@ export function DashboardSidebar() {
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col bg-slate-950 lg:flex">
         {/* Logo */}
         <div className="flex items-center gap-3 px-6 py-7">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10">
-            <BarChart3 className="h-6 w-6 text-trace-accent" />
-          </div>
+          <Image src="/trace-logo.svg" alt="Trace" width={40} height={40} className="rounded-xl" />
           <div className="flex flex-col">
             <span className="text-xl font-black tracking-tight text-white">Trace</span>
             <span className="text-[10px] uppercase font-bold tracking-widest text-trace-accent/80">

@@ -1,4 +1,5 @@
 import { DashboardSidebar } from '@/components/DashboardSidebar'
+import { PWAInstallBanner } from '@/components/PWAInstallBanner'
 
 export default function DashboardLayout({
   children,
@@ -16,6 +17,7 @@ export default function DashboardLayout({
           </div>
         </main>
       </div>
+      <PWAInstallBanner />
     </div>
   )
 }

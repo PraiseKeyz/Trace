@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import {
   Briefcase, MapPin, Wifi, WifiOff, Search, X, Loader2, CheckCircle2,
-  Sparkles, ChevronLeft, ChevronRight,
+  Sparkles, ChevronLeft, ChevronRight, ClipboardList, Clock,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -12,8 +12,11 @@ import {
   useOpportunities,
   useOpportunityMatches,
   useApplyOpportunity,
+  useMyApplications,
+  useMarkDone,
   type Opportunity,
   type MatchedOpportunity,
+  type MyApplication,
 } from '@/lib/api/hooks/use-opportunities'
 import { useEconomicProfile } from '@/lib/api/hooks/use-economic-profile'
 
@@ -299,9 +302,172 @@ function Pagination({
   )
 }
 
+// ── My Applications Tab ───────────────────────────────────────────────────────
+
+const APP_STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
+  pending:  { label: 'Pending',  classes: 'bg-slate-100 text-slate-600' },
+  accepted: { label: 'Selected', classes: 'bg-blue-100 text-blue-700' },
+  rejected: { label: 'Passed',   classes: 'bg-slate-100 text-slate-400' },
+}
+
+const JOB_STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
+  open:        { label: 'Open',              classes: 'bg-green-50 text-green-700' },
+  filled:      { label: 'In Progress',       classes: 'bg-blue-50 text-blue-700' },
+  worker_done: { label: 'Done — Awaiting',   classes: 'bg-amber-50 text-amber-700' },
+  confirmed:   { label: 'Completed',         classes: 'bg-slate-50 text-slate-500' },
+  disputed:    { label: 'Disputed',          classes: 'bg-red-50 text-red-700' },
+}
+
+function fmtAmt(n?: number | null) {
+  if (n == null) return null
+  return n >= 1000 ? `₦${(n / 1000).toFixed(0)}K` : `₦${n}`
+}
+
+function ApplicationCard({ app }: { app: MyApplication }) {
+  const { mutate: markDone, isPending: marking } = useMarkDone()
+  const jobStatus = JOB_STATUS_CONFIG[app.opportunity.status] ?? { label: app.opportunity.status, classes: 'bg-slate-100 text-slate-600' }
+  const appStatus = APP_STATUS_CONFIG[app.status] ?? { label: app.status, classes: 'bg-slate-100 text-slate-600' }
+
+  const canMarkDone = app.status === 'accepted' && app.opportunity.status === 'filled'
+  const escrow = app.opportunity.escrow_amount
+
+  function handleMarkDone() {
+    markDone(app.opportunity.id, {
+      onSuccess: () => toast.success('Job marked as done! The poster has 7 days to confirm payment.'),
+      onError: () => toast.error('Failed to mark done. Try again.'),
+    })
+  }
+
+  return (
+    <div className="bg-white rounded-2xl border border-trace-border p-5 space-y-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-bold text-slate-950 leading-tight line-clamp-2">{app.opportunity.title}</h3>
+          {app.opportunity.poster.full_name && (
+            <p className="text-xs text-slate-400 mt-0.5">by {app.opportunity.poster.full_name}</p>
+          )}
+        </div>
+        <span className={cn('text-[10px] font-bold px-2.5 py-1 rounded-full flex-shrink-0', appStatus.classes)}>
+          {appStatus.label}
+        </span>
+      </div>
+
+      <div className="flex flex-wrap gap-2 text-xs">
+        <span className={cn('font-semibold px-2.5 py-1 rounded-full', jobStatus.classes)}>
+          {jobStatus.label}
+        </span>
+        <span className="text-slate-500 capitalize bg-slate-50 px-2.5 py-1 rounded-full">
+          {app.opportunity.type.replace('_', '-')}
+        </span>
+        {(app.opportunity.city || app.opportunity.state) && (
+          <span className="flex items-center gap-1 text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full">
+            <MapPin size={10} />
+            {[app.opportunity.city, app.opportunity.state].filter(Boolean).join(', ')}
+          </span>
+        )}
+      </div>
+
+      {escrow && app.status === 'accepted' && (
+        <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-2.5 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs text-blue-700">
+            <CheckCircle2 size={13} />
+            <span className="font-semibold">Escrow locked for you</span>
+          </div>
+          <span className="text-sm font-black text-blue-800">₦{Number(escrow).toLocaleString()}</span>
+        </div>
+      )}
+
+      {app.opportunity.status === 'worker_done' && (
+        <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-2.5 flex items-center gap-2 text-xs text-amber-700">
+          <Clock size={13} />
+          <span className="font-semibold">
+            Marked done — waiting for poster to confirm
+            {app.opportunity.auto_release_at && (
+              <span className="font-normal ml-1">
+                (auto-release {new Date(app.opportunity.auto_release_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})
+              </span>
+            )}
+          </span>
+        </div>
+      )}
+
+      {app.opportunity.status === 'confirmed' && app.status === 'accepted' && (
+        <div className="rounded-xl bg-green-50 border border-green-100 px-4 py-2.5 flex items-center gap-2 text-xs text-green-700 font-semibold">
+          <CheckCircle2 size={13} />
+          Payment confirmed and released
+        </div>
+      )}
+
+      {canMarkDone && (
+        <button
+          onClick={handleMarkDone}
+          disabled={marking}
+          className="w-full py-3 rounded-xl bg-trace-accent hover:bg-trace-accent/90 disabled:opacity-50 text-white text-sm font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          {marking ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
+          {marking ? 'Updating…' : 'Mark Job as Done'}
+        </button>
+      )}
+
+      <p className="text-[10px] text-slate-400">
+        Applied {new Date(app.applied_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+      </p>
+    </div>
+  )
+}
+
+function MyApplicationsTab() {
+  const { data: applications, isLoading } = useMyApplications()
+
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2].map(i => (
+          <div key={i} className="bg-white rounded-2xl border border-trace-border p-5 animate-pulse space-y-3">
+            <div className="h-4 w-2/3 rounded bg-slate-200" />
+            <div className="h-3 w-1/3 rounded bg-slate-200" />
+            <div className="h-8 w-full rounded-xl bg-slate-200" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  if (!applications?.length) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-trace-border bg-white py-20 text-center">
+        <ClipboardList className="h-12 w-12 text-slate-300 mb-4" />
+        <p className="font-semibold text-slate-500">No applications yet</p>
+        <p className="text-sm text-slate-400 mt-1">Apply to jobs to see them here</p>
+      </div>
+    )
+  }
+
+  const active = applications.filter(a => ['open', 'filled', 'worker_done'].includes(a.opportunity.status) && a.status !== 'rejected')
+  const past = applications.filter(a => ['confirmed', 'disputed'].includes(a.opportunity.status) || a.status === 'rejected')
+
+  return (
+    <div className="space-y-5">
+      {active.length > 0 && (
+        <section className="space-y-3">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Active</h3>
+          {active.map(app => <ApplicationCard key={app.id} app={app} />)}
+        </section>
+      )}
+      {past.length > 0 && (
+        <section className="space-y-3">
+          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1">Past</h3>
+          {past.map(app => <ApplicationCard key={app.id} app={app} />)}
+        </section>
+      )}
+    </div>
+  )
+}
+
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function WorkMatcherPage() {
+  const [tab, setTab] = useState<'find' | 'applications'>('find')
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [filterRemote, setFilterRemote] = useState<'all' | 'remote' | 'onsite'>('all')
@@ -355,7 +521,7 @@ export default function WorkMatcherPage() {
   }
 
   const handleApply = (oppId: string) => {
-    applyFn(oppId, {
+    applyFn({ opportunity_id: oppId }, {
       onSuccess: () => {
         toast.success('Application submitted!')
         setAppliedIds(s => new Set(s).add(oppId))
@@ -365,12 +531,40 @@ export default function WorkMatcherPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">Work Matcher</h1>
-        <p className="text-slate-500">Opportunities matched to your skills and location.</p>
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 mb-1">Work Matcher</h1>
+        <p className="text-slate-400 text-sm">Find jobs matched to your skills and location.</p>
       </div>
+
+      {/* Tab switcher */}
+      <div className="flex bg-slate-100 rounded-xl p-1">
+        <button
+          onClick={() => setTab('find')}
+          className={cn(
+            'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all',
+            tab === 'find' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700',
+          )}
+        >
+          <Briefcase size={15} />
+          Find Work
+        </button>
+        <button
+          onClick={() => setTab('applications')}
+          className={cn(
+            'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all',
+            tab === 'applications' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700',
+          )}
+        >
+          <ClipboardList size={15} />
+          My Applications
+        </button>
+      </div>
+
+      {tab === 'applications' && <MyApplicationsTab />}
+
+      {tab === 'find' && <>
 
       {/* Profile hint */}
       {profile && (profile.skills?.length ?? 0) === 0 && (
@@ -500,6 +694,8 @@ export default function WorkMatcherPage() {
           onClose={() => setSelectedId(null)}
         />
       )}
+
+      </>}
     </div>
   )
 }
