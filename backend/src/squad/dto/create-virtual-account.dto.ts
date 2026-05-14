@@ -1,4 +1,5 @@
 import { IsEmail, IsIn, IsOptional, IsString, Matches } from 'class-validator';
+import { promises } from 'node:dns';
 
 export class CreateVirtualAccountDto {
   @IsString()

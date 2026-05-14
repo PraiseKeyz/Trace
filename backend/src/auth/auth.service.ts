@@ -136,11 +136,11 @@ export class AuthService {
         middle_name: dto.middleName,
         mobile_num: user.phone,
         email: dto.email,
-        bvn: dto.bvn,
+        bvn: process.env.BVN!,
         dob: dto.dob,
         address: dto.address,
         gender: dto.gender,
-        beneficiary_account: dto.beneficiaryAccount,
+        beneficiary_account: process.env.SQUAD_BENEFICIARY_ACCOUNT_NUMBER!,
       });
     }
 
