@@ -13,7 +13,7 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-
+test_endpoints.py
 # OS
 .DS_Store
 

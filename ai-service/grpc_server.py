@@ -6,13 +6,15 @@ from concurrent import futures
 import grpc
 
 from core.config import settings
-from core.schemas import MatchRequest, UserLocation
+from core.schemas import MatchRequest, UserLocation, OpportunityData
 from engines import calculate_identity_score_from_subscores
 from engines.matching_engine import match_opportunities
 
 # Generated grpcio files import trace_pb2 as a top-level module.
 sys.path.append(os.path.join(os.path.dirname(__file__), "api"))
+# pyrefly: ignore [missing-import]
 import trace_pb2  # noqa: E402
+# pyrefly: ignore [missing-import]
 import trace_pb2_grpc  # noqa: E402
 
 logger = logging.getLogger(__name__)
@@ -64,13 +66,11 @@ class MatchingServiceServicer(trace_pb2_grpc.MatchingServiceServicer):
                 languages=list(request.languages),
             )
 
-            # The current gRPC protocol sends only the user profile. It does not
-            # send candidate opportunities, so we preserve the existing matcher
-            # contract and return an empty result set until the protocol includes
-            # opportunity data or a backend-owned opportunity lookup is added.
-            result = match_opportunities(user=user, opportunities=[])
+            opportunities = self._fetch_open_opportunities()
 
-            opportunities = [
+            result = match_opportunities(user=user, opportunities=opportunities)
+
+            opportunities_pb = [
                 trace_pb2.MatchedOpportunity(
                     opportunity_id=opp.opportunity_id,
                     match_score=float(opp.match_score),
@@ -81,13 +81,48 @@ class MatchingServiceServicer(trace_pb2_grpc.MatchingServiceServicer):
 
             return trace_pb2.MatchResponse(
                 user_id=result.user_id,
-                opportunities=opportunities,
+                opportunities=opportunities_pb,
             )
         except Exception as exc:
             logger.exception("gRPC MatchOpportunities failed for user %s", request.user_id)
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(str(exc))
             return trace_pb2.MatchResponse()
+
+    @staticmethod
+    def _fetch_open_opportunities():
+        from core.database import get_sync_db
+        from core.models import Opportunity as OpportunityModel
+
+        db = get_sync_db()
+        try:
+            rows = db.query(OpportunityModel).filter(
+                OpportunityModel.status == "open"
+            ).limit(200).all()
+
+            return [
+                OpportunityData(
+                    id=str(row.id),
+                    title=row.title,
+                    description=row.description,
+                    type=row.type,
+                    skills_required=row.skills_required or [],
+                    languages_required=row.languages_required or [],
+                    latitude=float(row.latitude) if row.latitude else None,
+                    longitude=float(row.longitude) if row.longitude else None,
+                    is_remote=row.is_remote or False,
+                    pay_min=float(row.pay_min) if row.pay_min else None,
+                    pay_max=float(row.pay_max) if row.pay_max else None,
+                    city=row.city,
+                    state=row.state,
+                )
+                for row in rows
+            ]
+        except Exception as exc:
+            logger.warning("Failed to fetch opportunities from DB: %s", exc)
+            return []
+        finally:
+            db.close()
 
 
 def create_server() -> grpc.Server:

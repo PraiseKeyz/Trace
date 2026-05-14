@@ -741,7 +741,7 @@ Authorization: Bearer {partner-api-key}
 
 ---
 
-## 13. Job Supply Strategy
+## 13. Job Supply Strategy~
 
 ### Primary — Direct Employer Onboarding
 SMEs and market associations sign up on Trace and post opportunities directly. All payments go through Squad escrow. Everything stays in the loop.
