@@ -5,8 +5,12 @@
 **Squad Hackathon 3.0 | Challenge 02: Intelligent Economic Platform**
 Built by **Team Neuralstack**
 
----
+- `backend/` - NestJS API, PostgreSQL/Prisma persistence, Squad payment integration, JWT auth, webhooks, and gRPC client for AI scoring.
+- `frontend/` - Client application.
+- `ai-service/` - Python AI service for scoring, matching, and intelligence generation.
+- `document_pdf.pdf` - Architecture document used for the system design.
 
+<<<<<<< HEAD
 ## What Is Trace?
 
 Trace is an AI-powered platform that turns invisible informal economic activity into a verifiable digital identity — giving African traders, gig workers, and job seekers access to financial services they have always been excluded from.
@@ -77,9 +81,6 @@ squad-hackathon/
 ├── docker-compose.yml
 ├── frontend.env
 └── .github/workflows/deploy.yml
-```
-
----
 
 ## Quick Start (Local Development)
 

@@ -7,9 +7,32 @@ import { Input } from '@/components/ui/input'
 import { ArrowRight, CheckCircle, User, Lock, MapPin, Briefcase, Store, Wallet } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 
+type OnboardingSection = 'personal' | 'account' | 'location' | 'work' | 'business' | 'finance'
+
+interface OnboardingFormData {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  password: string
+  confirmPassword: string
+  userType: string
+  country: string
+  state: string
+  city: string
+  primaryIncome: string
+  skills: string[]
+  experience: string
+  monthlyIncome: string
+  paymentMethod: string
+  businessName: string
+  businessCategory: string
+  agreeTerms: boolean
+}
+
 export default function OnboardingPage() {
-  const { register } = useAuth()
-  const [formData, setFormData] = useState({
+  const { register, completeOnboarding } = useAuth()
+  const [formData, setFormData] = useState<OnboardingFormData>({
     firstName: '',
     lastName: '',
     email: '',
@@ -21,7 +44,7 @@ export default function OnboardingPage() {
     state: '',
     city: '',
     primaryIncome: '',
-    skills: [] as string[],
+    skills: [],
     experience: '',
     monthlyIncome: '',
     paymentMethod: '',
@@ -31,7 +54,7 @@ export default function OnboardingPage() {
   })
 
   const [isLoading, setIsLoading] = useState(false)
-  const [currentSection, setCurrentSection] = useState<'personal' | 'account' | 'location' | 'work' | 'business' | 'finance'>('personal')
+  const [currentSection, setCurrentSection] = useState<OnboardingSection>('personal')
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   const sections = [
@@ -43,25 +66,25 @@ export default function OnboardingPage() {
     { id: 'finance', label: 'Finance', icon: Wallet },
   ] as const
 
+  const updateField = <K extends keyof OnboardingFormData>(name: K, value: OnboardingFormData[K]) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target as any
+    const { name, type } = e.target
+    const field = name as keyof OnboardingFormData
     
     if (type === 'checkbox') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: (e.target as HTMLInputElement).checked
-      }))
-    } else if (name === 'skills') {
-      const skillArray = (value as string).split(',').map((s: string) => s.trim()).filter((s: string) => s)
-      setFormData(prev => ({
-        ...prev,
-        skills: skillArray
-      }))
+      const checked = (e.target as HTMLInputElement).checked
+      updateField(field, checked as OnboardingFormData[typeof field])
+    } else if (field === 'skills') {
+      const skillArray = e.target.value.split(',').map((s: string) => s.trim()).filter((s: string) => s)
+      updateField('skills', skillArray)
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }))
+      updateField(field, e.target.value as OnboardingFormData[typeof field])
     }
   }
 
@@ -74,11 +97,17 @@ export default function OnboardingPage() {
     setIsLoading(true)
     try {
       await register({
-        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
         phone: formData.phone,
-        email: formData.email,
         password: formData.password,
       })
+
+      await completeOnboarding({
+        fullName: `${formData.firstName} ${formData.lastName}`.trim(),
+        state: formData.state,
+        city: formData.city,
+      })
+
+      localStorage.removeItem('onboardingDraft')
     } catch (error) {
       // Error handled by register function (toast)
     } finally {
@@ -129,7 +158,7 @@ export default function OnboardingPage() {
   const handleContinue = () => {
     if (!validateSection(currentSection)) return
     const idx = sections.findIndex(s => s.id === currentSection)
-    if (idx < sections.length - 1) setCurrentSection(sections[idx + 1].id as any)
+    if (idx < sections.length - 1) setCurrentSection(sections[idx + 1].id)
   }
 
   // Persist draft to localStorage (omit passwords)
@@ -194,7 +223,7 @@ export default function OnboardingPage() {
                 return (
                   <button
                     key={section.id}
-                    onClick={() => setCurrentSection(section.id as any)}
+                    onClick={() => setCurrentSection(section.id)}
                     className={`flex items-center justify-center w-12 h-12 rounded-full transition-all duration-300 ${
                       isActive
                         ? 'bg-trace-accent text-white ring-2 ring-trace-accent/30 ring-offset-2'
@@ -574,7 +603,7 @@ export default function OnboardingPage() {
                 onClick={() => {
                   const currentIndex = sections.findIndex(s => s.id === currentSection)
                   if (currentIndex > 0) {
-                    setCurrentSection(sections[currentIndex - 1].id as any)
+                    setCurrentSection(sections[currentIndex - 1].id)
                   }
                 }}
                 disabled={currentSection === 'personal'}

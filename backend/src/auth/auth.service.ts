@@ -7,6 +7,7 @@ import * as argon2 from 'argon2';
 import { randomInt } from 'crypto';
 import { OnboardingDto } from './dto/onboarding.dto';
 import { SmsService } from '@/sms/sms.service';
+import { SquadService } from '@/squad/squad.service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private smsService: SmsService,
+    private squadService: SquadService,
   ) { }
 
   async register(dto: RegisterDto) {
@@ -89,6 +91,7 @@ export class AuthService {
       where: { id: userId },
       data: {
         full_name: dto.fullName,
+        email: dto.email,
         state: dto.state,
         city: dto.city,
         latitude: dto.latitude,
@@ -105,6 +108,27 @@ export class AuthService {
       update: {},
     });
 
+    let virtualAccount: unknown = null;
+    const [derivedFirstName, ...restName] = (dto.fullName ?? '').trim().split(/\s+/);
+    const firstName = dto.firstName ?? derivedFirstName;
+    const lastName = dto.lastName ?? restName.join(' ');
+
+    if (dto.email && dto.bvn && dto.dob && dto.address && dto.gender && firstName && lastName) {
+      virtualAccount = await this.squadService.createVirtualAccountForUser(userId, {
+        customer_identifier: userId,
+        first_name: firstName,
+        last_name: lastName,
+        middle_name: dto.middleName,
+        mobile_num: user.phone,
+        email: dto.email,
+        bvn: dto.bvn,
+        dob: dto.dob,
+        address: dto.address,
+        gender: dto.gender,
+        beneficiary_account: dto.beneficiaryAccount,
+      });
+    }
+
     return {
       message: 'Onboarding completed successfully',
       user: {
@@ -112,6 +136,7 @@ export class AuthService {
         phone: user.phone,
         onboardingComplete: user.onboarding_complete,
       },
+      virtualAccount,
     };
   }
 
