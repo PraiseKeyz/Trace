@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1'
 
 export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   const url = `${API_URL}${endpoint}`
@@ -19,5 +19,9 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
     throw new Error(errorData.message || 'Something went wrong')
   }
 
-  return response.json()
+  if (response.status === 204) {
+    return null
+  }
+
+  return response.json().catch(() => null)
 }
