@@ -9,6 +9,8 @@ import { EconomicProfileModule } from './economic-profile/economic-profile.modul
 import { TransactionsModule } from './transactions/transactions.module';
 import { OpportunitiesModule } from './opportunities/opportunities.module';
 import { SquadModule } from './squad/squad.module';
+import { VouchModule } from './vouch/vouch.module';
+import { UploadModule } from './upload/upload.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { BullModule } from '@nestjs/bullmq';
@@ -16,17 +18,14 @@ import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
-    // Global config — all modules can now inject ConfigService without importing ConfigModule themselves
     ConfigModule.forRoot({ isGlobal: true }),
 
-    // Global rate limiter: max 10 requests per 60 seconds per IP
     ThrottlerModule.forRoot([{
       name: 'global',
-      ttl: 60000,  // 60 seconds
+      ttl: 60000,
       limit: 10,
     }]),
 
-    // Global BullMQ connection — uses Redis for async job processing
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -47,6 +46,8 @@ import { APP_GUARD } from '@nestjs/core';
     TransactionsModule,
     OpportunitiesModule,
     SquadModule,
+    VouchModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

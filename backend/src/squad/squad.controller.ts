@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import type { RequestWithUser } from '@/common/interfaces/request-with-user.interface';
 import { SquadService } from './squad.service';
@@ -10,6 +10,7 @@ import { RequeryTransferDto } from './dto/requery-transfer.dto';
 import { ListTransfersDto } from './dto/list-transfers.dto';
 import { RefundDto } from './dto/refund.dto';
 import { QueryVaTransactionsDto } from './dto/query-va-transactions.dto';
+import { GenerateMyVirtualAccountDto } from './dto/generate-my-virtual-account.dto';
 
 @Controller('squad')
 export class SquadController {
@@ -27,6 +28,30 @@ export class SquadController {
     @Body() dto: CreateVirtualAccountDto,
   ) {
     return this.squadService.createVirtualAccountForUser(req.user.id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('my-virtual-account')
+  generateMyVirtualAccount(
+    @Req() req: RequestWithUser,
+    @Body() dto: GenerateMyVirtualAccountDto,
+  ) {
+    const user = req.user;
+    if (!user.email) {
+      throw new BadRequestException('Please add an email to your profile before generating a virtual account');
+    }
+    const [firstName, ...rest] = (user.full_name ?? '').trim().split(/\s+/);
+    return this.squadService.createVirtualAccountForUser(user.id, {
+      customer_identifier: user.id,
+      first_name: firstName || user.phone,
+      last_name: rest.join(' ') || '-',
+      mobile_num: user.phone,
+      email: user.email,
+      bvn: dto.bvn,
+      dob: dto.dob,
+      address: dto.address,
+      gender: dto.gender,
+    });
   }
 
   @UseGuards(JwtAuthGuard)

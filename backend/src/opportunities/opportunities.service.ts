@@ -33,21 +33,33 @@ export class OpportunitiesService {
     });
   }
 
-  async findAll() {
-    return this.prisma.opportunity.findMany({
-      where: { status: 'open' },
-      include: {
-        poster: {
-          select: {
-            id: true,
-            full_name: true,
-            city: true,
-            state: true,
+  async findAll(page = 1, limit = 20) {
+    const take = Math.min(limit, 50)
+    const skip = (page - 1) * take
+
+    const [items, total] = await this.prisma.$transaction([
+      this.prisma.opportunity.findMany({
+        where: { status: 'open' },
+        include: {
+          poster: {
+            select: {
+              id: true,
+              full_name: true,
+              city: true,
+              state: true,
+            },
           },
         },
-      },
-      orderBy: { created_at: 'desc' },
-    });
+        orderBy: { created_at: 'desc' },
+        take,
+        skip,
+      }),
+      this.prisma.opportunity.count({ where: { status: 'open' } }),
+    ])
+
+    const totalPages = Math.ceil(total / take)
+
+    return { items, page, limit: take, total, totalPages }
   }
 
   async findOne(id: string) {
@@ -123,7 +135,7 @@ export class OpportunitiesService {
       languages: user.languages,
     });
 
-    return result.opportunities;
+    return result.opportunities ?? [];
   }
 
   async updateApplicationStatus(applicationId: string, status: string) {

@@ -13,13 +13,18 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  user
+  admin
+}
+
 model User {
   id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   full_name           String?  @db.VarChar(255)
   phone               String   @unique @db.VarChar(20)
   email               String?  @unique @db.VarChar(255)
   password_hash       String   @db.Text
-  role                String[] @default([])
+  role                Role[]   @default([user])
   state               String?  @db.VarChar(100)
   city                String?  @db.VarChar(100)
   latitude            Decimal? @db.Decimal(9, 6)
@@ -32,6 +37,7 @@ model User {
   data_sharing_consent Boolean @default(false)
   otp_code            String?  @db.Text
   otp_expires_at      DateTime?
+  persona             String?  @db.VarChar(20)
   onboarding_complete Boolean? @default(false)
   created_at          DateTime @default(now()) @db.Timestamp()
   updated_at          DateTime @default(now()) @updatedAt @db.Timestamp()
@@ -42,6 +48,8 @@ model User {
   opportunities       Opportunity[] @relation("PostedOpportunities")
   selected_for        Opportunity[] @relation("SelectedApplicant")
   applications        OpportunityApplication[]
+  given_vouches       Vouch[] @relation("GivenVouches")
+  received_vouches    Vouch[] @relation("ReceivedVouches")
 
   @@map("users")
 }
@@ -139,4 +147,19 @@ model OpportunityApplication {
 
   @@unique([opportunity_id, applicant_id])
   @@map("opportunity_applications")
+}
+
+model Vouch {
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  voucher_id   String   @db.Uuid
+  recipient_id String   @db.Uuid
+  message      String?  @db.Text
+  weight       Decimal  @default(1) @db.Decimal(4, 2)
+  created_at   DateTime @default(now()) @db.Timestamp()
+
+  voucher   User @relation("GivenVouches", fields: [voucher_id], references: [id])
+  recipient User @relation("ReceivedVouches", fields: [recipient_id], references: [id])
+
+  @@unique([voucher_id, recipient_id])
+  @@map("vouches")
 }

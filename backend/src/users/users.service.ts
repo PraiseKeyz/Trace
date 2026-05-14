@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import * as argon2 from 'argon2';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -55,5 +55,14 @@ export class UsersService {
     });
 
     return { message: 'Password changed successfully' };
+  }
+
+  async lookupByPhone(phone: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { phone },
+      select: { id: true, full_name: true, persona: true },
+    });
+    if (!user) throw new NotFoundException('No user found with that phone number');
+    return user;
   }
 }

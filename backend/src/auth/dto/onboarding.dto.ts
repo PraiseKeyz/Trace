@@ -1,6 +1,11 @@
-import { IsEmail, IsIn, IsNumber, IsOptional, IsString, Matches } from 'class-validator';
+import { IsArray, IsEmail, IsIn, IsNumber, IsOptional, IsString, Matches } from 'class-validator';
+
 
 export class OnboardingDto {
+  @IsIn(['trader', 'gig_worker'])
+  @IsOptional()
+  persona?: 'trader' | 'gig_worker';
+
   @IsString()
   @IsOptional()
   fullName?: string;
@@ -59,4 +64,9 @@ export class OnboardingDto {
   @IsOptional()
   @Matches(/^\d{10}$/)
   beneficiaryAccount?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  languages?: string[];
 }
