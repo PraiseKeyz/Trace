@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import {
   Wallet,
@@ -62,19 +62,10 @@ const TIER_NEXT: Record<string, { label: string; target: number }> = {
 
 // ── Virtual Account Section ──────────────────────────────────────────────────
 
-interface GenerateFormState {
-  bvn: string
-  dob: string
-  address: string
-  gender: '1' | '2' | ''
-}
-
 function VirtualAccountSection() {
   const { data: user, isLoading } = useCurrentUser()
   const qc = useQueryClient()
-  const [showForm, setShowForm] = useState(false)
   const [submitting, setSubmitting] = useState(false)
-  const [form, setForm] = useState<GenerateFormState>({ bvn: '', dob: '', address: '', gender: '' })
 
   const handleCopy = () => {
     if (user?.virtual_account_no) {
@@ -83,20 +74,12 @@ function VirtualAccountSection() {
     }
   }
 
-  const handleGenerate = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    if (!form.gender) { toast.error('Please select a gender'); return }
+  const handleGenerate = async () => {
     setSubmitting(true)
     try {
-      await api.post('/squad/my-virtual-account', {
-        bvn: form.bvn,
-        dob: form.dob,
-        address: form.address,
-        gender: form.gender,
-      })
+      await api.post('/squad/my-virtual-account', undefined)
       toast.success('Virtual account created!')
       qc.invalidateQueries({ queryKey: currentUserKey })
-      setShowForm(false)
     } catch {
       // error toast handled by api client
     } finally {
@@ -151,88 +134,18 @@ function VirtualAccountSection() {
         <div>
           <p className="font-semibold text-amber-900">No Virtual Account Yet</p>
           <p className="text-sm text-amber-700 mt-0.5">
-            Looks like your virtual account wasn&apos;t created during signup. Generate one now to start receiving payments.
+            Generate one now to start receiving payments directly to your Trace wallet.
           </p>
         </div>
       </div>
-
-      {!showForm ? (
-        <Button
-          onClick={() => setShowForm(true)}
-          className="bg-trace-accent hover:bg-trace-accent/90 text-white"
-        >
-          Generate Account
-        </Button>
-      ) : (
-        <form onSubmit={handleGenerate} className="mt-4 space-y-3">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">BVN (11 digits)</label>
-              <input
-                type="text"
-                inputMode="numeric"
-                maxLength={11}
-                placeholder="12345678901"
-                value={form.bvn}
-                onChange={e => setForm(f => ({ ...f, bvn: e.target.value.replace(/\D/g, '') }))}
-                required
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Date of Birth (DD/MM/YYYY)</label>
-              <input
-                type="text"
-                placeholder="01/01/1990"
-                value={form.dob}
-                onChange={e => setForm(f => ({ ...f, dob: e.target.value }))}
-                required
-                className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
-              />
-            </div>
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Home Address</label>
-            <input
-              type="text"
-              placeholder="12 Example Street, Lagos"
-              value={form.address}
-              onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
-              required
-              className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Gender</label>
-            <div className="flex gap-3">
-              {(['1', '2'] as const).map(val => (
-                <button
-                  key={val}
-                  type="button"
-                  onClick={() => setForm(f => ({ ...f, gender: val }))}
-                  className={cn(
-                    'flex-1 rounded-lg border py-2 text-sm font-medium transition-colors',
-                    form.gender === val
-                      ? 'border-trace-accent bg-trace-accent/10 text-trace-accent'
-                      : 'border-border bg-white text-slate-600 hover:bg-slate-50'
-                  )}
-                >
-                  {val === '1' ? 'Male' : 'Female'}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex gap-2 pt-1">
-            <Button type="submit" className="bg-trace-accent hover:bg-trace-accent/90 text-white" disabled={submitting}>
-              {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-              {submitting ? 'Generating…' : 'Generate Account'}
-            </Button>
-            <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>
-              Cancel
-            </Button>
-          </div>
-        </form>
-      )}
+      <Button
+        onClick={handleGenerate}
+        disabled={submitting}
+        className="bg-trace-accent hover:bg-trace-accent/90 text-white"
+      >
+        {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+        {submitting ? 'Generating…' : 'Generate Account'}
+      </Button>
     </div>
   )
 }
@@ -334,7 +247,7 @@ export default function FinanceGatewayPage() {
       </div>
 
       {/* Financial Products */}
-      <div>
+      {/* <div>
         <h2 className="text-2xl font-bold text-slate-900 mb-6">Financial Products</h2>
         <div className="grid gap-6 md:grid-cols-3">
           {FINANCE_PRODUCTS.map((product) => {
@@ -369,7 +282,7 @@ export default function FinanceGatewayPage() {
             )
           })}
         </div>
-      </div>
+      </div> */}
 
       {/* Actionable Tips */}
       <div className="rounded-2xl border border-border bg-white p-6">

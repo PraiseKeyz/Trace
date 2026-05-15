@@ -1,0 +1,24 @@
+{
+  "name": "Trace — Economic Identity",
+  "short_name": "Trace",
+  "description": "Build your Economic Identity Score and unlock opportunities in work, trade, and financial services.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#020617",
+  "theme_color": "#F97316",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

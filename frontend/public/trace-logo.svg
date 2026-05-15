@@ -1,38 +1,54 @@
 <svg width="512" height="512" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Premium Gradient Background Plate -->
-  <rect width="100" height="100" rx="22" fill="url(#trace-bg)" />
-  
-  <!-- Ambient Backlight Trace (Represents historical data / history) -->
-  <path 
-    d="M20 50 L50 20 L80 50 M50 20 V80" 
-    stroke="white" 
-    stroke-opacity="0.2"
-    stroke-width="8" 
-    stroke-linecap="round" 
-    stroke-linejoin="round" 
-  />
-
-  <!-- Main Foreground T-Shape (Represents 'Trace' and current economic standing) -->
-  <path 
-    d="M32 38 H68 M50 38 V72" 
-    stroke="white" 
-    stroke-width="12" 
-    stroke-linecap="round" 
-    stroke-linejoin="round" 
-  />
-
-  <!-- Economic Nodes (The network of the user) -->
-  <circle cx="32" cy="38" r="6" fill="white" />
-  <circle cx="68" cy="38" r="6" fill="white" />
-  <circle cx="50" cy="72" r="6" fill="white" />
-  
-  <!-- The Core Identity Node (Center) -->
-  <circle cx="50" cy="38" r="4" fill="#ea580c" />
-
   <defs>
-    <linearGradient id="trace-bg" x1="0" y1="0" x2="100" y2="100" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#F97316" />
-      <stop offset="1" stop-color="#9A3412" />
-    </linearGradient>
+    <!-- Clips the rings to stay inside the background ellipse -->
+    <clipPath id="bg-clip">
+      <ellipse cx="50" cy="41" rx="34" ry="40"/>
+    </clipPath>
+
+    <!-- Masks the rings so they don't appear inside the T shape -->
+    <mask id="t-mask">
+      <rect width="100" height="100" fill="white"/>
+      <!-- T bar -->
+      <rect x="22" y="27" width="56" height="14" rx="2" fill="black"/>
+      <!-- T stem -->
+      <rect x="43" y="41" width="14" height="34" rx="2" fill="black"/>
+    </mask>
+
+    <filter id="dot-glow" x="-150%" y="-150%" width="400%" height="400%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
+
+  <!-- Background — ellipse sized to the outermost ring, no empty corners -->
+  <ellipse cx="50" cy="41" rx="34" ry="40" fill="#020617"/>
+
+  <!-- Fingerprint rings — clipped to ellipse boundary, masked to carve the T -->
+  <g clip-path="url(#bg-clip)" mask="url(#t-mask)" stroke="#F97316" fill="none">
+    <ellipse cx="50" cy="41" rx="4"  ry="5"  stroke-width="1.5" opacity="0.40"/>
+    <ellipse cx="50" cy="41" rx="8"  ry="10" stroke-width="1.7" opacity="0.52"/>
+    <ellipse cx="50" cy="41" rx="12" ry="15" stroke-width="1.9" opacity="0.63"/>
+    <ellipse cx="50" cy="41" rx="16" ry="20" stroke-width="2.0" opacity="0.72"/>
+    <ellipse cx="50" cy="41" rx="20" ry="25" stroke-width="2.1" opacity="0.79"/>
+    <ellipse cx="50" cy="41" rx="24" ry="30" stroke-width="2.2" opacity="0.85"/>
+    <ellipse cx="50" cy="41" rx="28" ry="35" stroke-width="2.4" opacity="0.91"/>
+    <ellipse cx="50" cy="41" rx="32" ry="39" stroke-width="2.6" opacity="0.97"/>
+  </g>
+
+  <!-- T cutout — background colour fills the T area, hiding rings behind it -->
+  <rect x="22" y="27" width="56" height="14" rx="2" fill="#020617"/>
+  <rect x="43" y="41" width="14" height="34" rx="2" fill="#020617"/>
+
+  <!-- T outline in orange -->
+  <path d="M22,27 H78 V41 H57 V75 H43 V41 H22 Z"
+        stroke="#F97316" stroke-width="2.2"
+        stroke-linejoin="round" fill="none"/>
+
+  <!-- Glowing identity dot at T junction -->
+  <circle cx="50" cy="41" r="4.5" fill="#F97316" opacity="0.25" filter="url(#dot-glow)"/>
+  <circle cx="50" cy="41" r="3.5" fill="#F97316"/>
+  <circle cx="50" cy="41" r="1.4" fill="white"   opacity="0.55"/>
 </svg>

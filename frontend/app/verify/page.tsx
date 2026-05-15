@@ -16,7 +16,8 @@ export default function VerifyPage() {
 
   const [otp, setOtp] = useState('')
   const [error, setError] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isVerifying, setIsVerifying] = useState(false)
+  const [isResending, setIsResending] = useState(false)
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -49,7 +50,7 @@ export default function VerifyPage() {
     e.preventDefault()
     if (!otp.trim()) { setError('Enter the OTP sent to your phone'); return }
     if (!/^\d{6}$/.test(otp.trim())) { setError('OTP must be exactly 6 digits'); return }
-    setIsSubmitting(true)
+    setIsVerifying(true)
     setError('')
     try {
       await verifyOtp(otp.trim())
@@ -57,20 +58,20 @@ export default function VerifyPage() {
     } catch {
       setError('Incorrect or expired OTP. Try again.')
     } finally {
-      setIsSubmitting(false)
+      setIsVerifying(false)
     }
   }
 
   const handleResend = async () => {
     if (cooldown > 0) return
-    setIsSubmitting(true)
+    setIsResending(true)
     try {
       await resendOtp()
       startCooldown()
     } catch {
       // ApiClient shows toast
     } finally {
-      setIsSubmitting(false)
+      setIsResending(false)
     }
   }
 
@@ -84,20 +85,6 @@ export default function VerifyPage() {
 
   return (
     <div className="min-h-screen bg-trace-surface flex flex-col">
-      {/* Header */}
-      <header className="border-b border-trace-border bg-trace-surface">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <Link href="/" className="flex items-center gap-3 w-fit">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-950">
-              <span className="font-bold text-white text-lg font-mono">T</span>
-            </div>
-            <div>
-              <span className="text-xl font-black text-slate-950 block tracking-tight">Trace</span>
-              <span className="text-[10px] uppercase font-bold tracking-widest text-trace-accent block -mt-1">Economic Identity</span>
-            </div>
-          </Link>
-        </div>
-      </header>
 
       {/* Main */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
@@ -114,8 +101,8 @@ export default function VerifyPage() {
             <p className="text-muted-foreground">
               We sent a 6-digit code to
             </p>
-            <p className="font-bold text-slate-950 mt-1">
-              {user?.phone ?? '—'}
+            <p className="font-bold text-slate-950 mt-1 tracking-wider">
+              {user?.phone ? `${user.phone.slice(0, 2)} ••••• ${user.phone.slice(-4)}` : '—'}
             </p>
           </div>
 
@@ -136,11 +123,11 @@ export default function VerifyPage() {
 
             <Button
               type="submit"
-              disabled={isSubmitting || otp.length !== 6}
+              disabled={isVerifying || otp.length !== 6}
               className="w-full h-12 bg-slate-950 hover:bg-slate-800 text-white rounded-full font-bold text-base"
             >
-              {isSubmitting ? 'Verifying…' : 'Verify Phone'}
-              {!isSubmitting && <ArrowRight className="ml-2 h-5 w-5" />}
+              {isVerifying ? 'Verifying…' : 'Verify Phone'}
+              {!isVerifying && <ArrowRight className="ml-2 h-5 w-5" />}
             </Button>
           </form>
 
@@ -150,11 +137,11 @@ export default function VerifyPage() {
             <button
               type="button"
               onClick={handleResend}
-              disabled={cooldown > 0 || isSubmitting}
+              disabled={cooldown > 0 || isResending}
               className="inline-flex items-center gap-2 text-sm font-bold text-slate-950 hover:underline disabled:text-muted-foreground disabled:no-underline disabled:cursor-not-allowed transition-colors"
             >
-              <RotateCcw size={14} className={cooldown > 0 ? '' : 'text-trace-accent'} />
-              {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend OTP'}
+              <RotateCcw size={14} className={cooldown > 0 || isResending ? '' : 'text-trace-accent'} />
+              {isResending ? 'Resending...' : cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend OTP'}
             </button>
           </div>
 

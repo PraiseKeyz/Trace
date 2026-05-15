@@ -216,7 +216,7 @@ export class SquadService {
       throw new BadRequestException('Escrow already locked for this opportunity');
     }
 
-    const amount = Number(opportunity.pay_max ?? opportunity.pay_min ?? 0);
+    const amount = Number(opportunity.escrow_amount ?? opportunity.pay_max ?? opportunity.pay_min ?? 0);
     if (amount <= 0) {
       throw new BadRequestException('Opportunity has no valid pay amount for escrow');
     }
@@ -391,6 +391,79 @@ export class SquadService {
     };
   }
 
+
+  async autoReleaseEscrow(opportunityId: string) {
+    const opportunity = await this.prisma.opportunity.findUnique({
+      where: { id: opportunityId },
+      include: { selected: true },
+    });
+
+    if (!opportunity) return;
+    if (!['worker_done', 'filled'].includes(opportunity.status)) return; // already handled
+
+    const worker = opportunity.selected;
+    const amount = Number(opportunity.escrow_amount ?? opportunity.pay_max ?? opportunity.pay_min ?? 0);
+
+    if (amount > 0 && worker?.virtual_account_no) {
+      const transferRef = `${this.merchantId ?? 'TRC'}_AUTO_${randomUUID()}`;
+      try {
+        await this.transfer({
+          transaction_reference: transferRef,
+          amount: String(amount * 100),
+          bank_code: '058',
+          account_number: worker.virtual_account_no,
+          account_name: worker.full_name ?? 'Trace Worker',
+          currency_id: 'NGN',
+          remark: `Auto-release for: ${opportunity.title}`,
+        });
+
+        await this.prisma.transaction.create({
+          data: {
+            user_id: opportunity.selected_applicant!,
+            counterparty_id: opportunity.posted_by,
+            squad_reference: transferRef,
+            type: 'escrow_release',
+            category: 'gig_payment',
+            amount,
+            currency: opportunity.currency,
+            status: 'successful',
+            metadata: { opportunity_id: opportunityId, opportunity_title: opportunity.title } as any,
+          },
+        });
+
+        await this.prisma.economicProfile.upsert({
+          where: { user_id: opportunity.selected_applicant! },
+          create: {
+            user_id: opportunity.selected_applicant!,
+            total_transaction_volume: amount,
+            total_transaction_count: 1,
+            last_transaction_at: new Date(),
+          },
+          update: {
+            total_transaction_volume: { increment: amount },
+            total_transaction_count: { increment: 1 },
+            last_transaction_at: new Date(),
+          },
+        });
+
+        await this.scoreQueue.add('recalculate-score', { userId: opportunity.selected_applicant });
+      } catch (err) {
+        this.logger.error(`Auto-release transfer failed for opportunity ${opportunityId}`, err);
+      }
+    }
+
+    await this.prisma.opportunity.update({
+      where: { id: opportunityId },
+      data: { status: 'confirmed' },
+    });
+
+    await this.prisma.transaction.updateMany({
+      where: { squad_reference: opportunity.escrow_reference ?? undefined },
+      data: { status: 'successful' },
+    });
+
+    this.logger.log(`Escrow auto-released for opportunity ${opportunityId}`);
+  }
 
   async cancelEscrow(opportunityId: string, userId: string, reason: string) {
     const opportunity = await this.prisma.opportunity.findUnique({

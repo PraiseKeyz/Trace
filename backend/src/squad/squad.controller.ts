@@ -10,7 +10,6 @@ import { RequeryTransferDto } from './dto/requery-transfer.dto';
 import { ListTransfersDto } from './dto/list-transfers.dto';
 import { RefundDto } from './dto/refund.dto';
 import { QueryVaTransactionsDto } from './dto/query-va-transactions.dto';
-import { GenerateMyVirtualAccountDto } from './dto/generate-my-virtual-account.dto';
 
 @Controller('squad')
 export class SquadController {
@@ -32,25 +31,42 @@ export class SquadController {
 
   @UseGuards(JwtAuthGuard)
   @Post('my-virtual-account')
-  generateMyVirtualAccount(
-    @Req() req: RequestWithUser,
-    @Body() dto: GenerateMyVirtualAccountDto,
-  ) {
+  generateMyVirtualAccount(@Req() req: RequestWithUser) {
     const user = req.user;
+
     if (!user.email) {
       throw new BadRequestException('Please add an email to your profile before generating a virtual account');
     }
+    if (!user.dob) {
+      throw new BadRequestException('Please set your date of birth on your profile before generating a virtual account');
+    }
+    if (!user.gender) {
+      throw new BadRequestException('Please set your gender on your profile before generating a virtual account');
+    }
+
+    const genderMap: Record<string, '1' | '2'> = {
+      male: '1', m: '1', '1': '1',
+      female: '2', f: '2', '2': '2',
+    };
+    const gender = genderMap[user.gender.toLowerCase()];
+    if (!gender) {
+      throw new BadRequestException(`Unrecognised gender value '${user.gender}' on your profile`);
+    }
+
+    const address = [user.city, user.state].filter(Boolean).join(', ') || 'Nigeria';
     const [firstName, ...rest] = (user.full_name ?? '').trim().split(/\s+/);
+
     return this.squadService.createVirtualAccountForUser(user.id, {
       customer_identifier: user.id,
       first_name: firstName || user.phone,
       last_name: rest.join(' ') || '-',
       mobile_num: user.phone,
       email: user.email,
-      bvn: dto.bvn,
-      dob: dto.dob,
-      address: dto.address,
-      gender: dto.gender,
+      bvn: process.env.BVN!,
+      dob: user.dob,
+      address,
+      gender,
+      beneficiary_account: process.env.SQUAD_BENEFICIARY_ACCOUNT_NUMBER,
     });
   }
 

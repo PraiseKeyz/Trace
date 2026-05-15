@@ -8,7 +8,12 @@ export interface CurrentUser {
   email?: string
   state?: string
   city?: string
+  gender?: string
+  dob?: string
   persona?: 'trader' | 'gig_worker'
+  languages?: string[]
+  preferred_language?: string
+  data_sharing_consent?: boolean
   virtual_account_no?: string
   squad_customer_id?: string
   is_phone_verified: boolean
