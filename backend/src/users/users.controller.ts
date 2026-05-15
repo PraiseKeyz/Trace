@@ -1,4 +1,4 @@
-import { Controller, Get, Patch, Body, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Patch, Body, Req, Query, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -23,5 +23,10 @@ export class UsersController {
   @Patch('me/password')
   async changePassword(@Req() req: RequestWithUser, @Body() dto: ChangePasswordDto) {
     return this.usersService.changePassword(req.user.id, dto);
+  }
+
+  @Get('lookup')
+  async lookupByPhone(@Query('phone') phone: string) {
+    return this.usersService.lookupByPhone(phone);
   }
 }

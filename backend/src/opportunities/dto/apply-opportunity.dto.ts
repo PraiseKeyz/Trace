@@ -8,4 +8,8 @@ export class ApplyOpportunityDto {
   @Min(0)
   @IsOptional()
   match_score?: number;
+
+  @IsString()
+  @IsOptional()
+  cover_note?: string;
 }

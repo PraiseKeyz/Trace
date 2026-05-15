@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
 import type { RequestWithUser } from '@/common/interfaces/request-with-user.interface';
 import { SquadService } from './squad.service';
@@ -27,6 +27,47 @@ export class SquadController {
     @Body() dto: CreateVirtualAccountDto,
   ) {
     return this.squadService.createVirtualAccountForUser(req.user.id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('my-virtual-account')
+  generateMyVirtualAccount(@Req() req: RequestWithUser) {
+    const user = req.user;
+
+    if (!user.email) {
+      throw new BadRequestException('Please add an email to your profile before generating a virtual account');
+    }
+    if (!user.dob) {
+      throw new BadRequestException('Please set your date of birth on your profile before generating a virtual account');
+    }
+    if (!user.gender) {
+      throw new BadRequestException('Please set your gender on your profile before generating a virtual account');
+    }
+
+    const genderMap: Record<string, '1' | '2'> = {
+      male: '1', m: '1', '1': '1',
+      female: '2', f: '2', '2': '2',
+    };
+    const gender = genderMap[user.gender.toLowerCase()];
+    if (!gender) {
+      throw new BadRequestException(`Unrecognised gender value '${user.gender}' on your profile`);
+    }
+
+    const address = [user.city, user.state].filter(Boolean).join(', ') || 'Nigeria';
+    const [firstName, ...rest] = (user.full_name ?? '').trim().split(/\s+/);
+
+    return this.squadService.createVirtualAccountForUser(user.id, {
+      customer_identifier: user.id,
+      first_name: firstName || user.phone,
+      last_name: rest.join(' ') || '-',
+      mobile_num: user.phone,
+      email: user.email,
+      bvn: process.env.BVN!,
+      dob: user.dob,
+      address,
+      gender,
+      beneficiary_account: process.env.SQUAD_BENEFICIARY_ACCOUNT_NUMBER,
+    });
   }
 
   @UseGuards(JwtAuthGuard)

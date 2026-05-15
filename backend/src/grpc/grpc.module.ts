@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientsModule } from '@nestjs/microservices/module/clients.module';
+import { Transport } from '@nestjs/microservices/enums';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { GrpcService } from './grpc.service';

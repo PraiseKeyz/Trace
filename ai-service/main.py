@@ -132,7 +132,10 @@ async def health_check():
     except Exception:
         pass
 
-    status = "healthy" if (model_loaded or True) else "degraded"
+    if db_connected and redis_connected:
+        status = "healthy" if model_loaded else "degraded"
+    else:
+        status = "unhealthy"
 
     return HealthResponse(
         status=status,

@@ -2,15 +2,22 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { apiFetch } from '@/lib/api'
+import { useQueryClient } from '@tanstack/react-query'
+import { api } from '@/lib/api'
 import { toast } from 'sonner'
+import { currentUserKey } from '@/lib/api/hooks/use-current-user'
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 interface User {
   id: string
-  fullName?: string
   phone: string
+  fullName?: string
   email?: string
-  onboardingComplete?: boolean
+  role?: string
+  persona?: 'trader' | 'gig_worker'
+  isPhoneVerified: boolean
+  onboardingComplete: boolean
 }
 
 interface RegisterPayload {
@@ -19,11 +26,19 @@ interface RegisterPayload {
 }
 
 interface OnboardingPayload {
+  persona?: 'trader' | 'gig_worker'
   fullName?: string
+  firstName?: string
+  lastName?: string
+  email?: string
   state?: string
   city?: string
   latitude?: number
   longitude?: number
+  languages?: string[]
+  skills?: string[]
+  tradeCategory?: string
+  yearsActive?: number
 }
 
 interface AuthApiUser {
@@ -31,48 +46,65 @@ interface AuthApiUser {
   phone: string
   full_name?: string
   email?: string
+  state?: string
+  city?: string
+  latitude?: number
+  longitude?: number
+  role?: string
+  persona?: string
+  squad_customer_id?: string | null
+  virtual_account_no?: string | null
+  is_phone_verified?: boolean
+  languages?: string[]
+  preferred_language?: string | null
+  data_sharing_consent?: boolean
   onboardingComplete?: boolean
   onboarding_complete?: boolean
+  created_at?: string
+  updated_at?: string
 }
 
 interface AuthContextType {
   user: User | null
   isLoading: boolean
+  isAuthenticated: boolean
   login: (phone: string, password: string) => Promise<void>
   register: (data: RegisterPayload) => Promise<void>
+  verifyOtp: (otp: string) => Promise<void>
+  resendOtp: () => Promise<void>
   completeOnboarding: (data: OnboardingPayload) => Promise<void>
   logout: () => Promise<void>
-  isAuthenticated: boolean
 }
+
+// ── Context ───────────────────────────────────────────────────────────────────
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const getErrorMessage = (error: unknown, fallback: string) => {
-  if (error && typeof error === 'object' && 'message' in error) {
-    const message = (error as { message?: string }).message
-    if (message) return message
+function mapUser(raw: AuthApiUser): User {
+  return {
+    id: raw.id,
+    phone: raw.phone,
+    email: raw.email,
+    fullName: raw.full_name,
+    persona: raw.persona as 'trader' | 'gig_worker' | undefined,
+    isPhoneVerified: raw.is_phone_verified ?? false,
+    onboardingComplete: raw.onboardingComplete ?? raw.onboarding_complete ?? false,
   }
-  return fallback
 }
+
+// ── Provider ──────────────────────────────────────────────────────────────────
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
-
-  const mapUser = (data: AuthApiUser): User => ({
-    id: data.id,
-    fullName: data.full_name,
-    phone: data.phone,
-    email: data.email,
-    onboardingComplete: data.onboardingComplete ?? data.onboarding_complete,
-  })
+  const qc = useQueryClient()
 
   const checkAuth = async () => {
     try {
-      const data = await apiFetch('/users/me')
-      setUser(mapUser(data))
-    } catch (error) {
+      const raw = await api.get<AuthApiUser>('/users/me', { silent: true })
+      setUser(mapUser(raw))
+    } catch {
       setUser(null)
     } finally {
       setIsLoading(false)
@@ -84,59 +116,68 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (phone: string, password: string) => {
-    try {
-      const data = await apiFetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ phone, password }),
-      })
-      const nextUser = mapUser(data.user)
-      setUser(nextUser)
-      toast.success('Welcome back!')
-      router.push(nextUser.onboardingComplete ? '/dashboard' : '/onboarding')
-    } catch (error: unknown) {
-      toast.error(getErrorMessage(error, 'Login failed'))
-      throw error
+    const data = await api.post<{ user: AuthApiUser }>('/auth/login', { phone, password })
+    const next = mapUser(data.user)
+    setUser(next)
+
+    if (!next.isPhoneVerified) {
+      // Account created but OTP never confirmed
+      toast.info('Please verify your phone number to continue.')
+      router.push('/verify')
+      return
     }
+
+    if (!next.onboardingComplete) {
+      // Phone verified but profile not filled in yet
+      toast.info('Welcome back! Let\'s finish setting up your profile.')
+      router.push('/onboarding')
+      return
+    }
+
+    toast.success('Welcome back!')
+    router.push('/dashboard')
   }
 
-  const register = async (formData: RegisterPayload) => {
-    try {
-      const data = await apiFetch('/auth/register', {
-        method: 'POST',
-        body: JSON.stringify(formData),
-      })
-      setUser(mapUser(data.user))
-      toast.success('Registration successful!')
-    } catch (error: unknown) {
-      toast.error(getErrorMessage(error, 'Registration failed'))
-      throw error
-    }
+  const register = async (payload: RegisterPayload) => {
+    const data = await api.post<{ user: AuthApiUser }>('/auth/register', payload)
+    setUser(mapUser(data.user))
+    // Page handles navigation to verify step — no router.push here
+  }
+
+  const verifyOtp = async (otp: string) => {
+    if (!user?.phone) throw new Error('No phone number on record')
+    await api.post('/auth/verify-otp', { phone: user.phone, otp })
+    // Refresh user so isPhoneVerified becomes true
+    await checkAuth()
+    toast.success('Phone verified! Let\'s set up your profile.')
+  }
+
+  const resendOtp = async () => {
+    if (!user?.phone) throw new Error('No phone number on record')
+    await api.post('/auth/resend-otp', { phone: user.phone })
+    toast.success('A new OTP has been sent to your phone.')
   }
 
   const completeOnboarding = async (payload: OnboardingPayload) => {
-    try {
-      await apiFetch('/auth/onboard', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      })
-      await checkAuth()
-      toast.success('Onboarding completed!')
-      router.push('/dashboard')
-    } catch (error: unknown) {
-      toast.error(getErrorMessage(error, 'Onboarding failed'))
-      throw error
+    const { skills, tradeCategory, yearsActive, ...userPayload } = payload
+    await api.post('/auth/onboard', userPayload)
+    if (skills?.length || tradeCategory || yearsActive !== undefined) {
+      await api.patch('/economic-profile/me/skills', {
+        skills,
+        trade_category: tradeCategory,
+        years_active: yearsActive,
+      }, { silent: true })
     }
+    await checkAuth()
+    await qc.invalidateQueries({ queryKey: currentUserKey })
+    toast.success('You\'re all set! Welcome to Trace.')
+    router.push('/dashboard')
   }
 
   const logout = async () => {
-    try {
-      await apiFetch('/auth/logout', { method: 'POST' })
-      setUser(null)
-      toast.success('Logged out successfully')
-      router.push('/login')
-    } catch (error) {
-      toast.error('Logout failed')
-    }
+    await api.post('/auth/logout', undefined, { silent: true })
+    setUser(null)
+    router.push('/login')
   }
 
   return (
@@ -144,11 +185,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isLoading,
+        isAuthenticated: !!user,
         login,
         register,
+        verifyOtp,
+        resendOtp,
         completeOnboarding,
         logout,
-        isAuthenticated: !!user,
       }}
     >
       {children}
@@ -156,10 +199,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
+// ── Hook ──────────────────────────────────────────────────────────────────────
+
 export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-  return context
+  const ctx = useContext(AuthContext)
+  if (!ctx) throw new Error('useAuth must be used within an AuthProvider')
+  return ctx
 }

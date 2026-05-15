@@ -3,7 +3,8 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, BarChart3, Briefcase, PiggyBank, Home } from 'lucide-react'
+import Image from 'next/image'
+import { Menu, X, Briefcase, PiggyBank, Home } from 'lucide-react'
 import { Button } from './ui/button'
 
 interface AppLayoutProps {
@@ -39,9 +40,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="flex flex-col gap-8 p-6">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-trace-primary">
-              <BarChart3 className="h-5 w-5 text-white" />
-            </div>
+            <Image src="/trace-logo.svg" alt="Trace" width={32} height={32} className="rounded-lg" />
             <span className="text-xl font-bold text-trace-primary">Trace</span>
           </Link>
 

@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
@@ -51,6 +51,7 @@ export class AuthService {
       user: {
         id: user.id,
         phone: user.phone,
+        is_phone_verified: user.is_phone_verified,
         onboardingComplete: user.onboarding_complete,
       },
       token,
@@ -80,6 +81,7 @@ export class AuthService {
       user: {
         id: user.id,
         phone: user.phone,
+        is_phone_verified: user.is_phone_verified,
         onboardingComplete: user.onboarding_complete,
       },
       token,
@@ -87,19 +89,34 @@ export class AuthService {
   }
 
   async completeOnboarding(userId: string, dto: OnboardingDto) {
-    const user = await this.prisma.user.update({
-      where: { id: userId },
-      data: {
-        full_name: dto.fullName,
-        email: dto.email,
-        state: dto.state,
-        city: dto.city,
-        latitude: dto.latitude,
-        longitude: dto.longitude,
-        role: ['user'],
-        onboarding_complete: true,
-      },
-    });
+    let user: Awaited<ReturnType<typeof this.prisma.user.update>>;
+    try {
+      user = await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          full_name: dto.fullName,
+          ...(dto.email !== undefined && { email: dto.email }),
+          ...(dto.persona !== undefined && { persona: dto.persona }),
+          state: dto.state,
+          city: dto.city,
+          latitude: dto.latitude,
+          longitude: dto.longitude,
+          ...(dto.languages !== undefined && { languages: dto.languages }),
+          ...(dto.gender !== undefined && { gender: dto.gender }),
+          ...(dto.dob !== undefined && { dob: dto.dob }),
+          role: ['user'],
+          onboarding_complete: true,
+        },
+      });
+    } catch (err: unknown) {
+      if (
+        typeof err === 'object' && err !== null &&
+        'code' in err && (err as { code: string }).code === 'P2002'
+      ) {
+        throw new BadRequestException('This email address is already linked to another account.');
+      }
+      throw err;
+    }
 
     // Bootstrap the economic profile with default values on first onboarding
     await this.prisma.economicProfile.upsert({
@@ -121,11 +138,11 @@ export class AuthService {
         middle_name: dto.middleName,
         mobile_num: user.phone,
         email: dto.email,
-        bvn: dto.bvn,
+        bvn: process.env.BVN!,
         dob: dto.dob,
         address: dto.address,
         gender: dto.gender,
-        beneficiary_account: dto.beneficiaryAccount,
+        beneficiary_account: process.env.SQUAD_BENEFICIARY_ACCOUNT_NUMBER!,
       });
     }
 

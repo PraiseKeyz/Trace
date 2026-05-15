@@ -32,12 +32,12 @@ const typeConfig = {
     iconColor: 'text-yellow-600',
   },
   info: {
-    bg: 'bg-blue-50',
-    border: 'border-blue-200',
-    title: 'text-blue-900',
-    message: 'text-blue-800',
+    bg: 'bg-trace-primary/5',
+    border: 'border-trace-primary/20',
+    title: 'text-trace-primary',
+    message: 'text-trace-primary/80',
     icon: Info,
-    iconColor: 'text-blue-600',
+    iconColor: 'text-trace-primary',
   },
   'score-update': {
     bg: 'bg-trace-accent/10',
