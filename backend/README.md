@@ -1,6 +1,6 @@
 # Trace — Backend Service
 
-The primary API server for the Trace platform. Handles all client requests, database persistence via Prisma/PostgreSQL, Squad payment integration, and acts as the gRPC client to the Python AI service.
+The primary API server for the Trace platform. Handles all client requests, database persistence via Prisma/PostgreSQL, Squad payment integration, file uploads, community vouching, and acts as the gRPC client to the Python AI service.
 
 ---
 
@@ -11,9 +11,13 @@ The primary API server for the Trace platform. Handles all client requests, data
 | Framework | NestJS 11 |
 | Language | TypeScript |
 | Database | PostgreSQL via Prisma ORM (Neon serverless) |
-| Auth | Phone OTP (Twilio) + JWT + HttpOnly Cookies |
+| Auth | Phone OTP + JWT + HttpOnly Cookies |
+| SMS | Twilio / Textbelt (configurable via `SMS_PROVIDER`) |
+| Payments | Squad Co (virtual accounts, payment links, transfers, webhooks) |
+| File Upload | Multer (disk storage, `/api/v1/uploads/`) |
+| Job Queue | BullMQ + Redis |
+| Rate Limiting | NestJS Throttler (120 req/60s global) |
 | Internal Comm | gRPC client → Python AI service |
-| Rate Limiting | NestJS Throttler |
 | Package Manager | pnpm |
 
 ---
@@ -24,6 +28,7 @@ The primary API server for the Trace platform. Handles all client requests, data
 - Node.js >= 18
 - pnpm
 - PostgreSQL database (local or Neon)
+- Redis instance
 - Python AI Service running on port 50051 (for gRPC endpoints)
 
 ### 1. Install
@@ -44,24 +49,37 @@ JWT_SECRET="your_secure_random_string"
 FRONTEND_URL="http://localhost:3001"
 AI_SERVICE_URL="localhost:50051"
 
-# Twilio — leave empty in development, mock SMS is used automatically
+# SMS — set SMS_PROVIDER to "twilio" or "textbelt"
+SMS_PROVIDER="textbelt"
 TWILIO_ACCOUNT_SID="ACxxxxxxxxxx"
 TWILIO_AUTH_TOKEN="your_auth_token"
 TWILIO_PHONE_NUMBER="+1234567890"
+TEXTBELT_API_KEY="textbelt"
+
+# Redis (used by BullMQ job queue)
+REDIS_HOST="localhost"
+REDIS_PORT=6379
+REDIS_PASSWORD=""
 
 # Squad Payment Integration
 SQUAD_PRIVATE_KEY="your_private_key"
 SQUAD_PUBLIC_KEY="your_public_key"
 SQUAD_SECRET_KEY="your_secret_key"
+SQUAD_MERCHANT_ID="your_merchant_id"
+SQUAD_BASE_URL="https://sandbox-api-d.squadco.com"
+SQUAD_CALLBACK_URL="https://yourdomain.com/api/v1/webhooks/squad"
+BVN="00000000000"
+SQUAD_BENEFICIARY_ACCOUNT_NUMBER="your_account_number"
 ```
 
 ### 3. Database Setup
 
-```bash
-# Push schema to the database
-pnpm prisma db push
+Run pending migrations (never use `db push` in shared environments):
 
-# Generate Prisma client
+```bash
+pnpm prisma migrate deploy
+
+# Regenerate Prisma client after schema changes
 pnpm prisma generate
 ```
 
@@ -82,46 +100,46 @@ pnpm start:prod
 
 All routes are prefixed with `/api/v1`. Protected routes require a valid JWT cookie (set on login).
 
-### Auth — `POST /api/v1/auth/*`
+### Auth — `/api/v1/auth/*`
 
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
 | POST | `/auth/register` | — | Register with phone + password, sends OTP |
 | POST | `/auth/login` | — | Login, returns JWT cookie |
-| POST | `/auth/logout` | — | Clears JWT cookie |
+| POST | `/auth/logout` | JWT | Clears JWT cookie |
 | POST | `/auth/verify-otp` | — | Verify phone OTP |
-| POST | `/auth/resend-otp` | — | Resend OTP (rate limited: 3/60s) |
-| POST | `/auth/onboard` | JWT | Complete onboarding profile |
-| POST | `/auth/forgot-password` | — | Initiate password reset via OTP |
-| POST | `/auth/reset-password` | — | Set new password with OTP |
-| GET | `/auth/me` | JWT | Get current authenticated user |
+| POST | `/auth/resend-otp` | — | Resend OTP |
+| POST | `/auth/onboard` | JWT | Complete onboarding profile + create virtual account |
 
-Rate limits: register/login 5 req/60s · resend-otp 3 req/60s · global 10 req/60s
-
-### Users — `GET/PUT /api/v1/users/*`
+### Users — `/api/v1/users/*`
 
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
-| GET | `/users/profile` | JWT | Get full user profile |
-| PUT | `/users/profile` | JWT | Update profile fields |
+| GET | `/users/me` | JWT | Get current authenticated user |
+| PATCH | `/users/me` | JWT | Update profile fields |
 | POST | `/users/change-password` | JWT | Change password |
 
 ### Economic Profile — `/api/v1/economic-profile/*`
 
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
-| GET | `/economic-profile/my-profile` | JWT | Get user's economic profile and score |
-| PUT | `/economic-profile/skills` | JWT | Update skills and trade category |
-| POST | `/economic-profile/recalculate-score` | JWT | Trigger gRPC score recalculation |
+| GET | `/economic-profile/me` | JWT | Get user's economic profile and score |
+| PATCH | `/economic-profile/me/skills` | JWT | Update skills, trade category, years active |
+| POST | `/economic-profile/me/recalculate` | JWT | Trigger gRPC score recalculation |
 
 ### Opportunities — `/api/v1/opportunities/*`
 
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
-| POST | `/opportunities` | JWT | Post a new opportunity |
+| POST | `/opportunities` | JWT | Post a new opportunity (trader) |
 | GET | `/opportunities` | JWT | List all open opportunities |
-| GET | `/opportunities/:id` | JWT | Get opportunity details + applicants |
-| POST | `/opportunities/apply` | JWT | Apply for an opportunity |
+| GET | `/opportunities/my-posts` | JWT | Get jobs posted by the current user |
+| GET | `/opportunities/my-applications` | JWT | Get current user's job applications |
+| POST | `/opportunities/:id/apply` | JWT | Apply for an opportunity |
+| POST | `/opportunities/:id/approve` | JWT | Approve an applicant (poster only) |
+| POST | `/opportunities/:id/confirm` | JWT | Confirm job completion (poster only) |
+| POST | `/opportunities/:id/dispute` | JWT | Raise a dispute |
+| POST | `/opportunities/:id/mark-done` | JWT | Mark job as done (worker) |
 | POST | `/opportunities/match` | JWT | Get AI-matched opportunities (calls gRPC) |
 
 ### Transactions — `/api/v1/transactions/*`
@@ -129,24 +147,59 @@ Rate limits: register/login 5 req/60s · resend-otp 3 req/60s · global 10 req/6
 | Method | Route | Auth | Description |
 |--------|-------|------|-------------|
 | POST | `/transactions` | JWT | Record a new transaction |
-| GET | `/transactions` | JWT | List user's transactions (sent + received) |
+| GET | `/transactions` | JWT | List user's transactions |
 | GET | `/transactions/:id` | JWT | Get transaction details |
-| PATCH | `/transactions/:id/status` | JWT | Update status (triggers score recalc on success) |
+| PATCH | `/transactions/:id/status` | JWT | Update status |
+
+### Squad Payments — `/api/v1/squad/*`
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| GET | `/squad/banks` | JWT | List Nigerian banks |
+| POST | `/squad/virtual-accounts` | JWT | Create a virtual account |
+| POST | `/squad/payment-links` | JWT | Generate a payment link |
+| POST | `/squad/accounts/resolve` | JWT | Resolve bank account details |
+| POST | `/squad/transfers` | JWT | Initiate a transfer |
+| POST | `/squad/transfers/requery` | JWT | Requery transfer status |
+| GET | `/squad/transfers` | JWT | List transfers |
+| POST | `/webhooks/squad` | — | Squad payment webhook (validates signature) |
+
+### Vouch — `/api/v1/vouch/*`
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/vouch` | JWT | Vouch for another user |
+| GET | `/vouch/received` | JWT | Vouches received by current user |
+| GET | `/vouch/given` | JWT | Vouches given by current user |
+| DELETE | `/vouch/:id` | JWT | Remove a vouch |
+
+### Upload — `/api/v1/upload/*`
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| POST | `/upload` | — | Upload a file (returns URL path) |
+| DELETE | `/upload/:filename` | — | Delete an uploaded file |
+
+Uploaded files are served statically at `/api/v1/uploads/:filename`.
 
 ---
 
 ## Database Schema
 
-Five Prisma models:
+Core Prisma models:
 
 ```
 User (1:1) EconomicProfile
 User (1:many) Transaction
 User (1:many) Opportunity (posted)
 Opportunity (1:many) OpportunityApplication
+User (1:many) Vouch (giver)
+User (1:many) Vouch (receiver)
 ```
 
-Key fields on **EconomicProfile**: `identity_score`, `risk_tier`, `is_finance_eligible`, `max_recommended_loan`, `total_transaction_volume`, `vouch_count`, `verified_vouch_count`, `skills`, `trade_category`.
+Key fields on **User**: `phone`, `full_name`, `first_name`, `last_name`, `email`, `gender`, `dob`, `address`, `persona` (`trader` | `gig_worker`), `squad_customer_id`, `virtual_account_no`, `is_phone_verified`, `onboarding_complete`.
+
+Key fields on **EconomicProfile**: `identity_score`, `risk_tier`, `is_finance_eligible`, `max_recommended_loan`, `total_transaction_volume`, `vouch_count`, `verified_vouch_count`, `skills`, `trade_category`, `years_active`, `languages`.
 
 Full schema: [`prisma/schema.prisma`](./prisma/schema.prisma)
 
@@ -155,12 +208,34 @@ Full schema: [`prisma/schema.prisma`](./prisma/schema.prisma)
 ## Authentication Flow
 
 1. User registers with phone + password
-2. Password hashed with Argon2; 6-digit OTP generated and sent via Twilio
-3. JWT issued immediately (user can proceed to onboarding)
+2. Password hashed with Argon2; 6-digit OTP sent via SMS
+3. JWT issued immediately after registration
 4. OTP verification sets `is_phone_verified = true`
 5. JWT is stored as an httpOnly, sameSite strict cookie (7-day expiry)
 6. `JwtAuthGuard` validates the cookie on every protected route
-7. `JWT_SECRET` from env is used to sign/verify tokens
+
+> **Dev shortcut:** OTP `123456` is accepted universally in development (hackathon bypass).
+
+---
+
+## Onboarding & Virtual Account
+
+`POST /api/v1/auth/onboard` updates the user profile and bootstraps the economic profile. If identity fields are provided, it also creates a Squad virtual account and stores the returned `squad_customer_id` and `virtual_account_no` on the user record.
+
+Fields required for virtual account creation:
+
+```json
+{
+  "firstName": "Tunde",
+  "lastName": "Adebayo",
+  "email": "tunde@example.com",
+  "dob": "31/12/1990",
+  "gender": "1",
+  "address": "1 Market Road, Lagos"
+}
+```
+
+`dob` must be `DD/MM/YYYY`. `gender` is `"1"` (male) or `"2"` (female). BVN is read from the `BVN` environment variable — users do not provide it.
 
 ---
 
@@ -170,12 +245,16 @@ The backend calls the Python AI service via gRPC for two operations:
 
 | Method | gRPC Call | Triggered By |
 |--------|-----------|--------------|
-| Score recalculation | `ScoringService.CalculateScore` | `POST /economic-profile/recalculate-score`, successful transaction |
+| Score recalculation | `ScoringService.CalculateScore` | Successful transaction, explicit recalculate endpoint |
 | Opportunity matching | `MatchingService.MatchOpportunities` | `POST /opportunities/match` |
 
-The shared contract is [`proto/trace.proto`](./proto/trace.proto). The `GrpcModule` manages the connection to `AI_SERVICE_URL` (default `localhost:50051`). The `GrpcService` provides typed wrapper methods.
+The shared contract is [`proto/trace.proto`](./proto/trace.proto). The `GrpcModule` manages the connection to `AI_SERVICE_URL` (default `localhost:50051`).
 
-The AI service must be running before any gRPC-dependent endpoint is called.
+---
+
+## Rate Limiting
+
+Global throttle: **120 requests per 60 seconds** per IP (NestJS `ThrottlerGuard`). All endpoints share this limit. Adjust in `app.module.ts` if needed.
 
 ---
 
@@ -183,81 +262,20 @@ The AI service must be running before any gRPC-dependent endpoint is called.
 
 ```
 src/
-├── auth/                  # Registration, login, OTP, JWT strategy
+├── auth/                  # Registration, login, OTP, JWT strategy, onboarding
 ├── users/                 # Profile read/update, password change
 ├── economic-profile/      # Score profile, skills, recalculation
 ├── transactions/          # Transaction CRUD, status updates
-├── opportunities/         # Gig posting, applications, AI matching
+├── opportunities/         # Job posting, applications, AI matching, approval flow
+├── squad/                 # Squad payment integration, webhooks
+├── vouch/                 # Peer vouching system
+├── upload/                # File upload (Multer, disk storage)
+├── sms/                   # SMS abstraction (Twilio / Textbelt)
 ├── grpc/                  # gRPC client module and service
-├── sms/                   # Twilio SMS wrapper (mock in dev)
 ├── common/
 │   ├── filters/           # Global HTTP exception filter
 │   ├── interceptors/      # Response transform interceptor
-│   └── interfaces/
-├── app.module.ts
+│   └── utils/             # Gender mapping and other helpers
+├── app.module.ts          # Root module, BullMQ, ThrottlerGuard
 └── main.ts                # Bootstrap, CORS, global pipes/filters
 ```
-
-## Squad Integration
-
-The backend now includes a dedicated Squad module for the payment flows required by the Trace architecture.
-
-Implemented services:
-
-- Virtual account creation.
-- Payment link generation.
-- Bank account resolution.
-- Account transfer.
-- Transfer requery.
-- Transfer listing.
-- Nigerian bank list endpoint backed by a local JSON bank-code file.
-- Squad webhook signature validation.
-- Webhook transaction persistence.
-- Economic profile transaction-stat updates after successful Squad payments.
-- Score recalculation trigger after successful Squad webhook events.
-
-## Squad Endpoints
-
-All routes below are under `/api/v1`.
-
-```text
-GET  /squad/banks
-POST /squad/virtual-accounts
-POST /squad/payment-links
-POST /squad/accounts/resolve
-POST /squad/transfers
-POST /squad/transfers/requery
-GET  /squad/transfers
-POST /webhooks/squad
-```
-
-Authenticated Squad routes use the same JWT auth guard as the rest of the backend. The webhook route is public and validates `x-squad-encrypted-body`.
-
-## Onboarding and Virtual Accounts
-
-`POST /api/v1/auth/onboard` updates the user profile and creates the initial economic profile. If the request includes Squad-required identity fields, it also creates a Squad virtual account and stores the returned customer identifier/account number on the user record.
-
-Required fields for virtual account creation:
-
-```json
-{
-  "email": "user@example.com",
-  "bvn": "22222222222",
-  "dob": "31/12/1990",
-  "address": "1 Market Road, Lagos",
-  "gender": "1",
-  "firstName": "Tunde",
-  "lastName": "Adebayo"
-}
-```
-
-## Verification
-
-Build the backend:
-
-```bash
-cd backend
-npm.cmd run build
-```
-
-On Windows PowerShell, `npm.cmd` avoids execution-policy issues with `npm.ps1`.

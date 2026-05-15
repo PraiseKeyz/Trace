@@ -432,12 +432,6 @@ export default function MyJobsPage() {
           <Briefcase className="h-12 w-12 text-slate-300 mb-4" />
           <p className="font-semibold text-slate-500">No jobs posted yet</p>
           <p className="text-sm text-slate-400 mt-1 mb-5">Post your first job and find trusted workers nearby</p>
-          <Button asChild>
-            <Link href="/dashboard/post-job">
-              <Plus size={16} />
-              Post a Job
-            </Link>
-          </Button>
         </div>
       ) : (
         <>

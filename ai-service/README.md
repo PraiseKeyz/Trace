@@ -1,6 +1,6 @@
 # Trace — AI Microservice
 
-The AI/ML layer for the Trace platform. Built with Python and FastAPI, this service handles identity score calculation, opportunity matching, and market intelligence generation. It is called internally by the NestJS backend over both gRPC and HTTP.
+The AI/ML layer for the Trace platform. Built with Python and FastAPI, this service handles economic identity score calculation, opportunity matching, and market intelligence generation. It is called internally by the NestJS backend over both gRPC (port 50051) and HTTP (port 8000).
 
 ---
 
@@ -10,11 +10,10 @@ The AI/ML layer for the Trace platform. Built with Python and FastAPI, this serv
 |--|--|
 | Framework | FastAPI |
 | Language | Python 3.10+ |
-| Embeddings | AfroXLM-R (`Davlan/afro-xlmr-large`) — supports 17 African languages |
+| Embeddings | SentenceTransformers (`sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`) — multilingual, 50+ languages including major African languages |
 | ML | scikit-learn, sentence-transformers, PyTorch |
 | gRPC Server | grpcio + grpcio-tools |
 | Database | PostgreSQL (SQLAlchemy async) |
-| Cache | Redis |
 | Server | Uvicorn |
 
 ---
@@ -40,12 +39,7 @@ Create `ai-service/.env`:
 
 ```env
 DATABASE_URL="postgresql+asyncpg://user:pass@host:5432/db"
-REDIS_URL="redis://localhost:6379/0"
-BACKEND_URL="http://localhost:5001"
-
-# Embedding model (downloads on first run, ~1.2GB)
-EMBEDDING_MODEL_NAME="Davlan/afro-xlmr-large"
-MODEL_DEVICE="cpu"   # or "cuda" if GPU available
+PORT=8000
 ```
 
 ### 4. Run
@@ -82,7 +76,7 @@ Calculates a user's Economic Identity Score (0–1000) from four weighted signal
 | Platform Activity | 20% | Gigs completed, logins, applications |
 | Profile Completeness | 15% | Identity depth and verification |
 
-Output includes `identity_score`, per-component scores, `risk_tier`, and `max_recommended_loan`.
+Output includes `identity_score`, per-component breakdown, `risk_tier`, and `max_recommended_loan`.
 
 **Risk Tiers:**
 
@@ -104,7 +98,7 @@ Ranks open opportunities for a given user using:
 | Historical Success Rate | 20% |
 | Language Match | 15% |
 
-Skill similarity is computed using AfroXLM-R embeddings, enabling semantic understanding across 17 African languages. Proximity is scored via Haversine distance (max 100 km radius). Results are returned as a ranked list with per-opportunity match scores.
+Skill similarity is computed using multilingual sentence embeddings, enabling semantic matching across languages. Proximity is scored via Haversine distance (max 100 km radius). Results are returned as a ranked list with per-opportunity match scores.
 
 ### 3. Intelligence Engine
 
@@ -121,12 +115,12 @@ Generates market intelligence for trade categories by location:
 | Method | Route | Description |
 |--------|-------|-------------|
 | GET | `/` | Service info |
-| GET | `/health` | Health check (model, DB, Redis status) |
-| POST | `/score/calculate` | Calculate identity score |
-| POST | `/match/opportunities` | Match user to opportunities |
+| GET | `/health` | Health check (model, DB status) |
+| POST | `/score/calculate` | Calculate identity score for a user |
+| POST | `/match/opportunities` | Match user to open opportunities |
 | POST | `/match/embed` | Get text embeddings |
-| POST | `/match/skill-similarity` | Compare user skills to requirements |
-| POST | `/intelligence/generate` | Generate market intelligence |
+| POST | `/match/skill-similarity` | Compare user skills to job requirements |
+| POST | `/intelligence/generate` | Generate market intelligence for a trade category |
 
 ---
 
@@ -138,7 +132,7 @@ Services exposed:
 - `ScoringService.CalculateScore` — called by backend on score recalculation
 - `MatchingService.MatchOpportunities` — called by backend on work-matcher requests
 
-The proto file is identical between `backend/proto/trace.proto` and `ai-service/proto/trace.proto`.
+The proto file is kept in sync between `backend/proto/trace.proto` and `ai-service/proto/trace.proto`.
 
 ---
 
@@ -146,26 +140,25 @@ The proto file is identical between `backend/proto/trace.proto` and `ai-service/
 
 ```
 ai-service/
-├── main.py                   # FastAPI app, lifespan (model loading)
-├── grpc_server.py            # Async gRPC server
-├── run_services.py           # Runs FastAPI + gRPC concurrently
+├── main.py                     # FastAPI app, lifespan (model loading)
+├── grpc_server.py              # Async gRPC server
+├── run_services.py             # Runs FastAPI + gRPC concurrently
 ├── core/
-│   ├── config.py             # Pydantic Settings — all env vars + model config
-│   ├── embeddings.py         # AfroXLM-R loading, LRU cache, similarity
-│   ├── database.py           # SQLAlchemy async engine
-│   ├── cache.py              # Redis connection pool
-│   ├── models.py             # SQLAlchemy ORM models
-│   └── schemas.py            # Pydantic request/response schemas
+│   ├── config.py               # Pydantic Settings — env vars + model config
+│   ├── embeddings.py           # Embedding model loading, similarity helpers
+│   ├── database.py             # SQLAlchemy async engine + session
+│   ├── models.py               # SQLAlchemy ORM models
+│   └── schemas.py              # Pydantic request/response schemas
 ├── engines/
-│   ├── identity_engine.py    # Score calculation
-│   ├── matching_engine.py    # Opportunity ranking
-│   ├── intelligence_engine.py # Market intelligence
-│   └── retraining_engine.py  # Periodic model retraining
+│   ├── identity_engine.py      # Score calculation
+│   ├── matching_engine.py      # Opportunity ranking
+│   ├── intelligence_engine.py  # Market intelligence
+│   └── retraining_engine.py    # Periodic model retraining
 ├── api/
-│   ├── score.py              # /score/* routes
-│   ├── match.py              # /match/* routes
-│   └── intelligence.py       # /intelligence/* routes
-├── proto/trace.proto         # gRPC service definitions
+│   ├── score.py                # /score/* routes
+│   ├── match.py                # /match/* routes
+│   └── intelligence.py         # /intelligence/* routes
+├── proto/trace.proto           # gRPC service definitions (shared with backend)
 ├── requirements.txt
 └── Dockerfile
 ```
@@ -174,6 +167,6 @@ ai-service/
 
 ## Notes
 
-- AfroXLM-R downloads automatically on first run (~1.2 GB). Set `MODEL_DEVICE=cuda` if a GPU is available to speed up embedding generation.
-- Redis is required. The service will fail to start without a reachable Redis instance.
-- The gRPC server must be reachable by the backend before any scoring or matching endpoints are called.
+- The embedding model downloads automatically on first run. Set `MODEL_DEVICE=cuda` if a GPU is available.
+- The gRPC server must be reachable by the NestJS backend before scoring or matching endpoints are called.
+- In Docker Compose, the AI service exposes both port `8000` (HTTP) and port `50051` (gRPC).
