@@ -31,6 +31,9 @@ interface OnboardingPayload {
   firstName?: string
   lastName?: string
   email?: string
+  gender?: string
+  dob?: string
+  address?: string
   state?: string
   city?: string
   latitude?: number

@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Briefcase, MapPin, Wifi, WifiOff, Search, X, Loader2, CheckCircle2,
   Sparkles, ChevronLeft, ChevronRight, ClipboardList, Clock,
@@ -19,6 +20,7 @@ import {
   type MyApplication,
 } from '@/lib/api/hooks/use-opportunities'
 import { useEconomicProfile } from '@/lib/api/hooks/use-economic-profile'
+import { useAuth } from '@/context/auth-context'
 
 const PAGE_LIMIT = 20
 
@@ -461,6 +463,14 @@ function MyApplicationsTab() {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function WorkMatcherPage() {
+  const { user, isLoading: authLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (authLoading) return
+    if (user && user.persona !== 'gig_worker') router.replace('/dashboard')
+  }, [user, authLoading, router])
+
   const [tab, setTab] = useState<'find' | 'applications'>('find')
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
@@ -523,6 +533,8 @@ export default function WorkMatcherPage() {
       },
     })
   }
+
+  if (authLoading || !user || user.persona !== 'gig_worker') return null
 
   return (
     <div className="space-y-6">

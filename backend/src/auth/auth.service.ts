@@ -131,7 +131,7 @@ export class AuthService {
     const firstName = dto.firstName ?? derivedFirstName;
     const lastName = dto.lastName ?? restName.join(' ');
 
-    if (dto.email && dto.bvn && dto.dob && dto.address && dto.gender && firstName && lastName) {
+    if (dto.email && dto.dob && dto.address && dto.gender && firstName && lastName) {
       virtualAccount = await this.squadService.createVirtualAccountForUser(userId, {
         customer_identifier: userId,
         first_name: firstName,

@@ -3,9 +3,12 @@
 import Link from 'next/link'
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
+import { format } from 'date-fns'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { ArrowRight, ArrowLeft, User, MapPin, Briefcase, CheckCircle, ShoppingBag, Languages } from 'lucide-react'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { ArrowRight, ArrowLeft, User, MapPin, Briefcase, CheckCircle, ShoppingBag, Languages, CalendarIcon } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
 import { Country, State, City } from 'country-state-city'
 import { cn } from '@/lib/utils'
@@ -129,6 +132,9 @@ interface FormData {
   firstName: string
   lastName: string
   email: string
+  gender: '1' | '2' | ''
+  dob: Date | null
+  address: string
   countryCode: string   // ISO code e.g. "NG"
   stateCode: string     // ISO code e.g. "LA"
   city: string
@@ -141,6 +147,7 @@ interface FormData {
 
 const INITIAL: FormData = {
   firstName: '', lastName: '', email: '',
+  gender: '', dob: null, address: '',
   countryCode: '', stateCode: '', city: '',
   languages: [],
   persona: '', tradeCategory: '', skills: [], yearsActive: '',
@@ -239,6 +246,16 @@ export default function OnboardingPage() {
     setErrors(p => { const n = { ...p }; delete n.languages; return n })
   }
 
+  const setGender = (val: '1' | '2') => {
+    setForm(p => ({ ...p, gender: val }))
+    setErrors(p => { const n = { ...p }; delete n.gender; return n })
+  }
+
+  const setDob = (d: Date | undefined) => {
+    setForm(p => ({ ...p, dob: d ?? null }))
+    setErrors(p => { const n = { ...p }; delete n.dob; return n })
+  }
+
   const inputClass = (field: keyof FormData) =>
     `h-12 bg-white border-trace-border focus-visible:border-slate-950 focus-visible:ring-slate-950/20${errors[field] ? ' border-red-400' : ''}`
 
@@ -253,8 +270,10 @@ export default function OnboardingPage() {
     if (step === 'personal') {
       if (!form.firstName.trim()) e.firstName = 'First name is required'
       if (!form.lastName.trim()) e.lastName = 'Last name is required'
-      if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
-        e.email = 'Enter a valid email address'
+      if (!form.email.trim()) e.email = 'Email is required'
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email address'
+      if (!form.gender) e.gender = 'Please select your gender'
+      if (!form.dob) e.dob = 'Please select your date of birth'
     }
     if (step === 'location') {
       if (!form.countryCode) e.countryCode = 'Please select your country'
@@ -299,12 +318,19 @@ export default function OnboardingPage() {
       const cityTrimmed = form.city.trim()
       const cityLabel = cityTrimmed !== '' ? cityTrimmed : (selectedState?.name ?? '')
 
+      const dobFormatted = form.dob
+        ? `${String(form.dob.getDate()).padStart(2, '0')}/${String(form.dob.getMonth() + 1).padStart(2, '0')}/${form.dob.getFullYear()}`
+        : undefined
+
       await completeOnboarding({
         persona: form.persona || undefined,
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),
         fullName: `${form.firstName.trim()} ${form.lastName.trim()}`,
         email: form.email.trim() || undefined,
+        gender: form.gender || undefined,
+        dob: dobFormatted,
+        address: form.address.trim() || `${cityLabel}, ${stateLabel}`.replace(/^, /, '').replace(/, $/, '') || undefined,
         state: stateLabel,
         city: cityLabel,
         languages: form.languages,
@@ -404,12 +430,59 @@ export default function OnboardingPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-foreground mb-2">
-                    Email Address <span className="font-normal text-muted-foreground">(optional)</span>
-                  </label>
+                  <label className="block text-sm font-bold text-foreground mb-2">Email Address</label>
                   <Input type="email" placeholder="you@example.com" value={form.email} onChange={set('email')} className={inputClass('email')} />
                   {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
-                  <p className="text-xs text-muted-foreground mt-1.5">Used for financial product notifications</p>
+                  <p className="text-xs text-muted-foreground mt-1.5">Required to create your virtual account</p>
+                </div>
+
+                {/* Gender */}
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Gender</label>
+                  <select
+                    value={form.gender}
+                    onChange={e => setGender(e.target.value as '1' | '2')}
+                    className={selectClass(!!errors.gender)}
+                  >
+                    <option value="">Select your gender</option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                  </select>
+                  {errors.gender && <p className="text-xs text-red-500 mt-1">{errors.gender}</p>}
+                </div>
+
+                {/* Date of Birth */}
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">Date of Birth</label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className={cn(
+                          'w-full h-12 justify-start text-left font-normal border-trace-border hover:bg-trace-surface',
+                          !form.dob && 'text-muted-foreground',
+                          errors.dob && 'border-red-400',
+                        )}
+                      >
+                        <CalendarIcon size={16} className="mr-2 flex-shrink-0 text-slate-400" />
+                        {form.dob ? format(form.dob, 'dd MMM yyyy') : 'Select your date of birth'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={form.dob ?? undefined}
+                        onSelect={setDob}
+                        captionLayout="dropdown"
+                        fromYear={1940}
+                        toYear={new Date().getFullYear() - 16}
+                        defaultMonth={form.dob ?? new Date(1990, 0)}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  {errors.dob && <p className="text-xs text-red-500 mt-1">{errors.dob}</p>}
+                  <p className="text-xs text-muted-foreground mt-1.5">You must be at least 16 years old</p>
                 </div>
               </div>
             )}
@@ -417,6 +490,20 @@ export default function OnboardingPage() {
             {/* ── LOCATION ── */}
             {step === 'location' && (
               <div className="space-y-5 animate-in fade-in duration-300">
+
+                {/* Street Address */}
+                <div>
+                  <label className="block text-sm font-bold text-foreground mb-2">
+                    Street Address <span className="font-normal text-muted-foreground">(optional)</span>
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="123 Market Street, Lagos"
+                    value={form.address}
+                    onChange={set('address')}
+                    className={inputClass('address')}
+                  />
+                </div>
 
                 {/* Country */}
                 <div>
