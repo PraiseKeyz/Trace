@@ -1,5 +1,5 @@
 import logging
-import os
+import os           
 import sys
 from concurrent import futures
 from typing import List
@@ -7,7 +7,7 @@ from typing import List
 import grpc
 from sqlalchemy import create_engine, text
 
-from core.config import settings
+from core.config import settings, sync_database_url
 from core.schemas import MatchRequest, UserLocation, OpportunityData
 from engines import calculate_identity_score_from_subscores
 from engines.matching_engine import match_opportunities
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # gRPC handlers run in a ThreadPoolExecutor — asyncpg (async-only) cannot be
 # used there. We create a separate synchronous engine using psycopg2 which
 # IS installed (psycopg2-binary in requirements.txt).
-_SYNC_DB_URL = settings.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql://")
+_SYNC_DB_URL = sync_database_url()
 _sync_engine = create_engine(
     _SYNC_DB_URL,
     pool_size=5,

@@ -25,12 +25,12 @@ async def lifespan(app: FastAPI):
     logger.info(f"Embedding model: {settings.EMBEDDING_MODEL_NAME}")
     logger.info(f"Device: {settings.MODEL_DEVICE}")
 
-    # Pre-load the AfroXLM-R model at startup to avoid first-request latency
+    # Pre-load the embedding model at startup to avoid first-request latency
     try:
         from core.embeddings import get_embedding_engine
         engine = get_embedding_engine()
         if engine.is_multilingual:
-            logger.info("✅ AfroXLM-R model loaded — multilingual matching enabled")
+            logger.info("✅ Multilingual model loaded — multilingual matching enabled")
             logger.info(
                 "   Supported languages: Afrikaans, Amharic, Hausa, Igbo, "
                 "Malagasy, Chichewa, Oromo, Pidgin, Kinyarwanda, Kirundi, "
@@ -60,7 +60,7 @@ app = FastAPI(
     description=(
         "AI/ML intelligence engine for the Trace economic platform. "
         "Provides identity scoring, multilingual opportunity matching "
-        "(powered by AfroXLM-R for 17 African languages), and market "
+        "(powered by multilingual sentence embeddings), and market "
         "intelligence generation. Called internally by the Node.js backend."
     ),
     version=settings.APP_VERSION,

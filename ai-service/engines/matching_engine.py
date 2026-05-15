@@ -201,7 +201,7 @@ def match_opportunities(
     matched.sort(key=lambda m: m.match_score, reverse=True)
     matched = matched[:user.max_results]
 
-    model_type = "afro_xlmr" if engine.is_multilingual else "fallback_tfidf"
+    model_type = "sentence_transformer" if engine.is_multilingual else "fallback_tfidf"
 
     logger.info(
         f"Matching for user {user.user_id}: "

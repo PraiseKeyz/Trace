@@ -1,11 +1,11 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import sessionmaker, Session
-from core.config import settings
+from core.config import settings, async_database_url, sync_database_url
 
 # Async engine — uses asyncpg driver (for FastAPI routes)
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    async_database_url(),
     echo=settings.DEBUG_MODE,
     pool_size=10,
     max_overflow=20,
@@ -20,7 +20,7 @@ async_session = async_sessionmaker(
 )
 
 # Sync engine — uses psycopg2 driver (for gRPC handlers running in ThreadPoolExecutor)
-_sync_url = settings.DATABASE_URL.replace("postgresql+asyncpg://", "postgresql://")
+_sync_url = sync_database_url()
 sync_engine = create_engine(
     _sync_url,
     echo=settings.DEBUG_MODE,
@@ -44,4 +44,3 @@ async def get_db() -> AsyncSession:
 def get_sync_db() -> Session:
     """Returns a sync database session for gRPC handlers."""
     return sync_session()
-
