@@ -1,23 +1,24 @@
-/*
-  Warnings:
-
-  - The `status` column on the `opportunity_applications` table would be dropped and recreated. This will lead to data loss if there is data in the column.
-
-*/
 -- CreateEnum
-CREATE TYPE "OpportunityApplicationStatus" AS ENUM ('pending', 'accepted', 'rejected');
+DO $$
+BEGIN
+  CREATE TYPE "OpportunityApplicationStatus" AS ENUM ('pending', 'accepted', 'rejected');
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- AlterTable
-ALTER TABLE "opportunities" ADD COLUMN     "auto_release_at" TIMESTAMP(3),
-ADD COLUMN     "escrow_amount" DECIMAL(15,2),
-ADD COLUMN     "funds_locked_at" TIMESTAMP(3),
-ADD COLUMN     "worker_done_at" TIMESTAMP(3);
+ALTER TABLE "opportunities" ADD COLUMN IF NOT EXISTS "auto_release_at" TIMESTAMP(3),
+ADD COLUMN IF NOT EXISTS "escrow_amount" DECIMAL(15,2),
+ADD COLUMN IF NOT EXISTS "funds_locked_at" TIMESTAMP(3),
+ADD COLUMN IF NOT EXISTS "worker_done_at" TIMESTAMP(3);
 
 -- AlterTable
-ALTER TABLE "opportunity_applications" ADD COLUMN     "cover_note" TEXT,
-DROP COLUMN "status",
-ADD COLUMN     "status" "OpportunityApplicationStatus" NOT NULL DEFAULT 'pending';
+ALTER TABLE "opportunity_applications" ADD COLUMN IF NOT EXISTS "cover_note" TEXT,
+ALTER COLUMN "status" DROP DEFAULT,
+ALTER COLUMN "status" TYPE "OpportunityApplicationStatus"
+  USING COALESCE("status", 'pending')::"OpportunityApplicationStatus",
+ALTER COLUMN "status" SET DEFAULT 'pending';
 
 -- AlterTable
-ALTER TABLE "users" ADD COLUMN     "dob" VARCHAR(10),
-ADD COLUMN     "gender" VARCHAR(10);
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "dob" VARCHAR(10),
+ADD COLUMN IF NOT EXISTS "gender" VARCHAR(10);

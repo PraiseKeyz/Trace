@@ -57,11 +57,18 @@ export class EconomicProfileService {
       profile_completeness_score: Number(profile.profile_completeness),
     });
 
-    const identityScore = result.identity_score ?? result.identityScore;
-    const riskTier = result.risk_tier ?? result.riskTier;
+    const riskTierFromResponse = result.risk_tier ?? result.riskTier;
+    const identityScore = result.identity_score ?? result.identityScore ?? (
+      riskTierFromResponse ? 0 : undefined
+    );
+    const riskTier = riskTierFromResponse ?? (
+      identityScore === undefined ? undefined : this.riskTierFromScore(identityScore)
+    );
 
     if (identityScore === undefined || !riskTier) {
-      throw new BadGatewayException('AI scoring service returned an invalid score response');
+      throw new BadGatewayException(
+        `AI scoring service returned an invalid score response: ${JSON.stringify(result)}`,
+      );
     }
 
     // Determine finance eligibility based on risk tier
@@ -78,5 +85,12 @@ export class EconomicProfileService {
         last_active: new Date(),
       },
     });
+  }
+
+  private riskTierFromScore(score: number): string {
+    if (score >= 75) return 'Very Low';
+    if (score >= 55) return 'Low';
+    if (score >= 30) return 'Medium';
+    return 'High';
   }
 }

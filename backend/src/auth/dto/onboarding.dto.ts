@@ -56,9 +56,9 @@ export class OnboardingDto {
   @IsOptional()
   address?: string;
 
-  @IsIn(['1', '2'])
+  @IsIn(['male', 'female', '1', '2'])
   @IsOptional()
-  gender?: '1' | '2';
+  gender?: 'male' | 'female' | '1' | '2';
 
   @IsString()
   @IsOptional()

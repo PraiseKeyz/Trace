@@ -66,7 +66,9 @@ export class GrpcService implements OnModuleInit {
 
   async scoreUser(request: ScoreRequest): Promise<ScoreResponse> {
     try {
-      return await firstValueFrom(this.scoringService.ScoreUser(request));
+      const result = await firstValueFrom(this.scoringService.ScoreUser(request));
+      this.logger.debug(`gRPC ScoreUser response: ${JSON.stringify(result)}`);
+      return result;
     } catch (error) {
       this.logger.error('gRPC ScoreUser failed', error);
       throw error;
