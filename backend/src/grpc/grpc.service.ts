@@ -14,9 +14,12 @@ export interface ScoreRequest {
 }
 
 export interface ScoreResponse {
-  user_id: string;
-  identity_score: number;
-  risk_tier: string;
+  user_id?: string;
+  userId?: string;
+  identity_score?: number;
+  identityScore?: number;
+  risk_tier?: string;
+  riskTier?: string;
 }
 
 export interface MatchRequest {

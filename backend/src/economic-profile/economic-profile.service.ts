@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadGatewayException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import { GrpcService } from '@/grpc/grpc.service';
 import { UpdateSkillsDto } from './dto/update-skills.dto';
@@ -57,15 +57,23 @@ export class EconomicProfileService {
       profile_completeness_score: Number(profile.profile_completeness),
     });
 
+    const identityScore = result.identity_score ?? result.identityScore;
+    const riskTier = result.risk_tier ?? result.riskTier;
+
+    if (identityScore === undefined || !riskTier) {
+      throw new BadGatewayException('AI scoring service returned an invalid score response');
+    }
+
     // Determine finance eligibility based on risk tier
-    const isFinanceEligible = ['Very Low', 'Low'].includes(result.risk_tier);
+    const normalizedRiskTier = riskTier.toLowerCase().replace(/_/g, ' ');
+    const isFinanceEligible = ['very low', 'low'].includes(normalizedRiskTier);
 
     // Persist the updated scores from the AI
     return this.prisma.economicProfile.update({
       where: { user_id: userId },
       data: {
-        identity_score: Math.round(result.identity_score),
-        risk_tier: result.risk_tier.toLowerCase(),
+        identity_score: Math.round(identityScore),
+        risk_tier: normalizedRiskTier,
         is_finance_eligible: isFinanceEligible,
         last_active: new Date(),
       },
