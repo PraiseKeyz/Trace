@@ -27,11 +27,14 @@ class Settings(BaseSettings):
     BACKEND_URL: str = "http://localhost:3000"
 
     # ── ML / NLP ─────────────────────────────────────────────────
-    # AfroXLM-R model for multilingual African language embeddings
-    EMBEDDING_MODEL_NAME: str = "Davlan/afro-xlmr-large"
-    EMBEDDING_DIMENSION: int = 1024  # afro-xlmr-large output dim
+    # SentenceTransformers model for multilingual embeddings.
+    # This is much lighter than Davlan/afro-xlmr-large and includes
+    # SentenceTransformer metadata, so startup/downloads are friendlier.
+    EMBEDDING_MODEL_NAME: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    EMBEDDING_DIMENSION: int = 384  # MiniLM fallback hashing dimension
     EMBEDDING_CACHE_SIZE: int = 10_000  # LRU cache entries for embeddings
     MODEL_DEVICE: str = "cpu"  # "cpu" or "cuda"
+    HF_TOKEN: Optional[str] = None
 
     # ── Score Weights (Identity Engine) ──────────────────────────
     WEIGHT_TRANSACTION_HISTORY: float = 0.40
@@ -61,6 +64,30 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
+        extra = "ignore"
 
 
 settings = Settings()
+
+
+def normalize_postgres_url(url: str) -> str:
+    """Normalize provider URLs like postgres:// to SQLAlchemy's postgresql://."""
+    if url.startswith("postgres://"):
+        return "postgresql://" + url.removeprefix("postgres://")
+    return url
+
+
+def async_database_url(url: str | None = None) -> str:
+    """Return a PostgreSQL URL suitable for SQLAlchemy's asyncpg engine."""
+    normalized = normalize_postgres_url(url or settings.DATABASE_URL)
+    if normalized.startswith("postgresql+asyncpg://"):
+        return normalized
+    if normalized.startswith("postgresql://"):
+        return "postgresql+asyncpg://" + normalized.removeprefix("postgresql://")
+    return normalized
+
+
+def sync_database_url(url: str | None = None) -> str:
+    """Return a PostgreSQL URL suitable for SQLAlchemy's sync psycopg2 engine."""
+    normalized = normalize_postgres_url(url or settings.DATABASE_URL)
+    return normalized.replace("postgresql+asyncpg://", "postgresql://", 1)

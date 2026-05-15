@@ -21,7 +21,7 @@ def _load_model():
         from sentence_transformers import SentenceTransformer
         import torch
 
-        logger.info(f"Loading AfroXLM-R model: {settings.EMBEDDING_MODEL_NAME}")
+        logger.info(f"Loading embedding model: {settings.EMBEDDING_MODEL_NAME}")
         logger.info(f"Device: {settings.MODEL_DEVICE}")
 
         _embedding_model = SentenceTransformer(
@@ -33,14 +33,14 @@ def _load_model():
         test_embedding = _embedding_model.encode("test", convert_to_numpy=True)
         actual_dim = test_embedding.shape[0]
         logger.info(
-            f"AfroXLM-R loaded successfully. "
+            f"Embedding model loaded successfully. "
             f"Embedding dimension: {actual_dim}"
         )
 
         return _embedding_model
 
     except Exception as e:
-        logger.error(f"Failed to load AfroXLM-R model: {e}")
+        logger.error(f"Failed to load embedding model: {e}")
         logger.warning("Falling back to TF-IDF based similarity (no multilingual support)")
         _embedding_model = None
         return None

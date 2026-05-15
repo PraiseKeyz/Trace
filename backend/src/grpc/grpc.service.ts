@@ -14,9 +14,12 @@ export interface ScoreRequest {
 }
 
 export interface ScoreResponse {
-  user_id: string;
-  identity_score: number;
-  risk_tier: string;
+  user_id?: string;
+  userId?: string;
+  identity_score?: number;
+  identityScore?: number;
+  risk_tier?: string;
+  riskTier?: string;
 }
 
 export interface MatchRequest {
@@ -63,7 +66,9 @@ export class GrpcService implements OnModuleInit {
 
   async scoreUser(request: ScoreRequest): Promise<ScoreResponse> {
     try {
-      return await firstValueFrom(this.scoringService.ScoreUser(request));
+      const result = await firstValueFrom(this.scoringService.ScoreUser(request));
+      this.logger.debug(`gRPC ScoreUser response: ${JSON.stringify(result)}`);
+      return result;
     } catch (error) {
       this.logger.error('gRPC ScoreUser failed', error);
       throw error;

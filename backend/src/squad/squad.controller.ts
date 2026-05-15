@@ -10,6 +10,7 @@ import { RequeryTransferDto } from './dto/requery-transfer.dto';
 import { ListTransfersDto } from './dto/list-transfers.dto';
 import { RefundDto } from './dto/refund.dto';
 import { QueryVaTransactionsDto } from './dto/query-va-transactions.dto';
+import { toSquadGender } from '@/common/utils/gender.util';
 
 @Controller('squad')
 export class SquadController {
@@ -44,14 +45,7 @@ export class SquadController {
       throw new BadRequestException('Please set your gender on your profile before generating a virtual account');
     }
 
-    const genderMap: Record<string, '1' | '2'> = {
-      male: '1', m: '1', '1': '1',
-      female: '2', f: '2', '2': '2',
-    };
-    const gender = genderMap[user.gender.toLowerCase()];
-    if (!gender) {
-      throw new BadRequestException(`Unrecognised gender value '${user.gender}' on your profile`);
-    }
+    const gender = toSquadGender(user.gender);
 
     const address = [user.city, user.state].filter(Boolean).join(', ') || 'Nigeria';
     const [firstName, ...rest] = (user.full_name ?? '').trim().split(/\s+/);

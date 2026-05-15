@@ -1,13 +1,15 @@
-/*
-  Warnings:
-
-  - The `role` column on the `users` table would be dropped and recreated. This will lead to data loss if there is data in the column.
-
-*/
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('user', 'admin');
+DO $$
+BEGIN
+  CREATE TYPE "Role" AS ENUM ('user', 'admin');
+EXCEPTION
+  WHEN duplicate_object THEN NULL;
+END $$;
 
 -- AlterTable
-ALTER TABLE "users" ADD COLUMN     "persona" VARCHAR(20),
-DROP COLUMN "role",
-ADD COLUMN     "role" "Role"[] DEFAULT ARRAY['user']::"Role"[];
+ALTER TABLE "users"
+ADD COLUMN IF NOT EXISTS "persona" VARCHAR(20),
+ALTER COLUMN "role" DROP DEFAULT,
+ALTER COLUMN "role" TYPE "Role"[]
+  USING COALESCE("role", ARRAY[]::TEXT[])::"Role"[],
+ALTER COLUMN "role" SET DEFAULT ARRAY['user']::"Role"[];

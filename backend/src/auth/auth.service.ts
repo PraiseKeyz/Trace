@@ -8,6 +8,7 @@ import { randomInt } from 'crypto';
 import { OnboardingDto } from './dto/onboarding.dto';
 import { SmsService } from '@/sms/sms.service';
 import { SquadService } from '@/squad/squad.service';
+import { toSquadGender } from '@/common/utils/gender.util';
 
 @Injectable()
 export class AuthService {
@@ -141,7 +142,7 @@ export class AuthService {
         bvn: process.env.BVN!,
         dob: dto.dob,
         address: dto.address,
-        gender: dto.gender,
+        gender: toSquadGender(dto.gender),
         beneficiary_account: process.env.SQUAD_BENEFICIARY_ACCOUNT_NUMBER!,
       });
     }
