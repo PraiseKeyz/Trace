@@ -29,6 +29,9 @@ export class UsersService {
         ...(dto.languages !== undefined && { languages: dto.languages }),
         ...(dto.preferred_language !== undefined && { preferred_language: dto.preferred_language }),
         ...(dto.data_sharing_consent !== undefined && { data_sharing_consent: dto.data_sharing_consent }),
+        ...(dto.gender !== undefined && { gender: dto.gender }),
+        ...(dto.dob !== undefined && { dob: dto.dob }),
+        ...(dto.persona !== undefined && { persona: dto.persona }),
       },
       select: SafeUserSelect,
     });

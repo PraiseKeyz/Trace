@@ -13,14 +13,39 @@ import { cn } from '@/lib/utils'
 
 // ── Profile Tab ───────────────────────────────────────────────────────────────
 
+const LANGUAGES = ['en','fr','ar','pt','yo','ha','ig','pcm','wo','tw','ff','ee','sw','am','om','so','zu','xh','af','sn','st','ln']
+const LANGUAGE_LABELS: Record<string, string> = {
+  en:'English', fr:'French', ar:'Arabic', pt:'Portuguese', yo:'Yoruba', ha:'Hausa',
+  ig:'Igbo', pcm:'Naija (Pidgin)', wo:'Wolof', tw:'Twi / Akan', ff:'Fula', ee:'Ewe',
+  sw:'Swahili', am:'Amharic', om:'Oromo', so:'Somali', zu:'Zulu', xh:'Xhosa',
+  af:'Afrikaans', sn:'Shona', st:'Sesotho', ln:'Lingala',
+}
+
+interface ProfileForm {
+  full_name: string
+  email: string
+  state: string
+  city: string
+  gender: '1' | '2' | ''
+  dob: string
+  persona: 'trader' | 'gig_worker' | ''
+  languages: string[]
+  preferred_language: string
+  data_sharing_consent: boolean
+}
+
 function ProfileTab() {
   const { data: user, isLoading } = useCurrentUser()
   const qc = useQueryClient()
   const [editMode, setEditMode] = useState(false)
-  const [form, setForm] = useState({ full_name: '', email: '', state: '', city: '' })
+  const [form, setForm] = useState<ProfileForm>({
+    full_name: '', email: '', state: '', city: '',
+    gender: '', dob: '', persona: '',
+    languages: [], preferred_language: '', data_sharing_consent: false,
+  })
 
   const { mutate: save, isPending: saving } = useMutation({
-    mutationFn: (data: typeof form) => api.patch('/users/me', data),
+    mutationFn: (data: Partial<ProfileForm>) => api.patch('/users/me', data),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: currentUserKey })
       toast.success('Profile updated')
@@ -30,27 +55,48 @@ function ProfileTab() {
 
   const handleEdit = () => {
     setForm({
-      full_name: user?.full_name ?? '',
-      email:     user?.email ?? '',
-      state:     user?.state ?? '',
-      city:      user?.city ?? '',
+      full_name:            user?.full_name ?? '',
+      email:                user?.email ?? '',
+      state:                user?.state ?? '',
+      city:                 user?.city ?? '',
+      gender:               (user?.gender as '1' | '2') ?? '',
+      dob:                  user?.dob ?? '',
+      persona:              user?.persona ?? '',
+      languages:            user?.languages ?? [],
+      preferred_language:   user?.preferred_language ?? '',
+      data_sharing_consent: user?.data_sharing_consent ?? false,
     })
     setEditMode(true)
   }
 
   const handleSave = () => {
-    const payload: Record<string, string> = {}
-    if (form.full_name) payload.full_name = form.full_name
-    if (form.email)     payload.email     = form.email
-    if (form.state)     payload.state     = form.state
-    if (form.city)      payload.city      = form.city
-    save(payload as typeof form)
+    const payload: Record<string, unknown> = {}
+    if (form.full_name)          payload.full_name          = form.full_name
+    if (form.email)              payload.email              = form.email
+    if (form.state)              payload.state              = form.state
+    if (form.city)               payload.city               = form.city
+    if (form.gender)             payload.gender             = form.gender
+    if (form.dob)                payload.dob                = form.dob
+    if (form.persona)            payload.persona            = form.persona
+    if (form.languages.length)   payload.languages          = form.languages
+    if (form.preferred_language) payload.preferred_language = form.preferred_language
+    payload.data_sharing_consent = form.data_sharing_consent
+    save(payload)
+  }
+
+  const toggleLang = (code: string) => {
+    setForm(f => ({
+      ...f,
+      languages: f.languages.includes(code)
+        ? f.languages.filter(l => l !== code)
+        : [...f.languages, code],
+    }))
   }
 
   if (isLoading) {
     return (
       <div className="animate-pulse space-y-4 p-8">
-        {[1,2,3,4].map(i => <div key={i} className="h-10 rounded-lg bg-slate-200" />)}
+        {[1,2,3,4,5,6].map(i => <div key={i} className="h-10 rounded-lg bg-slate-200" />)}
       </div>
     )
   }
@@ -59,8 +105,9 @@ function ProfileTab() {
   const initials = displayName.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase()
 
   return (
-    <div className="p-8">
-      <div className="flex items-start justify-between mb-8">
+    <div className="p-6 lg:p-8 space-y-8">
+      {/* Header */}
+      <div className="flex items-start justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-900">Profile Information</h2>
           <p className="text-sm text-slate-500 mt-0.5">Update your personal details</p>
@@ -79,8 +126,8 @@ function ProfileTab() {
       </div>
 
       {/* Avatar */}
-      <div className="flex items-center gap-4 mb-8 pb-8 border-b border-border">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-950 text-white text-xl font-bold">
+      <div className="flex items-center gap-4 pb-6 border-b border-border">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-950 text-white text-xl font-bold flex-shrink-0">
           {initials}
         </div>
         <div>
@@ -94,33 +141,189 @@ function ProfileTab() {
         </div>
       </div>
 
-      {/* Fields */}
-      <div className="grid gap-5 sm:grid-cols-2">
-        {[
-          { key: 'full_name', label: 'Full Name',  value: user?.full_name, type: 'text',  placeholder: 'Your full name' },
-          { key: 'email',     label: 'Email',       value: user?.email,     type: 'email', placeholder: 'you@example.com' },
-          { key: 'state',     label: 'State',       value: user?.state,     type: 'text',  placeholder: 'Lagos' },
-          { key: 'city',      label: 'City',        value: user?.city,      type: 'text',  placeholder: 'Yaba' },
-        ].map(field => (
-          <div key={field.key}>
-            <label className="block text-xs font-semibold text-slate-600 mb-1.5">{field.label}</label>
-            <Input
-              type={field.type}
-              disabled={!editMode}
-              value={editMode ? form[field.key as keyof typeof form] : (field.value ?? '')}
-              onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
-              placeholder={field.placeholder}
-              className={cn('bg-slate-50', !editMode && 'opacity-70')}
-            />
+      {/* Basic info */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Basic Info</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[
+            { key: 'full_name', label: 'Full Name',  type: 'text',  placeholder: 'Your full name' },
+            { key: 'email',     label: 'Email',       type: 'email', placeholder: 'you@example.com' },
+            { key: 'dob',       label: 'Date of Birth (DD/MM/YYYY)', type: 'text', placeholder: '01/01/1990' },
+          ].map(field => (
+            <div key={field.key} className={field.key === 'full_name' ? 'sm:col-span-2' : ''}>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{field.label}</label>
+              <Input
+                type={field.type}
+                disabled={!editMode}
+                value={editMode ? (form[field.key as keyof ProfileForm] as string) : ((user?.[field.key as keyof typeof user] as string) ?? '')}
+                onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
+                placeholder={field.placeholder}
+                className={cn('bg-slate-50', !editMode && 'opacity-70')}
+              />
+            </div>
+          ))}
+
+          {/* Gender */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Gender</label>
+            {editMode ? (
+              <select
+                value={form.gender}
+                onChange={e => setForm(f => ({ ...f, gender: e.target.value as '1' | '2' | '' }))}
+                className="w-full h-10 px-3 bg-slate-50 border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
+              >
+                <option value="">Select gender</option>
+                <option value="1">Male</option>
+                <option value="2">Female</option>
+              </select>
+            ) : (
+              <Input
+                disabled
+                value={user?.gender === '1' ? 'Male' : user?.gender === '2' ? 'Female' : ''}
+                placeholder="Not set"
+                className="bg-slate-50 opacity-70"
+              />
+            )}
           </div>
-        ))}
+
+          {/* Persona */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Work Type</label>
+            {editMode ? (
+              <select
+                value={form.persona}
+                onChange={e => setForm(f => ({ ...f, persona: e.target.value as 'trader' | 'gig_worker' | '' }))}
+                className="w-full h-10 px-3 bg-slate-50 border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
+              >
+                <option value="">Select work type</option>
+                <option value="trader">Trader</option>
+                <option value="gig_worker">Gig Worker</option>
+              </select>
+            ) : (
+              <Input
+                disabled
+                value={user?.persona === 'trader' ? 'Trader' : user?.persona === 'gig_worker' ? 'Gig Worker' : ''}
+                placeholder="Not set"
+                className="bg-slate-50 opacity-70"
+              />
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Phone — read-only */}
-      <div className="mt-5">
-        <label className="block text-xs font-semibold text-slate-600 mb-1.5">Phone Number</label>
-        <Input value={user?.phone ?? ''} disabled className="bg-slate-50 opacity-70" />
-        <p className="text-xs text-slate-400 mt-1">Phone number cannot be changed</p>
+      {/* Location */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Location</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          {[
+            { key: 'state', label: 'State',  placeholder: 'Lagos' },
+            { key: 'city',  label: 'City',   placeholder: 'Yaba' },
+          ].map(field => (
+            <div key={field.key}>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">{field.label}</label>
+              <Input
+                disabled={!editMode}
+                value={editMode ? (form[field.key as keyof ProfileForm] as string) : ((user?.[field.key as keyof typeof user] as string) ?? '')}
+                onChange={e => setForm(f => ({ ...f, [field.key]: e.target.value }))}
+                placeholder={field.placeholder}
+                className={cn('bg-slate-50', !editMode && 'opacity-70')}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Languages */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Languages</p>
+        <div className="mb-3">
+          <label className="block text-xs font-semibold text-slate-600 mb-1.5">Preferred Language</label>
+          {editMode ? (
+            <select
+              value={form.preferred_language}
+              onChange={e => setForm(f => ({ ...f, preferred_language: e.target.value }))}
+              className="w-full h-10 px-3 bg-slate-50 border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
+            >
+              <option value="">Select preferred language</option>
+              {LANGUAGES.map(code => (
+                <option key={code} value={code}>{LANGUAGE_LABELS[code]}</option>
+              ))}
+            </select>
+          ) : (
+            <Input
+              disabled
+              value={LANGUAGE_LABELS[user?.preferred_language ?? ''] ?? user?.preferred_language ?? ''}
+              placeholder="Not set"
+              className="bg-slate-50 opacity-70"
+            />
+          )}
+        </div>
+        <div>
+          <label className="block text-xs font-semibold text-slate-600 mb-2">Languages Spoken</label>
+          <div className="flex flex-wrap gap-2">
+            {LANGUAGES.map(code => {
+              const active = editMode
+                ? form.languages.includes(code)
+                : (user?.languages ?? []).includes(code)
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  disabled={!editMode}
+                  onClick={() => editMode && toggleLang(code)}
+                  className={cn(
+                    'px-3 py-1 rounded-full text-xs font-medium border transition-all',
+                    active
+                      ? 'bg-trace-accent text-white border-trace-accent'
+                      : 'bg-slate-50 text-slate-500 border-slate-200',
+                    !editMode && 'cursor-default',
+                    editMode && !active && 'hover:border-trace-accent/50 cursor-pointer',
+                  )}
+                >
+                  {LANGUAGE_LABELS[code]}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Account */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">Account</p>
+        <div className="space-y-3">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Phone Number</label>
+            <Input value={user?.phone ?? ''} disabled className="bg-slate-50 opacity-70" />
+            <p className="text-xs text-slate-400 mt-1">Phone number cannot be changed</p>
+          </div>
+          {user?.virtual_account_no && (
+            <div>
+              <label className="block text-xs font-semibold text-slate-600 mb-1.5">Virtual Account</label>
+              <Input value={user.virtual_account_no} disabled className="bg-slate-50 opacity-70 font-mono tracking-widest" />
+            </div>
+          )}
+          <div className="flex items-center justify-between rounded-xl border border-border px-4 py-3">
+            <div>
+              <p className="text-sm font-semibold text-slate-800">Data Sharing Consent</p>
+              <p className="text-xs text-slate-500 mt-0.5">Allow Trace to use your economic activity data</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer flex-shrink-0">
+              <input
+                type="checkbox"
+                disabled={!editMode}
+                checked={editMode ? form.data_sharing_consent : (user?.data_sharing_consent ?? false)}
+                onChange={e => setForm(f => ({ ...f, data_sharing_consent: e.target.checked }))}
+                className="sr-only peer"
+              />
+              <div className={cn(
+                'w-10 h-5 rounded-full peer peer-checked:after:translate-x-5 after:content-[\'\'] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all',
+                'peer-checked:bg-trace-accent bg-slate-200',
+                !editMode && 'opacity-60',
+              )} />
+            </label>
+          </div>
+        </div>
       </div>
     </div>
   )

@@ -2,8 +2,10 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'
+import { currentUserKey } from '@/lib/api/hooks/use-current-user'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -96,6 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const router = useRouter()
+  const qc = useQueryClient()
 
   const checkAuth = async () => {
     try {
@@ -166,6 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }, { silent: true })
     }
     await checkAuth()
+    await qc.invalidateQueries({ queryKey: currentUserKey })
     toast.success('You\'re all set! Welcome to Trace.')
     router.push('/dashboard')
   }

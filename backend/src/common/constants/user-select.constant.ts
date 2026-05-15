@@ -17,6 +17,8 @@ export const SafeUserSelect = {
   preferred_language: true,
   data_sharing_consent: true,
   persona: true,
+  gender: true,
+  dob: true,
   onboarding_complete: true,
   created_at: true,
   updated_at: true,

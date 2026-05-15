@@ -102,6 +102,8 @@ export class AuthService {
           latitude: dto.latitude,
           longitude: dto.longitude,
           ...(dto.languages !== undefined && { languages: dto.languages }),
+          ...(dto.gender !== undefined && { gender: dto.gender }),
+          ...(dto.dob !== undefined && { dob: dto.dob }),
           role: ['user'],
           onboarding_complete: true,
         },
