@@ -30,15 +30,15 @@ const TIER_LABEL: Record<string, string> = {
 }
 
 const SIDEBAR_NAV = [
-  { name: 'Dashboard',    href: '/dashboard',                 icon: LayoutDashboard },
-  { name: 'Work Matcher', href: '/dashboard/work-matcher',    icon: Briefcase },
-  { name: 'Post a Job',   href: '/dashboard/post-job',        icon: PlusCircle },
-  { name: 'My Jobs',      href: '/dashboard/my-jobs',         icon: ClipboardList },
-  { name: 'Portfolio',    href: '/dashboard/portfolio',       icon: Wallet },
-  { name: 'Transactions', href: '/dashboard/transactions',    icon: ArrowLeftRight },
-  { name: 'Quick Cash',   href: '/dashboard/finance-gateway', icon: PiggyBank },
-  { name: 'Community',    href: '/dashboard/community',       icon: Users },
-  { name: 'Settings',     href: '/dashboard/settings',        icon: Settings },
+  { name: 'Dashboard',    href: '/dashboard',                 icon: LayoutDashboard,  persona: null },
+  { name: 'Work Matcher', href: '/dashboard/work-matcher',    icon: Briefcase,         persona: 'gig_worker' },
+  { name: 'Post a Job',   href: '/dashboard/post-job',        icon: PlusCircle,        persona: 'trader' },
+  { name: 'My Jobs',      href: '/dashboard/my-jobs',         icon: ClipboardList,     persona: 'trader' },
+  { name: 'Portfolio',    href: '/dashboard/portfolio',       icon: Wallet,            persona: null },
+  { name: 'Transactions', href: '/dashboard/transactions',    icon: ArrowLeftRight,    persona: null },
+  { name: 'Quick Cash',   href: '/dashboard/finance-gateway', icon: PiggyBank,         persona: null },
+  { name: 'Community',    href: '/dashboard/community',       icon: Users,             persona: null },
+  { name: 'Settings',     href: '/dashboard/settings',        icon: Settings,          persona: null },
 ]
 
 const BOTTOM_TABS_TRADER = [
@@ -129,7 +129,7 @@ export function DashboardSidebar() {
 
         {/* Navigation */}
         <nav className="flex-1 space-y-0.5 px-4">
-          {SIDEBAR_NAV.map((item) => {
+          {SIDEBAR_NAV.filter(item => !item.persona || !user?.persona || item.persona === user.persona).map((item) => {
             const active = isActive(item.href)
             return (
               <Link

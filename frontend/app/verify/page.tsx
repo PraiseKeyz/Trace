@@ -1,27 +1,29 @@
 'use client'
 
-import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, RotateCcw, ShieldCheck } from 'lucide-react'
 import { useAuth } from '@/context/auth-context'
+import { cn } from '@/lib/utils'
 
 const RESEND_COOLDOWN = 30
+const OTP_LENGTH = 6
 
 export default function VerifyPage() {
   const { user, isLoading, verifyOtp, resendOtp } = useAuth()
   const router = useRouter()
 
-  const [otp, setOtp] = useState('')
+  const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(''))
   const [error, setError] = useState('')
   const [isVerifying, setIsVerifying] = useState(false)
   const [isResending, setIsResending] = useState(false)
   const [cooldown, setCooldown] = useState(RESEND_COOLDOWN)
+  const inputRefs = useRef<(HTMLInputElement | null)[]>(Array(OTP_LENGTH).fill(null))
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // Guard: if no session at all, send to signup
+  const otp = digits.join('')
+
   useEffect(() => {
     if (isLoading) return
     if (!user) { router.replace('/signup'); return }
@@ -29,7 +31,6 @@ export default function VerifyPage() {
     if (user.isPhoneVerified && user.onboardingComplete) { router.replace('/dashboard'); return }
   }, [user, isLoading, router])
 
-  // Start initial countdown
   useEffect(() => {
     startCooldown()
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
@@ -46,20 +47,69 @@ export default function VerifyPage() {
     }, 1000)
   }
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!otp.trim()) { setError('Enter the OTP sent to your phone'); return }
-    if (!/^\d{6}$/.test(otp.trim())) { setError('OTP must be exactly 6 digits'); return }
+  const submit = async (code: string) => {
     setIsVerifying(true)
     setError('')
     try {
-      await verifyOtp(otp.trim())
+      await verifyOtp(code)
       router.push('/onboarding')
     } catch {
       setError('Incorrect or expired OTP. Try again.')
+      setDigits(Array(OTP_LENGTH).fill(''))
+      setTimeout(() => inputRefs.current[0]?.focus(), 0)
     } finally {
       setIsVerifying(false)
     }
+  }
+
+  const handleDigitChange = (index: number, value: string) => {
+    const digit = value.replace(/\D/g, '').slice(-1)
+    const next = [...digits]
+    next[index] = digit
+    setDigits(next)
+    setError('')
+
+    if (digit && index < OTP_LENGTH - 1) {
+      inputRefs.current[index + 1]?.focus()
+    }
+
+    const code = next.join('')
+    if (code.length === OTP_LENGTH) {
+      submit(code)
+    }
+  }
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+      if (digits[index]) {
+        const next = [...digits]
+        next[index] = ''
+        setDigits(next)
+      } else if (index > 0) {
+        inputRefs.current[index - 1]?.focus()
+      }
+    }
+    if (e.key === 'ArrowLeft' && index > 0) inputRefs.current[index - 1]?.focus()
+    if (e.key === 'ArrowRight' && index < OTP_LENGTH - 1) inputRefs.current[index + 1]?.focus()
+  }
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH)
+    if (!text) return
+    const next = Array(OTP_LENGTH).fill('')
+    text.split('').forEach((d, i) => { next[i] = d })
+    setDigits(next)
+    setError('')
+    const focusIndex = Math.min(text.length, OTP_LENGTH - 1)
+    inputRefs.current[focusIndex]?.focus()
+    if (text.length === OTP_LENGTH) submit(text)
+  }
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (otp.length !== OTP_LENGTH) { setError('Enter the full 6-digit code'); return }
+    await submit(otp)
   }
 
   const handleResend = async () => {
@@ -68,6 +118,9 @@ export default function VerifyPage() {
     try {
       await resendOtp()
       startCooldown()
+      setDigits(Array(OTP_LENGTH).fill(''))
+      setError('')
+      setTimeout(() => inputRefs.current[0]?.focus(), 0)
     } catch {
       // ApiClient shows toast
     } finally {
@@ -85,10 +138,9 @@ export default function VerifyPage() {
 
   return (
     <div className="min-h-screen bg-trace-surface flex flex-col">
-
-      {/* Main */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-sm">
+
           {/* Icon */}
           <div className="flex justify-center mb-8">
             <div className="w-20 h-20 bg-slate-950 rounded-2xl flex items-center justify-center shadow-xl">
@@ -96,37 +148,53 @@ export default function VerifyPage() {
             </div>
           </div>
 
-          <div className="text-center mb-8">
+          <div className="text-center mb-10">
             <h1 className="text-3xl font-black text-slate-950 mb-3">Verify your phone</h1>
-            <p className="text-muted-foreground">
-              We sent a 6-digit code to
-            </p>
+            <p className="text-muted-foreground">We sent a 6-digit code to</p>
             <p className="font-bold text-slate-950 mt-1 tracking-wider">
               {user?.phone ? `${user.phone.slice(0, 2)} ••••• ${user.phone.slice(-4)}` : '—'}
             </p>
           </div>
 
-          <form onSubmit={handleVerify} className="space-y-4" noValidate>
-            <div>
-              <Input
-                type="text"
-                inputMode="numeric"
-                maxLength={6}
-                placeholder="000000"
-                value={otp}
-                onChange={(e) => { setOtp(e.target.value.replace(/\D/g, '')); setError('') }}
-                className={`h-16 text-center text-3xl tracking-[0.6em] font-black bg-white border-trace-border focus-visible:border-slate-950 focus-visible:ring-slate-950/20${error ? ' border-red-400' : ''}`}
-                autoFocus
-              />
-              {error && <p className="text-xs text-red-500 mt-2 text-center">{error}</p>}
+          <form onSubmit={handleVerify} noValidate>
+            {/* OTP boxes */}
+            <div className="flex gap-2 justify-center mb-3">
+              {digits.map((digit, i) => (
+                <input
+                  key={i}
+                  ref={el => { inputRefs.current[i] = el }}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={2}
+                  value={digit}
+                  onChange={e => handleDigitChange(i, e.target.value)}
+                  onKeyDown={e => handleKeyDown(i, e)}
+                  onPaste={handlePaste}
+                  onFocus={e => e.target.select()}
+                  autoFocus={i === 0}
+                  className={cn(
+                    'w-12 h-14 text-center text-2xl font-black rounded-2xl border-2 bg-white outline-none transition-all duration-150 select-none',
+                    'focus:ring-4',
+                    error
+                      ? 'border-red-400 text-red-500 focus:border-red-500 focus:ring-red-100'
+                      : digit
+                      ? 'border-slate-950 text-slate-950 focus:border-slate-950 focus:ring-slate-950/10'
+                      : 'border-trace-border text-slate-400 focus:border-slate-950 focus:ring-slate-950/10',
+                  )}
+                />
+              ))}
             </div>
+
+            {error && (
+              <p className="text-xs text-red-500 text-center mb-5">{error}</p>
+            )}
 
             <Button
               type="submit"
               variant="dark"
               size="lg"
-              disabled={isVerifying || otp.length !== 6}
-              className="w-full rounded-full"
+              disabled={isVerifying || otp.length !== OTP_LENGTH}
+              className="w-full rounded-full mt-5"
             >
               {isVerifying ? 'Verifying…' : 'Verify Phone'}
               {!isVerifying && <ArrowRight className="h-5 w-5" />}
@@ -149,12 +217,6 @@ export default function VerifyPage() {
             </Button>
           </div>
 
-          {/* <p className="text-center text-xs text-muted-foreground mt-10">
-            Wrong number?{' '}
-            <Link href="/signup" className="font-bold text-slate-950 hover:underline">
-              Go back
-            </Link>
-          </p> */}
         </div>
       </div>
     </div>

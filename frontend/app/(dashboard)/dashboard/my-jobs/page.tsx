@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   Plus, ChevronDown, ChevronUp, User, Loader2,
@@ -17,6 +18,7 @@ import {
   useRaiseDispute,
   type PostedOpportunity,
 } from '@/lib/api/hooks/use-opportunities'
+import { useAuth } from '@/context/auth-context'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -382,7 +384,17 @@ function JobCard({ job }: { job: PostedOpportunity }) {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function MyJobsPage() {
+  const { user, isLoading: authLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (authLoading) return
+    if (user && user.persona !== 'trader') router.replace('/dashboard')
+  }, [user, authLoading, router])
+
   const { data: jobs, isLoading } = useMyPosts()
+
+  if (authLoading || !user || user.persona !== 'trader') return null
 
   const activeJobs = jobs?.filter(j => ['open', 'filled', 'worker_done'].includes(j.status)) ?? []
   const pastJobs = jobs?.filter(j => ['confirmed', 'disputed', 'closed'].includes(j.status)) ?? []

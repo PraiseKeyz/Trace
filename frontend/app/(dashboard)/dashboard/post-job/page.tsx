@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { MapPin, Wifi, Briefcase, ChevronRight, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useCreateOpportunity } from '@/lib/api/hooks/use-opportunities'
 import { useCurrentUser } from '@/lib/api/hooks/use-current-user'
+import { useAuth } from '@/context/auth-context'
 
 const JOB_TYPES = [
   { value: 'gig',       label: 'Quick Gig',   desc: 'One-time task or delivery' },
@@ -23,8 +24,14 @@ const LOCATION_TYPES = [
 
 export default function PostJobPage() {
   const router = useRouter()
+  const { user: authUser, isLoading: authLoading } = useAuth()
   const { data: user } = useCurrentUser()
   const { mutate: createJob, isPending } = useCreateOpportunity()
+
+  useEffect(() => {
+    if (authLoading) return
+    if (authUser && authUser.persona !== 'trader') router.replace('/dashboard')
+  }, [authUser, authLoading, router])
 
   const [form, setForm] = useState({
     title: '',
@@ -85,6 +92,8 @@ export default function PostJobPage() {
       },
     )
   }
+
+  if (authLoading || !authUser || authUser.persona !== 'trader') return null
 
   return (
     <div className="space-y-6 pb-4">
