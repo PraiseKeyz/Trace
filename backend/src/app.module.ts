@@ -23,7 +23,7 @@ import { APP_GUARD } from '@nestjs/core';
     ThrottlerModule.forRoot([{
       name: 'global',
       ttl: 60000,
-      limit: 10,
+      limit: 120,
     }]),
 
     BullModule.forRootAsync({

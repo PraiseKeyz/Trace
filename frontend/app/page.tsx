@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { motion, Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Briefcase, TrendingUp, PiggyBank, ArrowRight, CheckCircle, Shield, Zap, Users, Award, Clock, ArrowUpRight, Star } from 'lucide-react'
+import { Briefcase, TrendingUp, PiggyBank, ArrowRight, CheckCircle, Shield, Zap, Users, Award, Clock } from 'lucide-react'
 import Hero from '@/components/Hero'
 
 export default function LandingPage() {
@@ -39,13 +39,13 @@ export default function LandingPage() {
               <span className="font-bold text-white text-lg font-mono">T</span>
             </div>
             <div>
-              <span className="text-xl font-black text-slate-950 tracking-tight">Trace</span>
+              <span className="text-xl font-black text-trace-text tracking-tight">Trace</span>
               <span className="text-[10px] uppercase font-bold tracking-widest text-trace-accent block -mt-1">Economic Identity</span>
             </div>
           </Link>
           <nav className="hidden md:flex gap-10 items-center">
             {['Why Trace', 'Features', 'Impact'].map((item) => (
-              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-bold text-slate-700 hover:text-trace-accent transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-trace-accent after:transition-all hover:after:w-full">
+              <a key={item} href={`#${item.toLowerCase().replace(' ', '-')}`} className="text-sm font-bold text-trace-text/65 hover:text-trace-accent transition-colors relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-0 after:h-0.5 after:bg-trace-accent after:transition-all hover:after:w-full">
                 {item}
               </a>
             ))}
@@ -67,150 +67,81 @@ export default function LandingPage() {
       <Hero />
 
       {/* Why Trace Section */}
-      <section id="why-trace" className="relative z-10 py-32 bg-linear-to-b from-white to-slate-50">
+      <section id="why-trace" className="relative z-10 py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-950 mb-6 leading-tight">
-              Why we built Trace.
+
+          {/* Header */}
+          <div className="max-w-2xl mb-16">
+            <p className="text-xs font-bold uppercase tracking-widest text-trace-accent mb-4">
+              Why we built Trace
+            </p>
+            <h2 className="text-4xl sm:text-5xl font-black text-trace-text leading-tight mb-5">
+              The system was never<br />built for them.
             </h2>
-            <p className="text-xl text-slate-700 leading-relaxed font-medium">
-              Billions of workers in Africa generate real economic value every day—but the financial system doesn't see them. They're locked out of credit, insurance, and formal opportunities because they lack a verifiable economic identity. We're changing that.
+            <p className="text-lg text-trace-text/45 leading-relaxed">
+              Millions of workers across Africa generate real economic value every day — and have nothing to show for it. No credit history. No financial identity. No way in. Trace fixes the data layer that was always missing.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-16 mb-20">
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="space-y-8"
-            >
+          {/* 3×2 card grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              {
+                icon: Award,
+                title: 'Every transaction builds your score',
+                body: 'Work completed, trades settled, payments made — it all counts. Your economic footprint becomes a verifiable asset that compounds over time.',
+              },
+              {
+                icon: Users,
+                title: 'Your community vouches for you',
+                body: 'Peers who have worked alongside you can vouch for your reliability. Verified endorsements carry real weight in your identity score.',
+              },
+              {
+                icon: TrendingUp,
+                title: 'Tools to grow, not just survive',
+                body: 'Market intelligence, income tracking, and opportunity matching help you make smarter decisions and scale your work intentionally.',
+              },
+              {
+                icon: Shield,
+                title: 'You own your data',
+                body: 'Your economic data is encrypted and controlled by you. You decide who sees it and when. No middlemen, no data brokers.',
+              },
+              {
+                icon: Zap,
+                title: 'No paperwork. No office hours.',
+                body: 'Prove your economic activity in minutes through your phone — not through bank statements or paper payslips that most workers don\'t have.',
+              },
+              {
+                icon: Clock,
+                title: 'Available when you need it',
+                body: 'No closing times. No minimum balance. No gatekeepers. Access opportunities and financial products on your schedule, not the bank\'s.',
+              },
+            ].map((card, i) => (
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
+                key={i}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+                transition={{ duration: 0.5, delay: i * 0.07 }}
+                className="rounded-2xl border border-slate-200 bg-white p-6"
               >
-                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
-                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Shield className="w-6 h-6 text-trace-accent" />
-                  </motion.div>
-                  Bank-grade security, on your terms.
-                </h3>
-                <p className="text-slate-700 leading-relaxed">
-                  Your economic data is encrypted end-to-end. You own your identity. You control who sees it and when. No exploitative middlemen, no data brokers.
-                </p>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-trace-accent/10 mb-5">
+                  <card.icon className="h-5 w-5 text-trace-accent" />
+                </div>
+                <h3 className="text-base font-bold text-trace-text mb-2">{card.title}</h3>
+                <p className="text-sm text-trace-text/45 leading-relaxed">{card.body}</p>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
-                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Zap className="w-6 h-6 text-trace-accent" />
-                  </motion.div>
-                  Verify instantly. No paperwork.
-                </h3>
-                <p className="text-slate-700 leading-relaxed">
-                  QR codes, digital wallets, and voice verification mean you can prove your hustle in minutes—without office hours or bureaucracy. Mobile-first, always available.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-              >
-                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
-                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Award className="w-6 h-6 text-trace-accent" />
-                  </motion.div>
-                  Every transaction builds your score.
-                </h3>
-                <p className="text-slate-700 leading-relaxed">
-                  Work completed, trades settled, payments made—it all counts. Your economic footprint becomes a real asset that compounds over time.
-                </p>
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="space-y-8"
-            >
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.5 }}
-              >
-                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
-                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Clock className="w-6 h-6 text-trace-accent" />
-                  </motion.div>
-                  Always on, always accessible.
-                </h3>
-                <p className="text-slate-700 leading-relaxed">
-                  No closing times. No minimum balance. No gatekeepers deciding if you're "creditworthy enough." Access opportunities and financial products 24/7.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
-                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <Users className="w-6 h-6 text-trace-accent" />
-                  </motion.div>
-                  Community vouches build trust.
-                </h3>
-                <p className="text-slate-700 leading-relaxed">
-                  Your peers know your work. Peer recommendations and verified reviews create a network effect—trust becomes tradeable capital.
-                </p>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.7 }}
-              >
-                <h3 className="text-2xl font-bold text-slate-950 mb-3 flex items-center gap-3">
-                  <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-                    <TrendingUp className="w-6 h-6 text-trace-accent" />
-                  </motion.div>
-                  Tools to grow, not just survive.
-                </h3>
-                <p className="text-slate-700 leading-relaxed">
-                  Real-time analytics, market intelligence, and income tracking help you make smarter decisions and scale your business intentionally.
-                </p>
-              </motion.div>
-            </motion.div>
+            ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-gradient-to-br from-trace-accent/5 to-white border border-trace-accent/20 rounded-3xl p-12 text-center"
-          >
-            <p className="text-lg font-semibold text-slate-950 mb-4">
-              The result: Your hustle becomes official. Your hustle becomes bankable. Your hustle becomes your future.
+          {/* Bottom statement */}
+          <div className="mt-14 pt-10 border-t border-slate-100">
+            <p className="text-trace-text/40 text-sm font-medium max-w-xl">
+              Your hustle has always been real.{' '}
+              <span className="text-trace-text font-semibold">Now it's verifiable.</span>
             </p>
-            <p className="text-slate-700">
-              50,000+ workers are already using Trace to unlock opportunities they never thought possible.
-            </p>
-          </motion.div>
+          </div>
+
         </div>
       </section>
 
@@ -218,10 +149,10 @@ export default function LandingPage() {
       <section id="features" className="relative z-10 py-32 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-20">
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-950 mb-6 leading-tight">
+            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-trace-text mb-6 leading-tight">
               Three pillars of economic power.
             </h2>
-            <p className="text-xl text-slate-700 leading-relaxed font-medium">
+            <p className="text-xl text-trace-text/65 leading-relaxed font-medium">
               Trace connects three critical dimensions of the informal economy: access to work, business intelligence, and financial services.
             </p>
           </div>
@@ -282,16 +213,16 @@ export default function LandingPage() {
                   </div>
 
                   <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 }} className="w-full">
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-slate-600 mb-1">{col.key === 'work' ? 'The Work Pillar' : col.key === 'trade' ? 'The Trade Pillar' : 'The Finance Pillar'}</h4>
-                    <h3 className="text-2xl font-black text-slate-900 mb-2">{col.title}</h3>
-                    <p className="text-sm text-slate-700 mb-3">{col.intro}</p>
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-trace-text/55 mb-1">{col.key === 'work' ? 'The Work Pillar' : col.key === 'trade' ? 'The Trade Pillar' : 'The Finance Pillar'}</h4>
+                    <h3 className="text-2xl font-black text-trace-text mb-2">{col.title}</h3>
+                    <p className="text-sm text-trace-text/65 mb-3">{col.intro}</p>
                     <ul className="space-y-3 text-left">
                       {col.items.map((item, j) => (
                         <motion.li key={j} initial={{ opacity: 0, x: -8 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: 0.12 + j * 0.08 }} className="flex gap-3 items-start">
                           <CheckCircle className="w-5 h-5 text-trace-accent mt-1 flex-shrink-0" />
                           <div>
-                            <p className="font-semibold text-slate-900">{item.label}</p>
-                            <p className="text-sm text-slate-600">{item.desc}</p>
+                            <p className="font-semibold text-trace-text">{item.label}</p>
+                            <p className="text-sm text-trace-text/55">{item.desc}</p>
                           </div>
                         </motion.li>
                       ))}
@@ -331,7 +262,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
                 <Link href="/signup">
-                  <Button className="bg-trace-accent hover:bg-[#e0981d] text-slate-950 font-black text-lg px-8 h-14 rounded-2xl shadow-[0_8px_30px_rgb(244,168,38,0.3)] hover:-translate-y-1 transition-all duration-300">
+                  <Button className="bg-trace-accent hover:bg-[#e0981d] text-trace-text font-black text-lg px-8 h-14 rounded-2xl shadow-[0_8px_30px_rgb(244,168,38,0.3)] hover:-translate-y-1 transition-all duration-300">
                     Join the Movement <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
@@ -383,7 +314,7 @@ export default function LandingPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-trace-accent">
                   <span className="font-bold text-white text-lg font-mono">T</span>
                 </div>
-                <span className="text-xl font-black text-slate-950 tracking-tight">Trace</span>
+                <span className="text-xl font-black text-trace-text tracking-tight">Trace</span>
               </Link>
               <p className="text-trace-text/60 mb-6 max-w-sm font-medium leading-relaxed">
                 Building the definitive economic identity platform for the African informal sector.

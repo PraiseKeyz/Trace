@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { Search, ArrowUpRight, ArrowDownLeft, ArrowLeftRight, Download, TrendingUp, TrendingDown, Wallet, ChevronDown } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useTransactions } from '@/lib/api/hooks/use-transactions'
 import type { Transaction } from '@/lib/api/hooks/use-transactions'
@@ -316,12 +317,9 @@ export default function TransactionsPage() {
               className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
             />
           </div>
-          <button
-            className="h-9 w-9 flex items-center justify-center rounded-xl bg-slate-950 text-white hover:bg-slate-800 transition active:scale-95"
-            title="Export"
-          >
+          <Button variant="dark" size="icon" title="Export">
             <Download size={15} />
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -332,18 +330,15 @@ export default function TransactionsPage() {
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex gap-1 bg-white border border-trace-border rounded-xl p-1 w-fit">
               {TYPE_TABS.map((tab) => (
-                <button
+                <Button
                   key={tab.key}
+                  size="sm"
+                  variant={filterType === tab.key ? 'default' : 'ghost'}
                   onClick={() => setFilterType(tab.key)}
-                  className={cn(
-                    'px-4 py-1.5 rounded-lg text-sm font-semibold transition-all',
-                    filterType === tab.key
-                      ? 'bg-trace-accent text-white shadow-sm'
-                      : 'text-slate-500 hover:text-slate-900',
-                  )}
+                  className={cn(filterType !== tab.key && 'text-slate-500 hover:text-slate-900')}
                 >
                   {tab.label}
-                </button>
+                </Button>
               ))}
             </div>
             <div className="relative flex-1 max-w-sm">

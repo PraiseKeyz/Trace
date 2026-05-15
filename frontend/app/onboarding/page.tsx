@@ -684,18 +684,18 @@ export default function OnboardingPage() {
             {/* Navigation */}
             <div className="flex gap-3 pt-2">
               {stepIndex > 0 && (
-                <Button type="button" variant="outline" onClick={handleBack} className="h-12 border-trace-border rounded-full px-6">
-                  <ArrowLeft className="h-4 w-4 mr-2" /> Back
+                <Button type="button" variant="outline" size="lg" onClick={handleBack} className="rounded-full px-6">
+                  <ArrowLeft className="h-4 w-4" /> Back
                 </Button>
               )}
               {step !== 'work' ? (
-                <Button type="button" onClick={handleContinue} className="h-12 bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full font-bold flex-1 shadow-lg shadow-trace-accent/20">
-                  Continue <ArrowRight className="ml-2 h-5 w-5" />
+                <Button type="button" size="lg" onClick={handleContinue} className="rounded-full flex-1 shadow-lg shadow-trace-accent/20">
+                  Continue <ArrowRight className="h-5 w-5" />
                 </Button>
               ) : (
-                <Button type="submit" disabled={isSubmitting} className="h-12 bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full font-bold flex-1 shadow-lg shadow-trace-accent/20">
+                <Button type="submit" size="lg" disabled={isSubmitting} className="rounded-full flex-1 shadow-lg shadow-trace-accent/20">
                   {isSubmitting ? 'Setting up your profile…' : 'Launch My Dashboard'}
-                  {!isSubmitting && <ArrowRight className="ml-2 h-5 w-5" />}
+                  {!isSubmitting && <ArrowRight className="h-5 w-5" />}
                 </Button>
               )}
             </div>

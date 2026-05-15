@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { MapPin, Wifi, Briefcase, ChevronRight, X, Loader2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { useCreateOpportunity } from '@/lib/api/hooks/use-opportunities'
@@ -239,13 +240,9 @@ export default function PostJobPage() {
               placeholder="e.g. driving, tailoring, cooking..."
               className="flex-1 border border-trace-border rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30 bg-trace-surface"
             />
-            <button
-              type="button"
-              onClick={addSkill}
-              className="px-4 py-2.5 bg-slate-950 text-white rounded-xl text-sm font-semibold hover:bg-slate-800 transition"
-            >
+            <Button type="button" variant="dark" size="sm" onClick={addSkill}>
               Add
-            </button>
+            </Button>
           </div>
           {form.skills_required.length > 0 && (
             <div className="flex flex-wrap gap-2">
@@ -265,17 +262,18 @@ export default function PostJobPage() {
         </div>
 
         {/* Submit */}
-        <button
+        <Button
           type="submit"
+          size="lg"
           disabled={isPending || !form.title.trim()}
-          className="w-full flex items-center justify-center gap-2 bg-trace-accent hover:bg-trace-accent/90 disabled:opacity-50 text-white font-bold py-4 rounded-2xl text-sm transition-all active:scale-[0.98]"
+          className="w-full rounded-2xl"
         >
           {isPending ? (
             <Loader2 size={18} className="animate-spin" />
           ) : (
             <>Post Job <ChevronRight size={18} /></>
           )}
-        </button>
+        </Button>
       </form>
     </div>
   )

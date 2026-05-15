@@ -140,7 +140,7 @@ function OpportunityCard({
           Applied
         </div>
       ) : (
-        <Button onClick={onApply} className="w-full bg-trace-accent hover:bg-trace-accent/90 text-white">
+        <Button onClick={onApply} className="w-full">
           Apply Now
         </Button>
       )}
@@ -172,9 +172,9 @@ function DetailModal({
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
             {matchScore !== undefined && <MatchBadge score={matchScore} />}
-            <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition-colors">
+            <Button variant="ghost" size="icon-sm" onClick={onClose}>
               <X className="h-5 w-5" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -222,9 +222,9 @@ function DetailModal({
             <Button
               onClick={onApply}
               disabled={applying}
-              className="flex-1 bg-trace-accent hover:bg-trace-accent/90 text-white"
+              className="flex-1"
             >
-              {applying ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+              {applying ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               {applying ? 'Applying…' : 'Apply Now'}
             </Button>
           )}
@@ -261,43 +261,41 @@ function Pagination({
 
   return (
     <div className="flex items-center justify-center gap-1.5 pt-6">
-      <button
+      <Button
+        variant="outline"
+        size="sm"
         onClick={() => onChange(page - 1)}
         disabled={page === 1 || isLoading}
-        className="flex items-center gap-1 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         <ChevronLeft className="h-4 w-4" />
         Prev
-      </button>
+      </Button>
 
       {pages.map((p, i) =>
         p === '...' ? (
           <span key={`dots-${i}`} className="px-1 text-slate-400 text-sm">…</span>
         ) : (
-          <button
+          <Button
             key={p}
+            variant={p === page ? 'default' : 'outline'}
+            size="icon-sm"
             onClick={() => onChange(p as number)}
             disabled={isLoading}
-            className={cn(
-              'h-9 w-9 rounded-lg text-sm font-semibold transition-colors',
-              p === page
-                ? 'bg-trace-accent text-white'
-                : 'border border-border bg-white text-slate-600 hover:bg-slate-50'
-            )}
           >
             {p}
-          </button>
+          </Button>
         )
       )}
 
-      <button
+      <Button
+        variant="outline"
+        size="sm"
         onClick={() => onChange(page + 1)}
         disabled={page === totalPages || isLoading}
-        className="flex items-center gap-1 rounded-lg border border-border bg-white px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
       >
         Next
         <ChevronRight className="h-4 w-4" />
-      </button>
+      </Button>
     </div>
   )
 }
@@ -399,14 +397,10 @@ function ApplicationCard({ app }: { app: MyApplication }) {
       )}
 
       {canMarkDone && (
-        <button
-          onClick={handleMarkDone}
-          disabled={marking}
-          className="w-full py-3 rounded-xl bg-trace-accent hover:bg-trace-accent/90 disabled:opacity-50 text-white text-sm font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
-        >
+        <Button onClick={handleMarkDone} disabled={marking} className="w-full">
           {marking ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
           {marking ? 'Updating…' : 'Mark Job as Done'}
-        </button>
+        </Button>
       )}
 
       <p className="text-[10px] text-slate-400">

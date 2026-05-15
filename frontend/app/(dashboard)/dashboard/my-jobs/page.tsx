@@ -7,6 +7,7 @@ import {
   AlertTriangle, CheckCircle2, MapPin, Wifi, Briefcase, Clock,
   ShieldCheck, X,
 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import {
@@ -108,9 +109,9 @@ function ApprovalModal({
             <h3 className="font-bold text-slate-950">Approve Worker</h3>
             <p className="text-xs text-slate-500 mt-0.5">You're hiring <span className="font-semibold text-slate-700">{applicantName}</span></p>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-trace-surface transition-colors">
+          <Button variant="ghost" size="icon-sm" onClick={onClose}>
             <X size={18} className="text-slate-400" />
-          </button>
+          </Button>
         </div>
 
         <div className="px-6 py-5 space-y-5">
@@ -151,20 +152,17 @@ function ApprovalModal({
         </div>
 
         <div className="flex gap-3 px-6 pb-6">
-          <button
-            onClick={onClose}
-            className="flex-1 py-3 rounded-xl border border-trace-border text-sm font-semibold text-slate-600 hover:bg-trace-surface transition-colors"
-          >
+          <Button variant="outline" onClick={onClose} className="flex-1">
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleApprove}
             disabled={isPending || !amount}
-            className="flex-1 py-3 rounded-xl bg-trace-accent hover:bg-trace-accent/90 disabled:opacity-50 text-white text-sm font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+            className="flex-1"
           >
             {isPending ? <Loader2 size={16} className="animate-spin" /> : <ShieldCheck size={16} />}
             {isPending ? 'Locking funds…' : 'Approve & Lock Funds'}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
@@ -253,21 +251,23 @@ function JobCard({ job }: { job: PostedOpportunity }) {
               </div>
             </div>
             <div className="flex gap-2">
-              <button
+              <Button
+                variant="danger"
                 onClick={handleDispute}
                 disabled={disputing || confirming}
-                className="flex-1 py-2.5 rounded-xl border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 disabled:opacity-40 transition-colors"
+                className="flex-1"
               >
-                {disputing ? <Loader2 size={14} className="animate-spin mx-auto" /> : 'Raise Dispute'}
-              </button>
-              <button
+                {disputing ? <Loader2 size={14} className="animate-spin" /> : null}
+                {disputing ? '' : 'Raise Dispute'}
+              </Button>
+              <Button
                 onClick={handleConfirm}
                 disabled={confirming || disputing}
-                className="flex-1 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 disabled:opacity-40 text-white text-sm font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
+                className="flex-1 bg-green-600 hover:bg-green-700"
               >
                 {confirming ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
                 {confirming ? 'Releasing…' : 'Confirm & Release'}
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -349,12 +349,14 @@ function JobCard({ job }: { job: PostedOpportunity }) {
                         {appStatus.label}
                       </span>
                       {app.status === 'pending' && job.status === 'open' && (
-                        <button
+                        <Button
+                          variant="link"
+                          size="sm"
+                          className="h-auto p-0 text-xs"
                           onClick={() => setApproving({ id: app.applicant.id, name: app.applicant.full_name ?? 'this worker' })}
-                          className="text-xs font-bold text-trace-accent hover:underline"
                         >
                           Approve
-                        </button>
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -395,13 +397,12 @@ export default function MyJobsPage() {
         <p className="text-white/60 text-sm leading-relaxed mb-4">
           Track applicants, approve workers, and manage escrow payments.
         </p>
-        <Link
-          href="/dashboard/post-job"
-          className="inline-flex items-center gap-2 bg-trace-accent hover:bg-trace-accent/90 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition-all active:scale-[0.98]"
-        >
-          <Plus size={16} />
-          Post a New Job
-        </Link>
+        <Button asChild size="sm">
+          <Link href="/dashboard/post-job">
+            <Plus size={16} />
+            Post a New Job
+          </Link>
+        </Button>
       </div>
 
       {isLoading ? (
@@ -419,13 +420,12 @@ export default function MyJobsPage() {
           <Briefcase className="h-12 w-12 text-slate-300 mb-4" />
           <p className="font-semibold text-slate-500">No jobs posted yet</p>
           <p className="text-sm text-slate-400 mt-1 mb-5">Post your first job and find trusted workers nearby</p>
-          <Link
-            href="/dashboard/post-job"
-            className="inline-flex items-center gap-2 bg-trace-accent text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:bg-trace-accent/90 transition"
-          >
-            <Plus size={16} />
-            Post a Job
-          </Link>
+          <Button asChild>
+            <Link href="/dashboard/post-job">
+              <Plus size={16} />
+              Post a Job
+            </Link>
+          </Button>
         </div>
       ) : (
         <>

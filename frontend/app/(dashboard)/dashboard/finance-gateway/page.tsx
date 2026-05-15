@@ -112,13 +112,10 @@ function VirtualAccountSection() {
           <span className="text-xl font-bold tracking-widest text-slate-900 flex-1">
             {user.virtual_account_no}
           </span>
-          <button
-            onClick={handleCopy}
-            className="flex items-center gap-1.5 rounded-lg bg-white border border-border px-3 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
-          >
+          <Button variant="outline" size="sm" onClick={handleCopy}>
             <Copy className="h-3.5 w-3.5" />
             Copy
-          </button>
+          </Button>
         </div>
         <p className="mt-2 text-xs text-slate-500">Wema Bank · Send payments to this account</p>
       </div>
@@ -138,12 +135,8 @@ function VirtualAccountSection() {
           </p>
         </div>
       </div>
-      <Button
-        onClick={handleGenerate}
-        disabled={submitting}
-        className="bg-trace-accent hover:bg-trace-accent/90 text-white"
-      >
-        {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+      <Button onClick={handleGenerate} disabled={submitting}>
+        {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
         {submitting ? 'Generating…' : 'Generate Account'}
       </Button>
     </div>
@@ -238,8 +231,8 @@ export default function FinanceGatewayPage() {
                 </p>
               )}
             </div>
-            <Button className="bg-trace-accent hover:bg-trace-accent/90 text-white mt-4 md:mt-0">
-              <ArrowUp className="mr-2 h-4 w-4" />
+            <Button className="mt-4 md:mt-0">
+              <ArrowUp className="h-4 w-4" />
               Improve Score
             </Button>
           </div>
@@ -339,7 +332,7 @@ export default function FinanceGatewayPage() {
                 {eligible ? '✓ You\'re eligible!' : `Need ${product.minScore - score} more points`}
               </p>
             </div>
-            <Button className="w-full bg-trace-accent hover:bg-trace-accent/90 text-white" disabled={!eligible}>
+            <Button className="w-full" disabled={!eligible}>
               {eligible ? 'Apply Now' : 'Unlock Product'}
             </Button>
           </div>
