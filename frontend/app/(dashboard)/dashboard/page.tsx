@@ -12,10 +12,12 @@ import {
   Loader2,
   TrendingUp,
   Star,
+  Wallet,
 } from 'lucide-react'
 import { useCurrentUser } from '@/lib/api/hooks/use-current-user'
 import { useEconomicProfile } from '@/lib/api/hooks/use-economic-profile'
 import { useTransactions } from '@/lib/api/hooks/use-transactions'
+import { useWallet } from '@/lib/api/hooks/use-wallet'
 
 const RISK_TIER_LABEL: Record<string, string> = {
   very_low: 'Elite',
@@ -79,6 +81,7 @@ export default function DashboardPage() {
   const { data: user, isLoading: userLoading } = useCurrentUser()
   const { data: profile, isLoading: profileLoading } = useEconomicProfile()
   const { data: transactions, isLoading: txLoading } = useTransactions()
+  const { data: wallet } = useWallet()
 
   useEffect(() => {
     if (!userLoading && user && !user.onboarding_complete) {
@@ -90,6 +93,8 @@ export default function DashboardPage() {
   const score = profile?.identity_score ?? 0
   const tier = RISK_TIER_LABEL[profile?.risk_tier ?? 'high'] ?? 'Starter'
   const scorePct = Math.round((score / 1000) * 100)
+
+  const walletBalance = wallet?.balance ?? 0
 
   const recentTx = (transactions ?? []).slice(0, 5)
   const totalIncome = (transactions ?? [])
@@ -180,6 +185,19 @@ export default function DashboardPage() {
                 {profile?.vouch_count ?? 0}
               </p>
               <p className="text-[10px] text-muted-foreground mt-1">community trust signals</p>
+            </div>
+
+            <div className="bg-white rounded-2xl p-5 border border-trace-border col-span-2 lg:col-span-1">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-trace-accent/10 flex items-center justify-center">
+                  <Wallet className="h-4 w-4 text-trace-accent" />
+                </div>
+                <p className="text-xs font-semibold text-muted-foreground">Wallet Balance</p>
+              </div>
+              <p className="text-2xl font-black text-slate-950">
+                ₦{walletBalance >= 1000 ? `${(walletBalance / 1000).toFixed(1)}K` : walletBalance.toLocaleString()}
+              </p>
+              <p className="text-[10px] text-muted-foreground mt-1">available to withdraw</p>
             </div>
           </div>
         </div>

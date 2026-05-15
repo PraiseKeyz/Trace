@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
 import {
   Wallet,
   TrendingUp,
@@ -13,10 +13,14 @@ import {
   CheckCircle2,
   Loader2,
   LucideIcon,
+  ArrowDownToLine,
+  ChevronDown,
+  X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCurrentUser, currentUserKey } from '@/lib/api/hooks/use-current-user'
 import { useEconomicProfile } from '@/lib/api/hooks/use-economic-profile'
+import { useWallet, useWithdraw } from '@/lib/api/hooks/use-wallet'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -27,6 +31,11 @@ interface FinanceProduct {
   title: string
   description: string
   minScore: number
+}
+
+interface Bank {
+  code: string
+  name: string
 }
 
 const FINANCE_PRODUCTS: FinanceProduct[] = [
@@ -58,6 +67,189 @@ const TIER_NEXT: Record<string, { label: string; target: number }> = {
   medium:   { label: 'Standard', target: 50 },
   low:      { label: 'Professional', target: 70 },
   very_low: { label: 'Elite', target: 100 },
+}
+
+// ── Wallet Section ────────────────────────────────────────────────────────────
+
+function WalletSection() {
+  const { data: wallet, isLoading } = useWallet()
+  const { data: banksData } = useQuery<Bank[]>({
+    queryKey: ['banks'],
+    queryFn: () => api.get('/squad/banks', { silent: true }) as Promise<Bank[]>,
+    staleTime: Infinity,
+  })
+  const { mutateAsync: withdraw, isPending } = useWithdraw()
+
+  const [showForm, setShowForm] = useState(false)
+  const [amount, setAmount] = useState('')
+  const [bankCode, setBankCode] = useState('')
+  const [accountNumber, setAccountNumber] = useState('')
+  const [accountName, setAccountName] = useState('')
+  const [resolving, setResolving] = useState(false)
+
+  const balance = wallet?.balance ?? 0
+  const banks = banksData ?? []
+
+  const handleResolve = async () => {
+    if (accountNumber.length !== 10 || !bankCode) return
+    setResolving(true)
+    try {
+      const res = await api.post<{ data?: { account_name?: string } }>(
+        '/squad/accounts/resolve',
+        { bank_code: bankCode, account_number: accountNumber },
+      ) as any
+      const name = res?.data?.account_name ?? res?.account_name ?? ''
+      if (name) {
+        setAccountName(name)
+        toast.success(`Account: ${name}`)
+      } else {
+        toast.error('Could not resolve account name')
+      }
+    } catch {
+      // error toast handled by api client
+    } finally {
+      setResolving(false)
+    }
+  }
+
+  const handleWithdraw = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const amt = Number(amount)
+    if (!amt || amt < 100) { toast.error('Minimum withdrawal is ₦100'); return }
+    if (!bankCode) { toast.error('Select a bank'); return }
+    if (accountNumber.length !== 10) { toast.error('Account number must be 10 digits'); return }
+    if (!accountName) { toast.error('Resolve account name first'); return }
+    if (amt > balance) { toast.error(`Insufficient balance. Available: ₦${balance.toLocaleString()}`); return }
+
+    try {
+      await withdraw({ amount: amt, bank_code: bankCode, account_number: accountNumber, account_name: accountName })
+      toast.success(`₦${amt.toLocaleString()} withdrawal initiated`)
+      setShowForm(false)
+      setAmount(''); setBankCode(''); setAccountNumber(''); setAccountName('')
+    } catch {
+      // handled by api client
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="rounded-2xl border border-border bg-white p-6 animate-pulse">
+        <div className="h-4 w-28 rounded bg-slate-200 mb-3" />
+        <div className="h-10 w-40 rounded bg-slate-200" />
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-2xl border border-border bg-white overflow-hidden">
+      {/* Balance Header */}
+      <div className="p-6 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-trace-accent/10">
+            <Wallet className="h-5 w-5 text-trace-accent" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Trace Wallet</p>
+            <p className="text-2xl font-black text-slate-900">₦{balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}</p>
+          </div>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowForm(v => !v)}
+          className="gap-1.5"
+        >
+          <ArrowDownToLine className="h-3.5 w-3.5" />
+          Withdraw
+          <ChevronDown className={cn('h-3 w-3 transition-transform', showForm && 'rotate-180')} />
+        </Button>
+      </div>
+
+      {/* Withdraw Form */}
+      {showForm && (
+        <form onSubmit={handleWithdraw} className="border-t border-border px-6 py-5 space-y-4 bg-slate-50">
+          <div className="flex items-center justify-between mb-1">
+            <p className="font-semibold text-slate-800 text-sm">Withdraw to Bank</p>
+            <button type="button" onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+
+          {/* Amount */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Amount (₦)</label>
+            <input
+              type="number"
+              min="100"
+              max={balance}
+              value={amount}
+              onChange={e => setAmount(e.target.value)}
+              placeholder="e.g. 5000"
+              className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-trace-accent focus:ring-2 focus:ring-trace-accent/10"
+              required
+            />
+            <p className="text-[11px] text-slate-400 mt-1">Available: ₦{balance.toLocaleString()}</p>
+          </div>
+
+          {/* Bank */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Bank</label>
+            <select
+              value={bankCode}
+              onChange={e => { setBankCode(e.target.value); setAccountName('') }}
+              className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-trace-accent focus:ring-2 focus:ring-trace-accent/10"
+              required
+            >
+              <option value="">Select bank…</option>
+              {banks.map(b => (
+                <option key={b.code} value={b.code}>{b.name}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Account Number + Resolve */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Account Number</label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                inputMode="numeric"
+                maxLength={10}
+                value={accountNumber}
+                onChange={e => { setAccountNumber(e.target.value.replace(/\D/g, '')); setAccountName('') }}
+                placeholder="0123456789"
+                className="flex-1 rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-trace-accent focus:ring-2 focus:ring-trace-accent/10"
+                required
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={accountNumber.length !== 10 || !bankCode || resolving}
+                onClick={handleResolve}
+                className="flex-shrink-0 h-[42px]"
+              >
+                {resolving ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Verify'}
+              </Button>
+            </div>
+          </div>
+
+          {/* Account Name (read-only) */}
+          {accountName && (
+            <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-2.5">
+              <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
+              <span className="text-sm font-semibold text-green-800">{accountName}</span>
+            </div>
+          )}
+
+          <Button type="submit" className="w-full" disabled={isPending || !accountName}>
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {isPending ? 'Processing…' : `Withdraw ₦${Number(amount || 0).toLocaleString()}`}
+          </Button>
+        </form>
+      )}
+    </div>
+  )
 }
 
 // ── Virtual Account Section ──────────────────────────────────────────────────
@@ -117,7 +309,7 @@ function VirtualAccountSection() {
             Copy
           </Button>
         </div>
-        <p className="mt-2 text-xs text-slate-500">Wema Bank · Send payments to this account</p>
+        <p className="mt-2 text-xs text-slate-500">Wema Bank · Send payments to this account to top up your Trace wallet</p>
       </div>
     )
   }
@@ -147,8 +339,6 @@ function VirtualAccountSection() {
 
 export default function FinanceGatewayPage() {
   const { data: profile, isLoading: profileLoading } = useEconomicProfile()
-  const [selectedProduct, setSelectedProduct] = useState<string | null>(null)
-
   const score = profile?.identity_score ?? 0
   const isEligible = profile?.is_finance_eligible ?? false
   const maxLoan = profile?.max_recommended_loan ?? 0
@@ -164,6 +354,9 @@ export default function FinanceGatewayPage() {
         <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-2">Quick Cash</h1>
         <p className="text-slate-500">Money when you need it — loans and financial products built for you</p>
       </div>
+
+      {/* Wallet Balance + Withdraw */}
+      <WalletSection />
 
       {/* Virtual Account */}
       <VirtualAccountSection />
@@ -239,44 +432,6 @@ export default function FinanceGatewayPage() {
         </div>
       </div>
 
-      {/* Financial Products */}
-      {/* <div>
-        <h2 className="text-2xl font-bold text-slate-900 mb-6">Financial Products</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          {FINANCE_PRODUCTS.map((product) => {
-            const eligible = score >= product.minScore
-            const Icon = product.icon
-            return (
-              <div
-                key={product.id}
-                onClick={() => setSelectedProduct(product.id === selectedProduct ? null : product.id)}
-                className={cn(
-                  'cursor-pointer rounded-2xl border bg-white p-6 transition-all',
-                  selectedProduct === product.id
-                    ? 'border-trace-accent ring-2 ring-trace-accent/20'
-                    : 'border-border hover:border-slate-300',
-                  !eligible && 'opacity-60'
-                )}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
-                    <Icon className="h-6 w-6 text-slate-700" />
-                  </div>
-                  <span className={cn(
-                    'rounded-full px-2.5 py-0.5 text-xs font-semibold',
-                    eligible ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'
-                  )}>
-                    {eligible ? 'Eligible' : `${product.minScore} pts`}
-                  </span>
-                </div>
-                <h3 className="font-bold text-slate-900 mb-1">{product.title}</h3>
-                <p className="text-sm text-slate-500">{product.description}</p>
-              </div>
-            )
-          })}
-        </div>
-      </div> */}
-
       {/* Actionable Tips */}
       <div className="rounded-2xl border border-border bg-white p-6">
         <h3 className="text-lg font-semibold text-slate-900 mb-5 flex items-center gap-2">
@@ -300,44 +455,6 @@ export default function FinanceGatewayPage() {
           ))}
         </div>
       </div>
-
-      {/* Selected product detail panel */}
-      {selectedProduct && (() => {
-        const product = FINANCE_PRODUCTS.find(p => p.id === selectedProduct)!
-        const eligible = score >= product.minScore
-        const Icon = product.icon
-        return (
-          <div className="rounded-2xl border border-border bg-white p-6">
-            <div className="flex items-start gap-4 mb-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
-                <Icon className="h-6 w-6 text-slate-700" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">{product.title}</h3>
-                <p className="text-sm text-slate-500">{product.description}</p>
-              </div>
-            </div>
-            <div className="mb-6">
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Eligibility</p>
-              <div className="flex items-center gap-3">
-                <div className="flex-1 h-2.5 rounded-full bg-slate-100 overflow-hidden">
-                  <div
-                    className={cn('h-full transition-all', eligible ? 'bg-green-500' : 'bg-trace-accent')}
-                    style={{ width: `${Math.min((score / product.minScore) * 100, 100)}%` }}
-                  />
-                </div>
-                <span className="text-sm font-bold text-slate-700">{score}/{product.minScore}</span>
-              </div>
-              <p className={cn('text-xs mt-1.5', eligible ? 'text-green-600' : 'text-slate-500')}>
-                {eligible ? '✓ You\'re eligible!' : `Need ${product.minScore - score} more points`}
-              </p>
-            </div>
-            <Button className="w-full" disabled={!eligible}>
-              {eligible ? 'Apply Now' : 'Unlock Product'}
-            </Button>
-          </div>
-        )
-      })()}
     </div>
   )
 }

@@ -16,19 +16,28 @@ import type { Response } from 'express';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // In production the frontend (traceafrika.app) and backend (api.traceafrika.app) are on
+  // different subdomains. Without an explicit domain the cookie is scoped to api.traceafrika.app
+  // only, so the Next.js middleware on traceafrika.app never sees it and redirects every
+  // post-login navigation back to /login. Setting domain=.traceafrika.app shares the cookie
+  // across all subdomains so both the backend and the middleware can read it.
+  private get cookieOptions() {
+    const isProduction = process.env.NODE_ENV === 'production';
+    return {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax' as const,
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      domain: process.env.COOKIE_DOMAIN || undefined,
+    };
+  }
+
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('register')
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.register(dto);
-
-    res.cookie('access_token', result.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
+    res.cookie('access_token', result.token, this.cookieOptions);
     return {
       message: result.message,
       data: { user: result.user },
@@ -40,15 +49,7 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const result = await this.authService.login(dto);
-
-    res.cookie('access_token', result.token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
+    res.cookie('access_token', result.token, this.cookieOptions);
     return {
       message: result.message,
       data: { user: result.user },
@@ -58,12 +59,8 @@ export class AuthController {
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('access_token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-    });
+    const { maxAge: _maxAge, ...clearOptions } = this.cookieOptions;
+    res.clearCookie('access_token', clearOptions);
 
     return { message: 'Logged out successfully' };
   }

@@ -613,6 +613,12 @@ export class SquadService {
         },
       });
 
+      // Credit the user's internal wallet (cast until prisma generate runs with new schema)
+      await (this.prisma as any).wallet.upsert({
+        where: { user_id: userId },
+        create: { user_id: userId, balance: amount, currency: 'NGN' },
+        update: { balance: { increment: amount } },
+      });
 
       await this.scoreQueue.add('recalculate-score', { userId });
     }

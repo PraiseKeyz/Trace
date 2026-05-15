@@ -11,6 +11,7 @@ import { OpportunitiesModule } from './opportunities/opportunities.module';
 import { SquadModule } from './squad/squad.module';
 import { VouchModule } from './vouch/vouch.module';
 import { UploadModule } from './upload/upload.module';
+import { WalletModule } from './wallet/wallet.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { BullModule } from '@nestjs/bullmq';
@@ -48,6 +49,7 @@ import { APP_GUARD } from '@nestjs/core';
     SquadModule,
     VouchModule,
     UploadModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [
