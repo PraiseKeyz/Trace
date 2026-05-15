@@ -34,18 +34,33 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
 
-  const rawOrigins = configService.get<string>('FRONTEND_URL') || 'http://localhost:3000';
-  const allowedOrigins = rawOrigins.split(',').map(o => o.trim()).filter(Boolean);
+  // Base allowed origins — always include production domains regardless of env var
+  const ALWAYS_ALLOWED = [
+    'https://traceafrika.app',
+    'https://www.traceafrika.app',
+    'http://localhost:3000',
+    'http://localhost:3001',
+  ];
+
+  const rawOrigins = configService.get<string>('FRONTEND_URL') ?? '';
+  const envOrigins = rawOrigins.split(',').map(o => o.trim()).filter(Boolean);
+  const allowedOrigins = new Set([...ALWAYS_ALLOWED, ...envOrigins]);
+
+  console.log('[CORS] Allowed origins:', [...allowedOrigins]);
 
   app.enableCors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow server-to-server (no Origin header) and all whitelisted origins
+      if (!origin || allowedOrigins.has(origin)) {
         callback(null, true);
       } else {
+        console.warn(`[CORS] Blocked origin: ${origin}`);
         callback(new Error(`CORS: origin '${origin}' not allowed`));
       }
     },
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Cookie'],
   });
 
   // Serve static files from the uploads directory

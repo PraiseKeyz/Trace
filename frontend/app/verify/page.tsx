@@ -123,26 +123,30 @@ export default function VerifyPage() {
 
             <Button
               type="submit"
+              variant="dark"
+              size="lg"
               disabled={isVerifying || otp.length !== 6}
-              className="w-full h-12 bg-slate-950 hover:bg-slate-800 text-white rounded-full font-bold text-base"
+              className="w-full rounded-full"
             >
               {isVerifying ? 'Verifying…' : 'Verify Phone'}
-              {!isVerifying && <ArrowRight className="ml-2 h-5 w-5" />}
+              {!isVerifying && <ArrowRight className="h-5 w-5" />}
             </Button>
           </form>
 
           {/* Resend */}
           <div className="text-center mt-8 space-y-2">
             <p className="text-sm text-muted-foreground">Didn&apos;t receive the code?</p>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={handleResend}
               disabled={cooldown > 0 || isResending}
-              className="inline-flex items-center gap-2 text-sm font-bold text-slate-950 hover:underline disabled:text-muted-foreground disabled:no-underline disabled:cursor-not-allowed transition-colors"
+              className="font-bold text-slate-950 disabled:text-muted-foreground"
             >
               <RotateCcw size={14} className={cooldown > 0 || isResending ? '' : 'text-trace-accent'} />
               {isResending ? 'Resending...' : cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend OTP'}
-            </button>
+            </Button>
           </div>
 
           {/* <p className="text-center text-xs text-muted-foreground mt-10">

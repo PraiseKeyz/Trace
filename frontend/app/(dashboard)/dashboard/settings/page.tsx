@@ -117,8 +117,8 @@ function ProfileTab() {
         ) : (
           <div className="flex gap-2">
             <Button variant="ghost" onClick={() => setEditMode(false)} disabled={saving}>Cancel</Button>
-            <Button onClick={handleSave} disabled={saving} className="bg-trace-accent hover:bg-trace-accent/90 text-white">
-              {saving ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
               Save Changes
             </Button>
           </div>
@@ -370,13 +370,15 @@ function SecurityTab() {
           className="pr-10 bg-slate-50"
           required
         />
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon-sm"
           onClick={() => setShow(s => ({ ...s, [showField]: !s[showField] }))}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+          className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
         >
           {show[showField] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-        </button>
+        </Button>
       </div>
     </div>
   )
@@ -394,9 +396,8 @@ function SecurityTab() {
         <Button
           type="submit"
           disabled={isPending || !form.currentPassword || !form.newPassword || !form.confirm}
-          className="bg-trace-accent hover:bg-trace-accent/90 text-white"
         >
-          {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
           {isPending ? 'Updating…' : 'Change Password'}
         </Button>
       </form>
@@ -452,7 +453,7 @@ function PrivacyTab() {
               <p className="text-sm font-semibold text-slate-800">{p.title}</p>
               <p className="text-xs text-slate-500 mt-0.5">{p.desc}</p>
             </div>
-            <button className="text-xs font-semibold text-trace-accent hover:underline flex-shrink-0">Manage</button>
+            <Button variant="link" size="sm" className="flex-shrink-0 h-auto p-0 text-xs">Manage</Button>
           </div>
         ))}
       </div>

@@ -217,13 +217,15 @@ function VouchCard({
         </div>
 
         {mode === 'given' && onRemove && (
-          <button
+          <Button
+            variant="ghost"
+            size="icon-sm"
             onClick={onRemove}
             disabled={removing}
-            className="flex-shrink-0 rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-500 transition-colors disabled:opacity-50"
+            className="flex-shrink-0 text-slate-400 hover:bg-red-50 hover:text-red-500"
           >
             <Trash2 className="h-4 w-4" />
-          </button>
+          </Button>
         )}
       </div>
     </div>
@@ -293,7 +295,7 @@ function VouchSomeoneTab() {
               onChange={e => setPhone(e.target.value.replace(/[^\d+]/g, ''))}
               className="flex-1 rounded-xl border border-border px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
             />
-            <Button type="submit" className="bg-trace-accent hover:bg-trace-accent/90 text-white" disabled={phone.length < 10}>
+            <Button type="submit" disabled={phone.length < 10}>
               {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronRight className="h-4 w-4" />}
             </Button>
           </form>
@@ -343,7 +345,7 @@ function VouchSomeoneTab() {
 
                   <Button
                     onClick={handleVouch}
-                    className="w-full bg-trace-accent hover:bg-trace-accent/90 text-white"
+                    className="w-full"
                     disabled={isPending}
                   >
                     {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <HandshakeIcon className="h-4 w-4 mr-2" />}

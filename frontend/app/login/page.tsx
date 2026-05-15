@@ -75,13 +75,15 @@ export default function LoginPage() {
               className="h-12 bg-trace-surface border-trace-border pr-12"
               required
             />
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-sm"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </Button>
           </div>
         </div>
 
@@ -92,11 +94,12 @@ export default function LoginPage() {
 
         <Button
           type="submit"
+          size="lg"
           disabled={isLoading}
-          className="w-full h-12 bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full font-bold text-base mt-2"
+          className="w-full rounded-full mt-2"
         >
           {isLoading ? 'Signing in…' : 'Sign In'}
-          {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
+          {!isLoading && <ArrowRight className="h-5 w-5" />}
         </Button>
       </form>
 

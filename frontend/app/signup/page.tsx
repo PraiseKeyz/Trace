@@ -98,10 +98,11 @@ export default function SignupPage() {
               className={`h-12 bg-trace-surface border-trace-border pr-12${errors.password ? ' border-red-400' : ''}`}
               required
             />
-            <button type="button" onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            <Button type="button" variant="ghost" size="icon-sm"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </Button>
           </div>
           {errors.password
             ? <p className="text-xs text-red-500 mt-1">{errors.password}</p>
@@ -120,21 +121,23 @@ export default function SignupPage() {
               className={`h-12 bg-trace-surface border-trace-border pr-12${errors.confirmPassword ? ' border-red-400' : ''}`}
               required
             />
-            <button type="button" onClick={() => setShowConfirm(!showConfirm)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
-              {showConfirm ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+            <Button type="button" variant="ghost" size="icon-sm"
+              onClick={() => setShowConfirm(!showConfirm)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+              {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
+            </Button>
           </div>
           {errors.confirmPassword && <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>}
         </div>
 
         <Button
           type="submit"
+          size="lg"
           disabled={isLoading}
-          className="w-full h-12 bg-trace-accent hover:bg-trace-accent/90 text-white rounded-full font-bold text-base shadow-lg shadow-trace-accent/20 mt-2"
+          className="w-full rounded-full shadow-lg shadow-trace-accent/20 mt-2"
         >
           {isLoading ? 'Creating account…' : 'Create Account'}
-          {!isLoading && <ArrowRight className="ml-2 h-5 w-5" />}
+          {!isLoading && <ArrowRight className="h-5 w-5" />}
         </Button>
       </form>
 
