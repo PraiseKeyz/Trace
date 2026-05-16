@@ -40,10 +40,8 @@ export interface OpportunitiesPage {
   totalPages: number
 }
 
-export interface MatchedOpportunity {
-  opportunity_id: string
+export interface MatchedOpportunity extends Opportunity {
   match_score: number
-  title: string
 }
 
 export interface ApplicationApplicant {
@@ -177,7 +175,10 @@ export function useApproveApplicant() {
       agreed_amount: number
     }) =>
       api.post(`/opportunities/${opportunityId}/approve/${applicantId}`, { agreed_amount }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['opportunities'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['opportunities'] })
+      qc.invalidateQueries({ queryKey: ['wallet'] })
+    },
   })
 }
 
@@ -195,7 +196,10 @@ export function useConfirmCompletion() {
   return useMutation({
     mutationFn: (opportunityId: string) =>
       api.post(`/opportunities/${opportunityId}/confirm`, {}),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['opportunities'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['opportunities'] })
+      qc.invalidateQueries({ queryKey: ['wallet'] })
+    },
   })
 }
 

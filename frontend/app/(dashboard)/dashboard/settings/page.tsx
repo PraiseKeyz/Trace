@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, KeyboardEvent } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { ChevronRight, User, Lock, Bell, Shield, HelpCircle, Loader2, Eye, EyeOff } from 'lucide-react'
+import { ChevronRight, User, Lock, Bell, Shield, HelpCircle, Loader2, Eye, EyeOff, X, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useCurrentUser, currentUserKey } from '@/lib/api/hooks/use-current-user'
+import { useEconomicProfile, useUpdateSkills } from '@/lib/api/hooks/use-economic-profile'
 import { useAuth } from '@/context/auth-context'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'
@@ -19,6 +20,46 @@ const LANGUAGE_LABELS: Record<string, string> = {
   ig:'Igbo', pcm:'Naija (Pidgin)', wo:'Wolof', tw:'Twi / Akan', ff:'Fula', ee:'Ewe',
   sw:'Swahili', am:'Amharic', om:'Oromo', so:'Somali', zu:'Zulu', xh:'Xhosa',
   af:'Afrikaans', sn:'Shona', st:'Sesotho', ln:'Lingala',
+}
+
+type Persona = 'trader' | 'gig_worker'
+
+const TRADE_CATEGORIES: Record<Persona, { value: string; label: string }[]> = {
+  trader: [
+    { value: 'retail',      label: 'Retail & Reselling' },
+    { value: 'food',        label: 'Food & Beverage' },
+    { value: 'transport',   label: 'Transport & Logistics' },
+    { value: 'agriculture', label: 'Agriculture & Farming' },
+    { value: 'crafts',      label: 'Crafts & Handmade' },
+    { value: 'services',    label: 'Services & Repairs' },
+    { value: 'other',       label: 'Other' },
+  ],
+  gig_worker: [
+    { value: 'tech',     label: 'Tech & Digital Services' },
+    { value: 'gig',      label: 'Gig & Freelance Work' },
+    { value: 'services', label: 'Services & Repairs' },
+    { value: 'creative', label: 'Creative & Media' },
+    { value: 'other',    label: 'Other' },
+  ],
+}
+
+const SKILLS_MAP: Record<Persona, Record<string, string[]>> = {
+  trader: {
+    retail:      ['Customer Service', 'Inventory Management', 'Product Sourcing', 'Negotiation', 'Cash Flow Management', 'Social Media Marketing', 'Digital Payments', 'Supplier Relations'],
+    food:        ['Food Preparation', 'Customer Service', 'Inventory Management', 'Cash Flow Management', 'Food Safety', 'Supplier Relations', 'Menu Planning', 'Packaging & Delivery'],
+    transport:   ['Driving', 'Route Planning', 'Vehicle Maintenance', 'Dispatch', 'Customer Service', 'Fleet Management', 'Logistics'],
+    agriculture: ['Crop Management', 'Livestock Care', 'Irrigation', 'Harvesting', 'Market Research', 'Supply Chain', 'Agro-processing'],
+    crafts:      ['Tailoring', 'Weaving', 'Pottery', 'Woodwork', 'Jewelry Making', 'Product Photography', 'Online Selling'],
+    services:    ['Customer Service', 'Plumbing', 'Electrical Work', 'Carpentry', 'Cleaning', 'Bookkeeping', 'Technical Repairs'],
+    other:       ['Customer Service', 'Bookkeeping', 'Cash Flow Management', 'Social Media Marketing', 'Digital Payments', 'Negotiation'],
+  },
+  gig_worker: {
+    tech:     ['Web Development', 'Mobile Development', 'Graphic Design', 'Video Editing', 'Content Writing', 'Digital Marketing', 'Data Entry', 'Social Media Management', 'UI/UX Design', 'SEO'],
+    gig:      ['Customer Support', 'Translation', 'Research', 'Transcription', 'Virtual Assistance', 'Data Entry', 'Content Writing', 'Proofreading'],
+    services: ['Plumbing', 'Electrical Work', 'Carpentry', 'Tailoring', 'Photography', 'Cleaning', 'Catering', 'Teaching', 'Hair Styling', 'Auto Repair'],
+    creative: ['Photography', 'Videography', 'Graphic Design', 'Music Production', 'Copywriting', 'Animation', 'Content Creation', 'Voice Over'],
+    other:    ['Customer Support', 'Teaching', 'Research', 'Data Entry', 'Translation', 'Virtual Assistance'],
+  },
 }
 
 interface ProfileForm {
@@ -36,6 +77,7 @@ interface ProfileForm {
 
 function ProfileTab() {
   const { data: user, isLoading } = useCurrentUser()
+  const { data: profile } = useEconomicProfile()
   const qc = useQueryClient()
   const [editMode, setEditMode] = useState(false)
   const [form, setForm] = useState<ProfileForm>({
@@ -43,6 +85,14 @@ function ProfileTab() {
     gender: '', dob: '', persona: '',
     languages: [], preferred_language: '', data_sharing_consent: false,
   })
+
+  // ── Skills state ─────────────────────────────────────────────────────────
+  const [skills, setSkills] = useState<string[]>([])
+  const [tradeCategory, setTradeCategory] = useState('')
+  const [yearsActive, setYearsActive] = useState('')
+  const [skillInput, setSkillInput] = useState('')
+  const skillInputRef = useRef<HTMLInputElement>(null)
+  const { mutate: saveSkills, isPending: savingSkills } = useUpdateSkills()
 
   const { mutate: save, isPending: saving } = useMutation({
     mutationFn: (data: Partial<ProfileForm>) => api.patch('/users/me', data),
@@ -52,6 +102,44 @@ function ProfileTab() {
       setEditMode(false)
     },
   })
+
+  const addSkill = () => {
+    const val = skillInput.trim()
+    if (!val || skills.map(s => s.toLowerCase()).includes(val.toLowerCase())) return
+    setSkills(s => [...s, val])
+    setSkillInput('')
+    skillInputRef.current?.focus()
+  }
+
+  const removeSkill = (skill: string) => setSkills(s => s.filter(x => x !== skill))
+
+  const handleSkillKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') { e.preventDefault(); addSkill() }
+    if (e.key === 'Backspace' && !skillInput && skills.length) {
+      setSkills(s => s.slice(0, -1))
+    }
+  }
+
+  const handleSaveSkills = () => {
+    saveSkills(
+      {
+        skills,
+        trade_category: tradeCategory || undefined,
+        years_active: yearsActive ? parseInt(yearsActive) : undefined,
+      },
+      { onSuccess: () => toast.success('Skills updated') },
+    )
+  }
+
+  const activePersona = ((editMode ? form.persona : user?.persona) || undefined) as Persona | undefined
+  const categoryOptions = activePersona ? TRADE_CATEGORIES[activePersona] : [
+    ...TRADE_CATEGORIES.trader, ...TRADE_CATEGORIES.gig_worker.filter(c => !TRADE_CATEGORIES.trader.find(t => t.value === c.value)),
+  ]
+  const skillSuggestions: string[] = editMode && tradeCategory && activePersona
+    ? (SKILLS_MAP[activePersona]?.[tradeCategory] ?? []).filter(
+        s => !skills.map(x => x.toLowerCase()).includes(s.toLowerCase()),
+      )
+    : []
 
   const handleEdit = () => {
     setForm({
@@ -66,6 +154,9 @@ function ProfileTab() {
       preferred_language:   user?.preferred_language ?? '',
       data_sharing_consent: user?.data_sharing_consent ?? false,
     })
+    setSkills(profile?.skills ?? [])
+    setTradeCategory(profile?.trade_category ?? '')
+    setYearsActive(profile?.years_active?.toString() ?? '')
     setEditMode(true)
   }
 
@@ -230,6 +321,128 @@ function ProfileTab() {
               />
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Skills & Trade */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">Skills & Trade</p>
+          {editMode && (
+            <Button size="sm" onClick={handleSaveSkills} disabled={savingSkills}>
+              {savingSkills ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+              Save Skills
+            </Button>
+          )}
+        </div>
+        <p className="text-xs text-slate-500 mb-4">
+          These skills are used by the AI to match you with relevant job opportunities.
+        </p>
+
+        {/* Skill pills + input */}
+        <div
+          onClick={() => editMode && skillInputRef.current?.focus()}
+          className={cn(
+            'min-h-[48px] flex flex-wrap gap-2 items-center rounded-xl border px-3 py-2 bg-slate-50',
+            editMode ? 'border-slate-300 cursor-text' : 'border-slate-200 cursor-default opacity-70',
+          )}
+        >
+          {(editMode ? skills : (profile?.skills ?? [])).map(skill => (
+            <span
+              key={skill}
+              className="inline-flex items-center gap-1 rounded-full bg-slate-950 text-white text-xs font-medium px-2.5 py-1"
+            >
+              {skill}
+              {editMode && (
+                <button type="button" onClick={() => removeSkill(skill)} className="hover:text-slate-300 ml-0.5">
+                  <X className="h-3 w-3" />
+                </button>
+              )}
+            </span>
+          ))}
+          {editMode && (
+            <input
+              ref={skillInputRef}
+              value={skillInput}
+              onChange={e => setSkillInput(e.target.value)}
+              onKeyDown={handleSkillKeyDown}
+              placeholder={(editMode ? skills : (profile?.skills ?? [])).length === 0 ? 'Type a skill and press Enter…' : 'Add more…'}
+              className="flex-1 min-w-[140px] bg-transparent text-sm outline-none placeholder:text-slate-400"
+            />
+          )}
+          {!editMode && (profile?.skills ?? []).length === 0 && (
+            <span className="text-sm text-slate-400">No skills added yet</span>
+          )}
+        </div>
+        {editMode && (
+          <div className="flex gap-2 mt-2">
+            <Button type="button" variant="outline" size="sm" onClick={addSkill} disabled={!skillInput.trim()}>
+              <Plus className="h-3.5 w-3.5" />
+              Add
+            </Button>
+          </div>
+        )}
+
+        {/* Skill suggestions from selected trade category */}
+        {editMode && skillSuggestions.length > 0 && (
+          <div className="mt-3">
+            <p className="text-xs text-slate-500 mb-2">Suggested for your category — tap to add:</p>
+            <div className="flex flex-wrap gap-1.5">
+              {skillSuggestions.map(s => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setSkills(prev => [...prev, s])}
+                  className="inline-flex items-center gap-1 rounded-full border border-slate-300 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 hover:border-slate-950 hover:bg-slate-100 transition-colors"
+                >
+                  <Plus className="h-2.5 w-2.5" />
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="grid gap-4 sm:grid-cols-2 mt-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Trade Category</label>
+            {editMode ? (
+              <select
+                value={tradeCategory}
+                onChange={e => setTradeCategory(e.target.value)}
+                className="w-full h-10 px-3 bg-slate-50 border border-input rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-trace-accent/30"
+              >
+                <option value="">Select category…</option>
+                {categoryOptions.map(c => (
+                  <option key={c.value} value={c.value}>{c.label}</option>
+                ))}
+              </select>
+            ) : (
+              <Input
+                disabled
+                value={
+                  profile?.trade_category
+                    ? (categoryOptions.find(c => c.value === profile.trade_category)?.label ?? profile.trade_category)
+                    : ''
+                }
+                placeholder="Not set"
+                className="bg-slate-50 opacity-70"
+              />
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Years Active in Trade</label>
+            <Input
+              disabled={!editMode}
+              type="number"
+              min={0}
+              max={60}
+              value={editMode ? yearsActive : (profile?.years_active?.toString() ?? '')}
+              onChange={e => setYearsActive(e.target.value)}
+              placeholder="e.g. 5"
+              className={cn('bg-slate-50', !editMode && 'opacity-70')}
+            />
+          </div>
         </div>
       </div>
 

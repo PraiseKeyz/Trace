@@ -687,6 +687,15 @@ export class SquadService {
     }))) as SquadResponse<T>;
 
     if (!response.ok) {
+      this.logger.error(
+        `Squad API ${options.method} ${path} → HTTP ${response.status}: ${JSON.stringify(payload)}`,
+      );
+      if (response.status === 401 || response.status === 403) {
+        throw new HttpException(
+          'Squad API authentication failed. Check SQUAD_SECRET_KEY in your environment.',
+          502,
+        );
+      }
       throw new HttpException(
         payload.message || 'Squad API request failed',
         payload.status || response.status,

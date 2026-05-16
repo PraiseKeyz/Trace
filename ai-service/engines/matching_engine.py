@@ -2,6 +2,8 @@ import logging
 import math
 from typing import List, Tuple
 
+import numpy as np
+
 from core.config import settings
 from core.embeddings import get_embedding_engine
 from core.schemas import (
@@ -31,37 +33,44 @@ def _haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> f
 
 
 def _calculate_skill_score(
-    user_skills: List[str],
-    user_skill_descriptions: List[str],
+    all_user_skills: List[str],
+    user_vecs: "np.ndarray",
     required_skills: List[str],
     opp_description: str,
 ) -> Tuple[float, List[str]]:
+    """Score skill overlap using pre-computed user embeddings (passed in to avoid re-encoding)."""
     engine = get_embedding_engine()
 
     if not required_skills and not opp_description:
         return 50.0, []
 
-    all_user_skills = list(set(user_skills + user_skill_descriptions))
-
-    if not all_user_skills:
+    if not all_user_skills or user_vecs is None or user_vecs.shape[0] == 0:
         return 0.0, []
 
+    # Encode required skills + description together (one batch per opportunity)
     all_required = list(required_skills)
     if opp_description:
         all_required.append(opp_description)
 
-    skill_score = engine.skill_match_score(all_user_skills, all_required)
+    required_vecs = engine.encode_batch(all_required)
+    if required_vecs.shape[0] == 0:
+        return 0.0, []
 
+    # Skill match: for each required item, best similarity with any user skill
+    best_matches = []
+    for req_vec in required_vecs:
+        sims = [engine.similarity(req_vec, u_vec) for u_vec in user_vecs]
+        best_matches.append(max(sims))
+
+    skill_score = float(np.mean(best_matches))
+
+    # Find specific matched skill pairs (only required_skills, not description)
     matched_skills = []
-    if required_skills and all_user_skills:
-        req_vecs = engine.encode_batch(required_skills)
-        user_vecs = engine.encode_batch(all_user_skills)
-
-        for i, req_skill in enumerate(required_skills):
-            for j, user_skill in enumerate(all_user_skills):
-                sim = engine.similarity(req_vecs[i], user_vecs[j])
-                if sim > 0.5:
-                    matched_skills.append(f"{user_skill} → {req_skill}")
+    req_vecs_only = required_vecs[:len(required_skills)]
+    for i, req_skill in enumerate(required_skills):
+        for j, user_skill in enumerate(all_user_skills):
+            if engine.similarity(req_vecs_only[i], user_vecs[j]) > 0.5:
+                matched_skills.append(f"{user_skill} → {req_skill}")
 
     score = skill_score * 100
     return round(min(100, max(0, score)), 2), matched_skills
@@ -128,13 +137,18 @@ def match_opportunities(
     opportunities: List[OpportunityData],
 ) -> MatchResponse:
     engine = get_embedding_engine()
+
+    # Pre-compute user skill embeddings ONCE — reused across all opportunities
+    all_user_skills = list(set(user.skills + user.skill_descriptions))
+    user_vecs = engine.encode_batch(all_user_skills) if all_user_skills else np.zeros((0, settings.EMBEDDING_DIMENSION))
+
     matched = []
 
     for opp in opportunities:
         # 1. Skill overlap (40%) — AfroXLM-R powered
         skill_score, matched_skills = _calculate_skill_score(
-            user_skills=user.skills,
-            user_skill_descriptions=user.skill_descriptions,
+            all_user_skills=all_user_skills,
+            user_vecs=user_vecs,
             required_skills=opp.skills_required,
             opp_description=opp.description or opp.title,
         )

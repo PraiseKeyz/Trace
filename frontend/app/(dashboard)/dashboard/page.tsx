@@ -6,13 +6,14 @@ import { useRouter } from 'next/navigation'
 import {
   ArrowRight,
   Briefcase,
-  PiggyBank,
-  ArrowLeftRight,
+  ArrowDownToLine,
+  ArrowUpFromLine,
   Users,
   Loader2,
   TrendingUp,
   Star,
   Wallet,
+  ClipboardList,
 } from 'lucide-react'
 import { useCurrentUser } from '@/lib/api/hooks/use-current-user'
 import { useEconomicProfile } from '@/lib/api/hooks/use-economic-profile'
@@ -26,7 +27,7 @@ const RISK_TIER_LABEL: Record<string, string> = {
   high: 'Starter',
 }
 
-const QUICK_ACTIONS = [
+const GIG_QUICK_ACTIONS = [
   {
     icon: Briefcase,
     label: 'Find Work',
@@ -35,18 +36,49 @@ const QUICK_ACTIONS = [
     color: 'text-trace-accent',
   },
   {
-    icon: PiggyBank,
-    label: 'Quick Cash',
-    href: '/dashboard/finance-gateway',
-    bg: 'bg-slate-950/5',
-    color: 'text-slate-800',
+    icon: ArrowDownToLine,
+    label: 'Deposit',
+    href: '/dashboard/deposit',
+    bg: 'bg-green-50',
+    color: 'text-green-600',
   },
   {
-    icon: ArrowLeftRight,
-    label: 'Transact',
-    href: '/dashboard/transactions',
+    icon: ArrowUpFromLine,
+    label: 'Withdraw',
+    href: '/dashboard/withdraw',
+    bg: 'bg-slate-950/5',
+    color: 'text-slate-700',
+  },
+  {
+    icon: Users,
+    label: 'Community',
+    href: '/dashboard/community',
     bg: 'bg-trace-accent/10',
     color: 'text-trace-accent',
+  },
+]
+
+const TRADER_QUICK_ACTIONS = [
+  {
+    icon: ClipboardList,
+    label: 'My Jobs',
+    href: '/dashboard/my-jobs',
+    bg: 'bg-trace-accent/10',
+    color: 'text-trace-accent',
+  },
+  {
+    icon: ArrowDownToLine,
+    label: 'Deposit',
+    href: '/dashboard/deposit',
+    bg: 'bg-green-50',
+    color: 'text-green-600',
+  },
+  {
+    icon: ArrowUpFromLine,
+    label: 'Withdraw',
+    href: '/dashboard/withdraw',
+    bg: 'bg-slate-950/5',
+    color: 'text-slate-700',
   },
   {
     icon: Users,
@@ -95,11 +127,10 @@ export default function DashboardPage() {
   const scorePct = Math.round((score / 1000) * 100)
 
   const walletBalance = wallet?.balance ?? 0
+  const isTrader = user?.persona === 'trader'
+  const quickActions = isTrader ? TRADER_QUICK_ACTIONS : GIG_QUICK_ACTIONS
 
   const recentTx = (transactions ?? []).slice(0, 5)
-  const totalIncome = (transactions ?? [])
-    .filter((t) => t.status === 'successful' && t.type !== 'debit')
-    .reduce((sum, t) => sum + Number(t.amount), 0)
 
   return (
     <div className="space-y-4">
@@ -164,18 +195,6 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 lg:grid-cols-1 gap-4">
             <div className="bg-white rounded-2xl p-5 border border-trace-border">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 rounded-lg bg-trace-accent/10 flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4 text-trace-accent" />
-                </div>
-                <p className="text-xs font-semibold text-muted-foreground">Total Income</p>
-              </div>
-              <p className="text-2xl font-black text-slate-950">
-                ₦{totalIncome >= 1000 ? `${(totalIncome / 1000).toFixed(1)}K` : totalIncome.toLocaleString()}
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-5 border border-trace-border">
-              <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-slate-950/5 flex items-center justify-center">
                   <Star className="h-4 w-4 text-slate-700" />
                 </div>
@@ -187,6 +206,19 @@ export default function DashboardPage() {
               <p className="text-[10px] text-muted-foreground mt-1">community trust signals</p>
             </div>
 
+            <div className="bg-white rounded-2xl p-5 border border-trace-border">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 rounded-lg bg-trace-accent/10 flex items-center justify-center">
+                  <TrendingUp className="h-4 w-4 text-trace-accent" />
+                </div>
+                <p className="text-xs font-semibold text-muted-foreground">Transactions</p>
+              </div>
+              <p className="text-2xl font-black text-slate-950">
+                {(transactions ?? []).length}
+              </p>
+              <p className="text-[10px] text-muted-foreground mt-1">recorded activities</p>
+            </div>
+
             <div className="bg-white rounded-2xl p-5 border border-trace-border col-span-2 lg:col-span-1">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 rounded-lg bg-trace-accent/10 flex items-center justify-center">
@@ -195,7 +227,7 @@ export default function DashboardPage() {
                 <p className="text-xs font-semibold text-muted-foreground">Wallet Balance</p>
               </div>
               <p className="text-2xl font-black text-slate-950">
-                ₦{walletBalance >= 1000 ? `${(walletBalance / 1000).toFixed(1)}K` : walletBalance.toLocaleString()}
+                ₦{Number(walletBalance).toLocaleString('en-NG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
               <p className="text-[10px] text-muted-foreground mt-1">available to withdraw</p>
             </div>
@@ -205,7 +237,7 @@ export default function DashboardPage() {
 
       {/* ── Quick Actions ─────────────────────────────────────────── */}
       <div className="grid grid-cols-4 gap-3">
-        {QUICK_ACTIONS.map((action) => (
+        {quickActions.map((action) => (
           <Link
             key={action.label}
             href={action.href}
@@ -300,7 +332,7 @@ export default function DashboardPage() {
             </p>
           </div>
           <Link
-            href="/dashboard/work-matcher"
+            href={isTrader ? '/dashboard/my-jobs' : '/dashboard/work-matcher'}
             className="flex-shrink-0 text-xs font-bold text-trace-accent flex items-center gap-1"
           >
             Start <ArrowRight size={12} />

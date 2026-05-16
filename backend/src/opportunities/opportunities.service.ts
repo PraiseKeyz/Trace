@@ -3,19 +3,20 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import { OpportunityApplicationStatus } from '../../generated/prisma/enums';
-import { SquadService } from '@/squad/squad.service';
 import { GrpcService, MatchedOpportunity } from '@/grpc/grpc.service';
 import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { ApplyOpportunityDto } from './dto/apply-opportunity.dto';
 import { ApproveOpportunityDto } from './dto/approve-opportunity.dto';
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const MATCH_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 @Injectable()
 export class OpportunitiesService {
+  private readonly matchCache = new Map<string, { data: unknown[]; expiresAt: number }>()
+
   constructor(
     private readonly prisma: PrismaService,
-    private readonly squadService: SquadService,
     private readonly grpcService: GrpcService,
     @InjectQueue('score-recalculation') private readonly scoreQueue: Queue,
   ) {}
@@ -110,7 +111,13 @@ export class OpportunitiesService {
     });
   }
 
-  async getMatches(userId: string): Promise<MatchedOpportunity[]> {
+  async getMatches(userId: string) {
+    // Serve from cache if still fresh
+    const cached = this.matchCache.get(userId)
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data
+    }
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { economic_profile: true },
@@ -128,7 +135,30 @@ export class OpportunitiesService {
       languages: user.languages,
     });
 
-    return result.opportunities ?? [];
+    const aiMatches = result.opportunities ?? [];
+    if (aiMatches.length === 0) {
+      this.matchCache.set(userId, { data: [], expiresAt: Date.now() + MATCH_CACHE_TTL_MS })
+      return [];
+    }
+
+    // Enrich AI match IDs with full opportunity details from the database
+    const ids = aiMatches.map(m => m.opportunity_id);
+    const opportunities = await this.prisma.opportunity.findMany({
+      where: { id: { in: ids }, status: 'open' },
+      include: {
+        poster: { select: { id: true, full_name: true, city: true, state: true } },
+      },
+    });
+
+    const oppMap = new Map(opportunities.map(o => [o.id, o]));
+
+    const enriched = aiMatches
+      .filter(m => oppMap.has(m.opportunity_id))
+      .map(m => ({ ...oppMap.get(m.opportunity_id)!, match_score: m.match_score }))
+      .sort((a, b) => b.match_score - a.match_score);
+
+    this.matchCache.set(userId, { data: enriched, expiresAt: Date.now() + MATCH_CACHE_TTL_MS })
+    return enriched;
   }
 
   async getMyApplications(userId: string) {
@@ -207,7 +237,24 @@ export class OpportunitiesService {
       );
     }
 
-    // Set escrow_amount and selected_applicant, then lock funds
+    // Wallet balance check — must have enough to cover the agreed amount
+    const wallet = await (this.prisma as any).wallet.findUnique({
+      where: { user_id: posterId },
+    });
+    const walletBalance = Number(wallet?.balance ?? 0);
+    if (walletBalance < dto.agreed_amount) {
+      throw new BadRequestException(
+        `Insufficient wallet balance. You need ₦${dto.agreed_amount.toLocaleString()} but your wallet only has ₦${walletBalance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}. Please fund your wallet before approving.`,
+      );
+    }
+
+    // Debit trader's Trace wallet — funds held in escrow until job confirmed
+    await (this.prisma as any).wallet.update({
+      where: { user_id: posterId },
+      data: { balance: { decrement: dto.agreed_amount } },
+    });
+
+    // Update opportunity: select worker, lock escrow amount, mark filled
     await this.prisma.opportunity.update({
       where: { id: opportunityId },
       data: {
@@ -228,14 +275,24 @@ export class OpportunitiesService {
       data: { status: 'accepted' },
     });
 
-    // Lock funds via Squad
-    const escrow = await this.squadService.lockEscrow(opportunityId, posterId);
+    // Record escrow-lock transaction
+    await this.prisma.transaction.create({
+      data: {
+        user_id: posterId,
+        counterparty_id: applicantId,
+        squad_reference: `ESC_${opportunityId}`,
+        type: 'escrow_lock',
+        category: 'gig_escrow',
+        amount: dto.agreed_amount,
+        currency: 'NGN',
+        status: 'pending',
+        metadata: { opportunity_id: opportunityId } as any,
+      },
+    });
 
     return {
-      message: 'Applicant approved and funds locked in escrow',
-      escrow_reference: escrow.escrow_reference,
+      message: 'Applicant approved — funds held in escrow from your Trace wallet',
       agreed_amount: dto.agreed_amount,
-      checkout_url: escrow.checkout_url,
     };
   }
 
@@ -250,7 +307,7 @@ export class OpportunitiesService {
     if (opportunity.selected_applicant !== workerId) {
       throw new ForbiddenException('You are not the assigned worker for this opportunity');
     }
-    if (opportunity.status !== 'filled') {
+    if (!['filled', 'in_progress'].includes(opportunity.status)) {
       throw new BadRequestException(
         `Cannot mark done — current status is '${opportunity.status}'`,
       );
@@ -296,7 +353,45 @@ export class OpportunitiesService {
       );
     }
 
-    await this.squadService.autoReleaseEscrow(opportunityId);
+    const workerId = opportunity.selected_applicant;
+    if (!workerId) throw new BadRequestException('No worker assigned to this opportunity');
+
+    const payout = Number(opportunity.escrow_amount ?? 0);
+    if (payout <= 0) throw new BadRequestException('No escrow amount set for this opportunity');
+
+    // Credit worker's Trace wallet
+    await (this.prisma as any).wallet.upsert({
+      where: { user_id: workerId },
+      create: { user_id: workerId, balance: payout, currency: 'NGN' },
+      update: { balance: { increment: payout } },
+    });
+
+    // Mark opportunity as confirmed
+    await this.prisma.opportunity.update({
+      where: { id: opportunityId },
+      data: { status: 'confirmed' },
+    });
+
+    // Mark escrow as released (funds went to worker — this is NOT new income for the poster)
+    await this.prisma.transaction.updateMany({
+      where: { squad_reference: `ESC_${opportunityId}` },
+      data: { status: 'released' },
+    });
+
+    // Record payout credit for the worker
+    await this.prisma.transaction.create({
+      data: {
+        user_id: workerId,
+        counterparty_id: posterId,
+        squad_reference: `PAY_${opportunityId}`,
+        type: 'credit',
+        category: 'gig_payout',
+        amount: payout,
+        currency: 'NGN',
+        status: 'successful',
+        metadata: { opportunity_id: opportunityId } as any,
+      },
+    });
 
     return { message: 'Job confirmed — payment released to the worker' };
   }
@@ -310,7 +405,7 @@ export class OpportunitiesService {
 
     if (!opportunity) throw new NotFoundException('Opportunity not found');
     if (opportunity.posted_by !== posterId) throw new ForbiddenException('Not your opportunity');
-    if (!['filled', 'worker_done'].includes(opportunity.status)) {
+    if (!['filled', 'in_progress', 'worker_done'].includes(opportunity.status)) {
       throw new BadRequestException('No active escrow to dispute');
     }
 

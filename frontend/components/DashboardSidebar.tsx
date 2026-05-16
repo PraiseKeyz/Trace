@@ -59,9 +59,9 @@ const BOTTOM_TABS_GIG = [
 
 const BOTTOM_TABS_ALL = [
   { name: 'Home',      href: '/dashboard',                 icon: LayoutDashboard },
-  { name: 'Work',      href: '/dashboard/work-matcher',    icon: Briefcase },
-  { name: 'Jobs',      href: '/dashboard/my-jobs',         icon: ClipboardList },
   { name: 'Cash',      href: '/dashboard/finance-gateway', icon: PiggyBank },
+  { name: 'Activity',  href: '/dashboard/transactions',    icon: ArrowLeftRight },
+  { name: 'Community', href: '/dashboard/community',       icon: Users },
   { name: 'Me',        href: '/dashboard/settings',        icon: User },
 ]
 
