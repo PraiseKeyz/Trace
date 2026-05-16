@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../instance'
 
 export interface EconomicProfile {
@@ -32,5 +32,14 @@ export function useEconomicProfile() {
   return useQuery({
     queryKey: economicProfileKey,
     queryFn: () => api.get<EconomicProfile>('/economic-profile/me', { silent: true }),
+  })
+}
+
+export function useUpdateSkills() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: { skills?: string[]; trade_category?: string; years_active?: number }) =>
+      api.patch('/economic-profile/me/skills', data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: economicProfileKey }),
   })
 }

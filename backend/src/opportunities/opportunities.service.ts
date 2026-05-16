@@ -108,7 +108,7 @@ export class OpportunitiesService {
     });
   }
 
-  async getMatches(userId: string): Promise<MatchedOpportunity[]> {
+  async getMatches(userId: string) {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { economic_profile: true },
@@ -126,7 +126,24 @@ export class OpportunitiesService {
       languages: user.languages,
     });
 
-    return result.opportunities ?? [];
+    const aiMatches = result.opportunities ?? [];
+    if (aiMatches.length === 0) return [];
+
+    // Enrich AI match IDs with full opportunity details from the database
+    const ids = aiMatches.map(m => m.opportunity_id);
+    const opportunities = await this.prisma.opportunity.findMany({
+      where: { id: { in: ids }, status: 'open' },
+      include: {
+        poster: { select: { id: true, full_name: true, city: true, state: true } },
+      },
+    });
+
+    const oppMap = new Map(opportunities.map(o => [o.id, o]));
+
+    return aiMatches
+      .filter(m => oppMap.has(m.opportunity_id))
+      .map(m => ({ ...oppMap.get(m.opportunity_id)!, match_score: m.match_score }))
+      .sort((a, b) => b.match_score - a.match_score);
   }
 
   async getMyApplications(userId: string) {

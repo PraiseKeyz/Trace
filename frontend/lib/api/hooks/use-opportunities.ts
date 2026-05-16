@@ -40,10 +40,8 @@ export interface OpportunitiesPage {
   totalPages: number
 }
 
-export interface MatchedOpportunity {
-  opportunity_id: string
+export interface MatchedOpportunity extends Opportunity {
   match_score: number
-  title: string
 }
 
 export interface ApplicationApplicant {

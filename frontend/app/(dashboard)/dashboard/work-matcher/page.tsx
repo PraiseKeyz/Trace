@@ -487,22 +487,14 @@ export default function WorkMatcherPage() {
   const opportunities = pageData?.items ?? []
   const totalPages = pageData?.totalPages ?? 1
 
-  // Build match score lookup
-  const matchScoreMap = useMemo<Map<string, MatchedOpportunity>>(() => {
-    if (!Array.isArray(aiMatches)) return new Map()
-    return new Map(aiMatches.map(m => [m.opportunity_id, m]))
-  }, [aiMatches])
+  // AI matches now include full opportunity details — no cross-referencing needed
+  const matchedOpportunities: MatchedOpportunity[] = Array.isArray(aiMatches) ? aiMatches : []
 
-  // AI-matched section (only when AI service is up)
-  const matchedOpportunities = useMemo(() => {
-    if (!Array.isArray(aiMatches) || aiMatches.length === 0) return []
-    return aiMatches
-      .map(m => {
-        const opp = opportunities.find(o => o.id === m.opportunity_id)
-        return opp ? { opp, match: m } : null
-      })
-      .filter((x): x is { opp: Opportunity; match: MatchedOpportunity } => x !== null)
-  }, [aiMatches, opportunities])
+  // Build match score lookup for the "All Opportunities" badges
+  const matchScoreMap = useMemo<Map<string, number>>(() => {
+    if (!Array.isArray(aiMatches)) return new Map()
+    return new Map(aiMatches.map(m => [m.id, m.match_score]))
+  }, [aiMatches])
 
   const filtered = useMemo(() => {
     return opportunities.filter(opp => {
@@ -518,7 +510,9 @@ export default function WorkMatcherPage() {
     })
   }, [opportunities, search, filterRemote])
 
-  const selectedOpp = opportunities.find(o => o.id === selectedId) ?? null
+  const selectedOpp = selectedId
+    ? (opportunities.find(o => o.id === selectedId) ?? matchedOpportunities.find(m => m.id === selectedId) ?? null)
+    : null
 
   const handlePageChange = (p: number) => {
     setPage(p)
@@ -595,12 +589,12 @@ export default function WorkMatcherPage() {
             </div>
           ) : (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {matchedOpportunities.map(({ opp, match }) => (
+              {matchedOpportunities.map((opp) => (
                 <OpportunityCard
                   key={opp.id}
                   opp={opp}
                   applied={appliedIds.has(opp.id)}
-                  matchScore={match.match_score}
+                  matchScore={opp.match_score}
                   onApply={() => handleApply(opp.id)}
                   onSelect={() => setSelectedId(opp.id)}
                 />
@@ -672,7 +666,7 @@ export default function WorkMatcherPage() {
                   key={opp.id}
                   opp={opp}
                   applied={appliedIds.has(opp.id)}
-                  matchScore={matchScoreMap.get(opp.id)?.match_score}
+                  matchScore={matchScoreMap.get(opp.id)}
                   onApply={() => handleApply(opp.id)}
                   onSelect={() => setSelectedId(opp.id)}
                 />

@@ -285,10 +285,10 @@ export default function FinanceGatewayPage() {
                 </p>
               )}
             </div>
-            <Button className="mt-4 md:mt-0">
+            {/* <Button className="mt-4 md:mt-0">
               <ArrowUp className="h-4 w-4" />
               Improve Score
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

@@ -1,148 +1,14 @@
 [
   {
-    "title": "React Frontend Developer",
-    "description": "Build and maintain responsive web applications using React.js. You will work on component architecture, state management, and API integration for a fast-growing fintech startup.",
+    "title": "Skilled Carpenter for Furniture Workshop",
+    "description": "We need an experienced carpenter to make custom wooden furniture — beds, wardrobes, and chairs. You must be able to read simple sketches and work with different wood types. Workshop is based in Alaba.",
     "type": "full_time",
-    "skills_required": [
-      "React",
-      "JavaScript",
-      "CSS",
-      "HTML",
-      "Git"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "skills_required": ["Carpentry", "Furniture Making", "Wood Finishing", "Measurement"],
+    "languages_required": ["English", "Yoruba"],
     "state": "Lagos",
-    "city": "Lekki",
+    "city": "Alaba",
     "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": false,
-    "pay_min": 250000,
-    "pay_max": 400000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Node.js Backend Engineer",
-    "description": "Design and build scalable REST APIs using Node.js and Express. Experience with PostgreSQL and Redis required. You will own backend services for our payment platform.",
-    "type": "full_time",
-    "skills_required": [
-      "Node.js",
-      "Express",
-      "PostgreSQL",
-      "Redis",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 300000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Mobile App Developer (React Native)",
-    "description": "Develop cross-platform mobile applications for iOS and Android using React Native. Work closely with design and backend teams to ship clean, performant apps.",
-    "type": "full_time",
-    "skills_required": [
-      "React Native",
-      "JavaScript",
-      "TypeScript",
-      "Redux",
-      "Mobile Development"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Wuse",
-    "latitude": 9.0579,
-    "longitude": 7.4951,
-    "is_remote": true,
-    "pay_min": 280000,
-    "pay_max": 450000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "UI/UX Designer",
-    "description": "Create user-centred designs for web and mobile products. Conduct user research, build wireframes, and deliver high-fidelity prototypes in Figma.",
-    "type": "full_time",
-    "skills_required": [
-      "Figma",
-      "UI Design",
-      "UX Research",
-      "Prototyping",
-      "Wireframing"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": false,
-    "pay_min": 200000,
-    "pay_max": 350000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Python Developer",
-    "description": "Build data pipelines and backend services using Python. Experience with FastAPI or Django preferred. You will work on our AI microservices team.",
-    "type": "full_time",
-    "skills_required": [
-      "Python",
-      "FastAPI",
-      "PostgreSQL",
-      "Machine Learning",
-      "pandas"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 280000,
-    "pay_max": 480000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "WordPress Developer",
-    "description": "Build and customise WordPress websites for clients. You will handle theme development, plugin integration, and performance optimisation.",
-    "type": "gig",
-    "skills_required": [
-      "WordPress",
-      "PHP",
-      "CSS",
-      "HTML",
-      "Elementor"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
+    "longitude": 3.1852,
     "is_remote": false,
     "pay_min": 80000,
     "pay_max": 150000,
@@ -151,51 +17,16 @@
     "payment_method": "squad"
   },
   {
-    "title": "Graphic Designer",
-    "description": "Create brand identities, social media graphics, flyers, and marketing materials for SME clients. Must be proficient in Adobe Illustrator and Photoshop.",
-    "type": "gig",
-    "skills_required": [
-      "Adobe Illustrator",
-      "Photoshop",
-      "Canva",
-      "Branding",
-      "Typography"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
+    "title": "Tailor / Fashion Designer for Boutique",
+    "description": "A growing fashion boutique in Yaba needs a skilled tailor who can sew Ankara styles, ankara blouses, skirts, and agbada. Must be fast and clean with stitching. Work is daily with weekly pay.",
+    "type": "full_time",
+    "skills_required": ["Tailoring", "Sewing Machine", "Ankara Styles", "Pattern Cutting"],
+    "languages_required": ["English", "Yoruba"],
     "state": "Lagos",
-    "city": "Oshodi",
-    "latitude": 6.5563,
-    "longitude": 3.3375,
-    "is_remote": true,
-    "pay_min": 50000,
-    "pay_max": 120000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Social Media Manager",
-    "description": "Manage social media accounts for a growing Lagos-based brand. Create content calendars, write captions, design graphics, and grow engagement across Instagram, Twitter, and TikTok.",
-    "type": "contract",
-    "skills_required": [
-      "Social Media Marketing",
-      "Content Creation",
-      "Canva",
-      "Copywriting",
-      "Analytics"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Lagos Island",
-    "latitude": 6.4541,
-    "longitude": 3.3947,
-    "is_remote": true,
+    "city": "Yaba",
+    "latitude": 6.5095,
+    "longitude": 3.3711,
+    "is_remote": false,
     "pay_min": 60000,
     "pay_max": 100000,
     "currency": "NGN",
@@ -203,125 +34,16 @@
     "payment_method": "squad"
   },
   {
-    "title": "Video Editor",
-    "description": "Edit YouTube videos, reels, and brand content for a digital media agency. Must be fast, creative, and proficient in Premiere Pro or DaVinci Resolve.",
-    "type": "gig",
-    "skills_required": [
-      "Video Editing",
-      "Adobe Premiere Pro",
-      "DaVinci Resolve",
-      "After Effects",
-      "Motion Graphics"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ajah",
-    "latitude": 6.4698,
-    "longitude": 3.5715,
-    "is_remote": true,
-    "pay_min": 40000,
-    "pay_max": 80000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Data Analyst",
-    "description": "Analyse business data and generate actionable insights using Excel, SQL, and Power BI. You will support the operations and marketing teams with weekly reports.",
-    "type": "full_time",
-    "skills_required": [
-      "SQL",
-      "Excel",
-      "Power BI",
-      "Data Analysis",
-      "Python"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Garki",
-    "latitude": 9.0217,
-    "longitude": 7.4836,
-    "is_remote": false,
-    "pay_min": 180000,
-    "pay_max": 300000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Cybersecurity Analyst",
-    "description": "Monitor and protect company infrastructure from threats. Conduct vulnerability assessments, manage firewalls, and respond to security incidents.",
-    "type": "full_time",
-    "skills_required": [
-      "Cybersecurity",
-      "Network Security",
-      "Linux",
-      "Penetration Testing",
-      "SIEM"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 350000,
-    "pay_max": 600000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "DevOps Engineer",
-    "description": "Manage CI/CD pipelines, cloud infrastructure on AWS, and containerised deployments using Docker and Kubernetes. Own the reliability of our production systems.",
-    "type": "full_time",
-    "skills_required": [
-      "Docker",
-      "Kubernetes",
-      "AWS",
-      "CI/CD",
-      "Linux",
-      "Terraform"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "title": "Plumber for Residential Estate",
+    "description": "We are looking for a qualified plumber to handle pipe installations, repairs, and maintenance for a housing estate in Lekki. Must have experience with overhead tanks, boreholes, and bathroom fittings.",
+    "type": "contract",
+    "skills_required": ["Plumbing", "Pipe Fitting", "Borehole", "Bathroom Installation"],
+    "languages_required": ["English"],
     "state": "Lagos",
     "city": "Lekki",
     "latitude": 6.4698,
     "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 700000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Technical Writer",
-    "description": "Write clear, concise API documentation, developer guides, and product changelogs for a SaaS company. Must understand REST APIs and be comfortable reading code.",
-    "type": "contract",
-    "skills_required": [
-      "Technical Writing",
-      "API Documentation",
-      "Markdown",
-      "REST API",
-      "Git"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
+    "is_remote": false,
     "pay_min": 100000,
     "pay_max": 200000,
     "currency": "NGN",
@@ -329,250 +51,339 @@
     "payment_method": "squad"
   },
   {
-    "title": "Flutter Developer",
-    "description": "Build beautiful cross-platform mobile apps using Flutter and Dart. You will work on our consumer app used by thousands of Nigerians daily.",
+    "title": "Auto Mechanic — Engine & Electrical",
+    "description": "Busy mechanic workshop in Oshodi needs experienced auto mechanic with strong knowledge of Toyota and Honda engine systems, auto-electrical faults, and diagnosis. Must bring own tools.",
     "type": "full_time",
-    "skills_required": [
-      "Flutter",
-      "Dart",
-      "Mobile Development",
-      "Firebase",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "skills_required": ["Auto Mechanics", "Engine Repair", "Auto Electrical", "Toyota", "Honda"],
+    "languages_required": ["English", "Yoruba"],
     "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
+    "city": "Oshodi",
+    "latitude": 6.5574,
+    "longitude": 3.3504,
     "is_remote": false,
-    "pay_min": 250000,
-    "pay_max": 420000,
+    "pay_min": 90000,
+    "pay_max": 160000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "SEO Specialist",
-    "description": "Grow organic traffic for our e-commerce platform. Conduct keyword research, optimise on-page content, build backlinks, and track performance with Google Analytics.",
-    "type": "contract",
-    "skills_required": [
-      "SEO",
-      "Google Analytics",
-      "Keyword Research",
-      "Content Strategy",
-      "Ahrefs"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Machine Learning Engineer",
-    "description": "Build and deploy ML models for credit scoring and recommendation systems. Experience with scikit-learn, TensorFlow, and model serving required.",
+    "title": "Cook / Chef for Canteen (Abuja)",
+    "description": "We need a professional Nigerian cook for our staff canteen in Maitama, Abuja. Must know how to cook soups (egusi, ogbono, banga), rice dishes, and local proteins. Feeding 50+ people daily.",
     "type": "full_time",
-    "skills_required": [
-      "Machine Learning",
-      "Python",
-      "scikit-learn",
-      "TensorFlow",
-      "MLOps"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 450000,
-    "pay_max": 750000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Content Writer",
-    "description": "Write blog posts, landing page copy, and email newsletters for a fintech brand. Must understand the Nigerian market and write in a clear, engaging voice.",
-    "type": "gig",
-    "skills_required": [
-      "Copywriting",
-      "Content Writing",
-      "SEO Writing",
-      "Research",
-      "Editing"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
+    "skills_required": ["Cooking", "Nigerian Cuisine", "Catering", "Food Hygiene"],
+    "languages_required": ["English", "Hausa"],
     "state": "Abuja",
     "city": "Maitama",
-    "latitude": 9.0833,
-    "longitude": 7.4833,
-    "is_remote": true,
-    "pay_min": 30000,
-    "pay_max": 60000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Cloud Engineer (AWS)",
-    "description": "Design and manage cloud infrastructure on AWS. You will handle EC2, S3, RDS, Lambda, and implement infrastructure as code with Terraform.",
-    "type": "full_time",
-    "skills_required": [
-      "AWS",
-      "Terraform",
-      "Docker",
-      "Linux",
-      "Cloud Architecture"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 650000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Database Administrator",
-    "description": "Manage and optimise PostgreSQL and MySQL databases. Handle backups, replication, query optimisation, and schema migrations for production systems.",
-    "type": "full_time",
-    "skills_required": [
-      "PostgreSQL",
-      "MySQL",
-      "Database Administration",
-      "SQL",
-      "Linux"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
+    "latitude": 9.0765,
+    "longitude": 7.4983,
     "is_remote": false,
-    "pay_min": 250000,
-    "pay_max": 400000,
+    "pay_min": 70000,
+    "pay_max": 120000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Product Manager",
-    "description": "Own the product roadmap for a B2B SaaS platform. Work with engineering, design, and business teams to ship features that drive growth and retention.",
-    "type": "full_time",
-    "skills_required": [
-      "Product Management",
-      "Agile",
-      "User Research",
-      "Roadmapping",
-      "Data Analysis"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "title": "Electrician for Building Construction",
+    "description": "We need a certified electrician to handle wiring, socket installation, and panel board setup for a 4-bedroom duplex under construction in Ikoyi. Must have experience with both 1-phase and 3-phase systems.",
+    "type": "gig",
+    "skills_required": ["Electrical Wiring", "Panel Board", "Socket Installation", "Safety"],
+    "languages_required": ["English"],
     "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
+    "city": "Ikoyi",
+    "latitude": 6.4480,
+    "longitude": 3.4354,
     "is_remote": false,
-    "pay_min": 350000,
-    "pay_max": 600000,
+    "pay_min": 120000,
+    "pay_max": 250000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "QA Engineer",
-    "description": "Write and execute manual and automated test cases for web and mobile applications. Experience with Cypress, Playwright, or Selenium required.",
-    "type": "full_time",
-    "skills_required": [
-      "QA Testing",
-      "Cypress",
-      "Selenium",
-      "Test Automation",
-      "API Testing"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 200000,
-    "pay_max": 350000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Blockchain Developer",
-    "description": "Build smart contracts and DeFi applications on Ethereum and Solana. Experience with Solidity, Web3.js, and Hardhat required.",
-    "type": "full_time",
-    "skills_required": [
-      "Solidity",
-      "Web3.js",
-      "Ethereum",
-      "Smart Contracts",
-      "Hardhat"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 500000,
-    "pay_max": 900000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Email Marketing Specialist",
-    "description": "Design and execute email campaigns using Mailchimp and HubSpot. Write compelling copy, segment audiences, and analyse open and click rates.",
+    "title": "Commercial Driver (Lagos–Abuja Route)",
+    "description": "Logistics company needs experienced long-distance driver for Lagos–Abuja route. Must have valid driver's licence, know the route well, and have a clean record. Trips are 3–4 times monthly.",
     "type": "contract",
-    "skills_required": [
-      "Email Marketing",
-      "Mailchimp",
-      "HubSpot",
-      "Copywriting",
-      "Analytics"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "skills_required": ["Driving", "Long Distance", "Vehicle Maintenance", "Navigation"],
+    "languages_required": ["English", "Hausa"],
+    "state": "Lagos",
+    "city": "Ojota",
+    "latitude": 6.5961,
+    "longitude": 3.3841,
+    "is_remote": false,
+    "pay_min": 150000,
+    "pay_max": 250000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Welder / Steel Fabricator",
+    "description": "Fabrication company in Apapa needs a skilled welder proficient in MIG and ARC welding. You will be making steel gates, railings, and industrial shelves. Safety-conscious and reliable.",
+    "type": "full_time",
+    "skills_required": ["Welding", "MIG Welding", "ARC Welding", "Steel Fabrication", "Safety"],
+    "languages_required": ["English", "Yoruba"],
+    "state": "Lagos",
+    "city": "Apapa",
+    "latitude": 6.4488,
+    "longitude": 3.3595,
+    "is_remote": false,
+    "pay_min": 100000,
+    "pay_max": 180000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Hairdresser / Hair Stylist",
+    "description": "Busy hair salon in Ikeja GRA is hiring a skilled hairdresser who can do braids, weave-on, natural hair treatment, and relaxers. Must be fast, friendly, and clean. Flexible working hours.",
+    "type": "full_time",
+    "skills_required": ["Hairdressing", "Braiding", "Weave-On", "Natural Hair", "Relaxer"],
+    "languages_required": ["English", "Yoruba"],
     "state": "Lagos",
     "city": "Ikeja",
     "latitude": 6.6018,
     "longitude": 3.3515,
-    "is_remote": true,
+    "is_remote": false,
+    "pay_min": 50000,
+    "pay_max": 90000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Mason / Block Layer for Construction",
+    "description": "Construction company needs an experienced block layer and mason to work on a 20-unit housing project in Lugbe, Abuja. Must be able to read simple drawings and work with a team.",
+    "type": "contract",
+    "skills_required": ["Masonry", "Block Laying", "Plastering", "Construction"],
+    "languages_required": ["English", "Hausa"],
+    "state": "Abuja",
+    "city": "Lugbe",
+    "latitude": 8.9833,
+    "longitude": 7.4000,
+    "is_remote": false,
+    "pay_min": 80000,
+    "pay_max": 130000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Painter (Interior & Exterior)",
+    "description": "We need a professional painter who can handle interior emulsion, exterior weathercoat, and oil paint finishes for a newly built home in Ajah. Neat work and attention to detail is a must.",
+    "type": "gig",
+    "skills_required": ["Painting", "Interior Painting", "Exterior Painting", "Emulsion", "Weathercoat"],
+    "languages_required": ["English"],
+    "state": "Lagos",
+    "city": "Ajah",
+    "latitude": 6.4698,
+    "longitude": 3.5700,
+    "is_remote": false,
+    "pay_min": 60000,
+    "pay_max": 100000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Barber for Men's Grooming Salon",
+    "description": "Premium barbing salon in Wuse 2, Abuja needs a skilled barber who can do fades, low cuts, beards, and designs. Must be professional, time-keeping, and love the craft.",
+    "type": "full_time",
+    "skills_required": ["Barbering", "Fades", "Beard Grooming", "Hair Design", "Low Cut"],
+    "languages_required": ["English", "Hausa"],
+    "state": "Abuja",
+    "city": "Wuse 2",
+    "latitude": 9.0579,
+    "longitude": 7.4951,
+    "is_remote": false,
+    "pay_min": 55000,
+    "pay_max": 95000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Delivery Rider (Motorbike)",
+    "description": "Food delivery startup needs motorbike dispatch riders in Port Harcourt. Must have own bike in good condition, valid licence, and know Port Harcourt roads well. Earn per delivery + weekly bonus.",
+    "type": "gig",
+    "skills_required": ["Motorbike Riding", "Delivery", "Navigation", "Customer Service"],
+    "languages_required": ["English", "Igbo"],
+    "state": "Rivers",
+    "city": "Port Harcourt",
+    "latitude": 4.8156,
+    "longitude": 7.0498,
+    "is_remote": false,
+    "pay_min": 60000,
+    "pay_max": 100000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Kuli-Kuli & Snack Production Worker",
+    "description": "We produce and distribute local snacks (kuli-kuli, chin-chin, puff-puff) and need a production worker in Kano. Must know how to fry, package, and maintain hygiene. Early morning starts.",
+    "type": "full_time",
+    "skills_required": ["Food Production", "Frying", "Packaging", "Food Hygiene"],
+    "languages_required": ["Hausa", "English"],
+    "state": "Kano",
+    "city": "Kano",
+    "latitude": 12.0022,
+    "longitude": 8.5920,
+    "is_remote": false,
+    "pay_min": 40000,
+    "pay_max": 65000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "AC Technician — Installation & Repairs",
+    "description": "HVAC company needs an experienced air conditioning technician in Abuja. Must be able to install split units, diagnose faults, regas refrigerant, and handle electrical faults in AC systems.",
+    "type": "full_time",
+    "skills_required": ["AC Repair", "AC Installation", "Refrigerant Regassing", "HVAC", "Electrical Fault Diagnosis"],
+    "languages_required": ["English"],
+    "state": "Abuja",
+    "city": "Gwarinpa",
+    "latitude": 9.1091,
+    "longitude": 7.4124,
+    "is_remote": false,
+    "pay_min": 90000,
+    "pay_max": 160000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Caterer for Events (Lagos Island)",
+    "description": "Event catering business needs a caterer who can cook for 100–500 guests. Specialization in Nigerian buffet — jollof rice, fried rice, assorted meats, small chops. Must have own cooking equipment.",
+    "type": "gig",
+    "skills_required": ["Catering", "Bulk Cooking", "Event Catering", "Nigerian Cuisine", "Small Chops"],
+    "languages_required": ["English", "Yoruba"],
+    "state": "Lagos",
+    "city": "Lagos Island",
+    "latitude": 6.4550,
+    "longitude": 3.3841,
+    "is_remote": false,
+    "pay_min": 80000,
+    "pay_max": 200000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Generator Repair Technician",
+    "description": "We repair and maintain generators for homes and businesses across Ibadan. Looking for a skilled technician who can service Mikano, FG Wilson, and Chinese generator brands. Own tools required.",
+    "type": "full_time",
+    "skills_required": ["Generator Repair", "Engine Servicing", "Electrical Fault Diagnosis", "Mikano", "FG Wilson"],
+    "languages_required": ["English", "Yoruba"],
+    "state": "Oyo",
+    "city": "Ibadan",
+    "latitude": 7.3775,
+    "longitude": 3.9470,
+    "is_remote": false,
+    "pay_min": 70000,
+    "pay_max": 120000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Tiler (Floor & Wall Tiling)",
+    "description": "Construction company needs an experienced tiler for a residential project in Enugu. Must be able to cut, set, and grout tiles neatly for floors, bathrooms, and kitchen areas. 3-month contract.",
+    "type": "contract",
+    "skills_required": ["Tiling", "Floor Tiling", "Wall Tiling", "Tile Cutting", "Grouting"],
+    "languages_required": ["English", "Igbo"],
+    "state": "Enugu",
+    "city": "Enugu",
+    "latitude": 6.4582,
+    "longitude": 7.5464,
+    "is_remote": false,
+    "pay_min": 80000,
+    "pay_max": 140000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Market Sales Agent — Electronics",
+    "description": "Electronics shop in Computer Village, Ikeja needs a confident sales agent who understands phones, laptops, and accessories. Must be able to negotiate, explain specs to customers, and close sales.",
+    "type": "full_time",
+    "skills_required": ["Sales", "Customer Service", "Electronics Knowledge", "Negotiation"],
+    "languages_required": ["English", "Yoruba"],
+    "state": "Lagos",
+    "city": "Ikeja",
+    "latitude": 6.6018,
+    "longitude": 3.3515,
+    "is_remote": false,
+    "pay_min": 45000,
+    "pay_max": 80000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Bricklayer for Self-Build Project",
+    "description": "Individual building a personal home in Asaba needs a skilled bricklayer. Job involves block laying from DPC to roofing level. Must be punctual and bring labour team if needed.",
+    "type": "gig",
+    "skills_required": ["Bricklaying", "Block Laying", "Construction", "Scaffold Work"],
+    "languages_required": ["English", "Igbo"],
+    "state": "Delta",
+    "city": "Asaba",
+    "latitude": 6.1985,
+    "longitude": 6.7347,
+    "is_remote": false,
+    "pay_min": 90000,
+    "pay_max": 160000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Vulcanizer / Tyre Repair Technician",
+    "description": "Busy roadside auto service point in Surulere needs a skilled vulcanizer. Must handle tyre changes, rim repairs, pressure checks, and balancing. Must be fast and handle high customer volume.",
+    "type": "full_time",
+    "skills_required": ["Tyre Repair", "Vulcanizing", "Rim Repair", "Wheel Balancing"],
+    "languages_required": ["Yoruba", "English"],
+    "state": "Lagos",
+    "city": "Surulere",
+    "latitude": 6.5044,
+    "longitude": 3.3523,
+    "is_remote": false,
+    "pay_min": 40000,
+    "pay_max": 70000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Security Guard (Day & Night Shift)",
+    "description": "Property management company needs armed and unarmed security guards for residential properties across Victoria Island. NSCDC trained candidates preferred. Accommodation provided on site.",
+    "type": "full_time",
+    "skills_required": ["Security", "Access Control", "Surveillance", "Report Writing", "NSCDC"],
+    "languages_required": ["English"],
+    "state": "Lagos",
+    "city": "Victoria Island",
+    "latitude": 6.4281,
+    "longitude": 3.4219,
+    "is_remote": false,
+    "pay_min": 50000,
+    "pay_max": 80000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Seamstress — Wedding & Evening Gowns",
+    "description": "Bridal wear studio in Ikeja needs an experienced seamstress who can sew ball gowns, fitted wedding dresses, and lace evening wear. Must be able to take measurements and cut patterns independently.",
+    "type": "full_time",
+    "skills_required": ["Seamstress", "Bridal Wear", "Pattern Making", "Lace Work", "Embroidery"],
+    "languages_required": ["English", "Yoruba"],
+    "state": "Lagos",
+    "city": "Ikeja",
+    "latitude": 6.6018,
+    "longitude": 3.3515,
+    "is_remote": false,
     "pay_min": 70000,
     "pay_max": 130000,
     "currency": "NGN",
@@ -580,3551 +391,356 @@
     "payment_method": "squad"
   },
   {
-    "title": "iOS Developer (Swift)",
-    "description": "Build native iOS applications using Swift and SwiftUI. Work on a consumer app with 50k+ users and own features end to end.",
-    "type": "full_time",
-    "skills_required": [
-      "Swift",
-      "SwiftUI",
-      "iOS Development",
-      "Xcode",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 350000,
-    "pay_max": 600000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Android Developer (Kotlin)",
-    "description": "Build and maintain Android applications using Kotlin and Jetpack Compose. Own the mobile experience for our growing user base.",
-    "type": "full_time",
-    "skills_required": [
-      "Kotlin",
-      "Android Development",
-      "Jetpack Compose",
-      "REST API",
-      "Firebase"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Wuse",
-    "latitude": 9.0579,
-    "longitude": 7.4951,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "IT Support Specialist",
-    "description": "Provide first and second-line technical support to staff. Handle hardware setup, network troubleshooting, and software installations.",
-    "type": "full_time",
-    "skills_required": [
-      "IT Support",
-      "Windows",
-      "Networking",
-      "Hardware Troubleshooting",
-      "Active Directory"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": false,
-    "pay_min": 100000,
-    "pay_max": 180000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Fullstack Developer (MERN)",
-    "description": "Build end-to-end web features using MongoDB, Express, React, and Node.js. Join a small team building tools for Nigerian SMEs.",
-    "type": "full_time",
-    "skills_required": [
-      "React",
-      "Node.js",
-      "MongoDB",
-      "Express",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": false,
-    "pay_min": 280000,
-    "pay_max": 460000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Motion Graphics Designer",
-    "description": "Create animated explainer videos, intros, and social content for digital brands. Proficiency in After Effects and Cinema 4D required.",
-    "type": "gig",
-    "skills_required": [
-      "After Effects",
-      "Motion Graphics",
-      "Cinema 4D",
-      "Animation",
-      "Premiere Pro"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Network Engineer",
-    "description": "Design, implement, and manage enterprise network infrastructure. Handle routing, switching, firewalls, and VPNs for a mid-sized organisation.",
-    "type": "full_time",
-    "skills_required": [
-      "Networking",
-      "Cisco",
-      "Firewall",
-      "VPN",
-      "TCP/IP"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 250000,
-    "pay_max": 420000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "E-commerce Manager",
-    "description": "Manage product listings, inventory, and sales on Jumia, Konga, and a Shopify store. Coordinate fulfilment and run promotions.",
-    "type": "full_time",
-    "skills_required": [
-      "E-commerce",
-      "Shopify",
-      "Product Management",
-      "Digital Marketing",
-      "Analytics"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Lagos Island",
-    "latitude": 6.4541,
-    "longitude": 3.3947,
-    "is_remote": false,
-    "pay_min": 150000,
-    "pay_max": 250000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Shopify Developer",
-    "description": "Build and customise Shopify stores for Nigerian fashion and beauty brands. Handle theme customisation, app integration, and checkout optimisation.",
-    "type": "gig",
-    "skills_required": [
-      "Shopify",
-      "Liquid",
-      "JavaScript",
-      "CSS",
-      "E-commerce"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Digital Marketing Manager",
-    "description": "Plan and execute digital marketing campaigns across Google Ads, Meta Ads, and email. Own acquisition metrics and report weekly to the CEO.",
-    "type": "full_time",
-    "skills_required": [
-      "Digital Marketing",
-      "Google Ads",
-      "Meta Ads",
-      "Analytics",
-      "Campaign Management"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 200000,
-    "pay_max": 380000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Penetration Tester",
-    "description": "Conduct ethical hacking engagements for fintech and enterprise clients. Deliver detailed reports with remediation steps. CEH or OSCP preferred.",
+    "title": "Farm Labourer (Cassava & Maize)",
+    "description": "Mechanised farm in Ogun State needs farm labourers for cassava and maize cultivation. Duties include planting, weeding, and harvesting. Accommodation available on site. Meals provided.",
     "type": "contract",
-    "skills_required": [
-      "Penetration Testing",
-      "Kali Linux",
-      "Burp Suite",
-      "OWASP",
-      "Networking"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 550000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Business Intelligence Analyst",
-    "description": "Build interactive dashboards and reports using Power BI and Tableau. Translate complex datasets into clear business stories for non-technical stakeholders.",
-    "type": "full_time",
-    "skills_required": [
-      "Power BI",
-      "Tableau",
-      "SQL",
-      "Data Visualisation",
-      "Excel"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Garki",
-    "latitude": 9.0217,
-    "longitude": 7.4836,
+    "skills_required": ["Farming", "Planting", "Weeding", "Harvesting", "Manual Labour"],
+    "languages_required": ["Yoruba", "English"],
+    "state": "Ogun",
+    "city": "Abeokuta",
+    "latitude": 7.1475,
+    "longitude": 3.3619,
     "is_remote": false,
-    "pay_min": 200000,
-    "pay_max": 350000,
+    "pay_min": 35000,
+    "pay_max": 55000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Virtual Assistant",
-    "description": "Provide remote administrative support including email management, scheduling, research, and data entry for a busy entrepreneur.",
-    "type": "contract",
-    "skills_required": [
-      "Virtual Assistance",
-      "Google Workspace",
-      "Scheduling",
-      "Research",
-      "Communication"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "title": "Housekeeper / Domestic Worker",
+    "description": "Family in Banana Island needs a live-in housekeeper. Duties include cleaning, laundry, cooking, and general home management. Must be neat, honest, and have references. Accommodation and feeding provided.",
+    "type": "full_time",
+    "skills_required": ["Housekeeping", "Cleaning", "Cooking", "Laundry", "Home Management"],
+    "languages_required": ["English"],
     "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
+    "city": "Banana Island",
+    "latitude": 6.4480,
+    "longitude": 3.4554,
+    "is_remote": false,
     "pay_min": 50000,
-    "pay_max": 90000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Photography & Photo Editing",
-    "description": "Shoot and edit product photos for an e-commerce brand. Must have your own camera equipment and be proficient in Lightroom and Photoshop.",
-    "type": "gig",
-    "skills_required": [
-      "Photography",
-      "Lightroom",
-      "Photoshop",
-      "Product Photography",
-      "Editing"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": false,
-    "pay_min": 40000,
     "pay_max": 80000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Laravel PHP Developer",
-    "description": "Build and maintain web applications using Laravel. Work on API development, database design, and third-party integrations for a logistics platform.",
+    "title": "Event Photographer",
+    "description": "Events company needs a freelance event photographer for weddings, birthdays, and corporate events in Abuja. Must own a DSLR camera, have portfolio, and be able to deliver edited photos within 48 hours.",
+    "type": "gig",
+    "skills_required": ["Photography", "DSLR", "Photo Editing", "Lightroom", "Event Photography"],
+    "languages_required": ["English"],
+    "state": "Abuja",
+    "city": "Wuse",
+    "latitude": 9.0579,
+    "longitude": 7.4951,
+    "is_remote": false,
+    "pay_min": 50000,
+    "pay_max": 120000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Cobbler / Shoe Repair Technician",
+    "description": "Leather goods workshop in Balogun Market needs a cobbler to handle shoe repairs, resoling, stitching, and polishing. Experience with leather bags is a plus. Daily pay structure.",
     "type": "full_time",
-    "skills_required": [
-      "Laravel",
-      "PHP",
-      "MySQL",
-      "REST API",
-      "Git"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "skills_required": ["Shoe Repair", "Leather Work", "Resoling", "Stitching", "Cobbling"],
+    "languages_required": ["Yoruba", "English"],
+    "state": "Lagos",
+    "city": "Lagos Island",
+    "latitude": 6.4550,
+    "longitude": 3.3841,
+    "is_remote": false,
+    "pay_min": 35000,
+    "pay_max": 60000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Water Tanker Driver",
+    "description": "Water supply company needs a driver for their water tanker trucks in Kaduna. Must have experience driving large vehicles, valid Class E licence, and know Kaduna roads. Monday to Saturday.",
+    "type": "full_time",
+    "skills_required": ["Tanker Driving", "Heavy Vehicle", "Class E Licence", "Navigation"],
+    "languages_required": ["Hausa", "English"],
+    "state": "Kaduna",
+    "city": "Kaduna",
+    "latitude": 10.5105,
+    "longitude": 7.4165,
+    "is_remote": false,
+    "pay_min": 70000,
+    "pay_max": 110000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Makeup Artist for Events",
+    "description": "We need a skilled makeup artist for weddings and events in Lagos. Must be proficient in bridal makeup, airbrush, and natural looks. Must own professional kit. Gig-based — paid per event.",
+    "type": "gig",
+    "skills_required": ["Makeup", "Bridal Makeup", "Airbrush", "Face Beat", "Contouring"],
+    "languages_required": ["English", "Yoruba"],
+    "state": "Lagos",
+    "city": "Lekki",
+    "latitude": 6.4698,
+    "longitude": 3.5852,
+    "is_remote": false,
+    "pay_min": 30000,
+    "pay_max": 80000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Motorcycle Mechanic",
+    "description": "Dispatch and logistics company in Onitsha needs a motorcycle mechanic who can service and repair Bajaj, Boxer, and TVS bikes. High volume — up to 20 bikes per day. Salary plus commission.",
+    "type": "full_time",
+    "skills_required": ["Motorcycle Repair", "Bajaj", "TVS", "Engine Overhaul", "Electrical Diagnosis"],
+    "languages_required": ["Igbo", "English"],
+    "state": "Anambra",
+    "city": "Onitsha",
+    "latitude": 6.1427,
+    "longitude": 6.7877,
+    "is_remote": false,
+    "pay_min": 60000,
+    "pay_max": 100000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Baker — Bread & Pastry",
+    "description": "Bakery in Garki, Abuja needs an experienced baker who can produce bread, chin-chin, cake, and puff-puff. Must know how to operate industrial oven and mixer. Production starts at 4am daily.",
+    "type": "full_time",
+    "skills_required": ["Baking", "Bread Making", "Pastry", "Industrial Oven", "Confectionery"],
+    "languages_required": ["English", "Hausa"],
+    "state": "Abuja",
+    "city": "Garki",
+    "latitude": 9.0333,
+    "longitude": 7.4833,
+    "is_remote": false,
+    "pay_min": 55000,
+    "pay_max": 90000,
+    "currency": "NGN",
+    "status": "open",
+    "payment_method": "squad"
+  },
+  {
+    "title": "Laundry Attendant / Dry Cleaner",
+    "description": "Laundry service in Ikeja needs an attendant to wash, iron, fold, and package clothes. Must know how to handle delicate fabrics and use industrial washing machines. Customer-facing role.",
+    "type": "full_time",
+    "skills_required": ["Laundry", "Ironing", "Dry Cleaning", "Fabric Care", "Customer Service"],
+    "languages_required": ["English", "Yoruba"],
     "state": "Lagos",
     "city": "Ikeja",
     "latitude": 6.6018,
     "longitude": 3.3515,
     "is_remote": false,
-    "pay_min": 200000,
-    "pay_max": 380000,
+    "pay_min": 40000,
+    "pay_max": 65000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Django Developer",
-    "description": "Build backend systems and REST APIs using Django and Django REST Framework. Work on a healthcare data platform serving hospitals across Nigeria.",
-    "type": "full_time",
-    "skills_required": [
-      "Django",
-      "Python",
-      "PostgreSQL",
-      "REST API",
-      "Celery"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 250000,
-    "pay_max": 420000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Excel & Data Entry Specialist",
-    "description": "Clean, organise, and analyse data in Excel and Google Sheets. Create pivot tables, dashboards, and automated reports for a trading company.",
+    "title": "Groundnut Oil Processor",
+    "description": "Local oil mill in Kano needs workers to help with groundnut processing — cleaning, grinding, pressing, and packaging groundnut oil. Daily work with daily pay. No experience needed.",
     "type": "gig",
-    "skills_required": [
-      "Microsoft Excel",
-      "Google Sheets",
-      "Data Entry",
-      "Data Cleaning",
-      "Pivot Tables"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Oshodi",
-    "latitude": 6.5563,
-    "longitude": 3.3375,
-    "is_remote": true,
+    "skills_required": ["Food Processing", "Manual Labour", "Packaging", "Oil Milling"],
+    "languages_required": ["Hausa"],
+    "state": "Kano",
+    "city": "Kano",
+    "latitude": 12.0022,
+    "longitude": 8.5920,
+    "is_remote": false,
     "pay_min": 25000,
-    "pay_max": 50000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Podcast Editor",
-    "description": "Edit weekly podcast episodes for a Nigerian business podcast. Remove filler words, add intro/outro music, and deliver broadcast-quality audio.",
-    "type": "gig",
-    "skills_required": [
-      "Audio Editing",
-      "Audacity",
-      "Adobe Audition",
-      "Podcast Production",
-      "Sound Design"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 20000,
     "pay_max": 45000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Game Developer (Unity)",
-    "description": "Build 2D and 3D mobile games using Unity and C#. Join a small indie studio creating culturally relevant games for the African market.",
+    "title": "Fabric Seller / Market Trader",
+    "description": "Established fabric store in Balogun Market needs a confident sales attendant who understands fabric types — lace, ankara, aso-oke, george. Must be able to attend to customers in Yoruba and English.",
     "type": "full_time",
-    "skills_required": [
-      "Unity",
-      "C#",
-      "Game Development",
-      "3D Modelling",
-      "Mobile Games"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 200000,
-    "pay_max": 380000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Growth Hacker",
-    "description": "Drive user acquisition and retention for a consumer app. Run A/B tests, analyse funnels, and execute growth experiments across multiple channels.",
-    "type": "full_time",
-    "skills_required": [
-      "Growth Hacking",
-      "A/B Testing",
-      "Analytics",
-      "Digital Marketing",
-      "SQL"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 250000,
-    "pay_max": 420000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "TypeScript Developer",
-    "description": "Write clean, typed code for a large-scale Node.js backend. Migrate existing JavaScript codebases to TypeScript and enforce type safety across the team.",
-    "type": "full_time",
-    "skills_required": [
-      "TypeScript",
-      "Node.js",
-      "Express",
-      "PostgreSQL",
-      "Git"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Figma to HTML/CSS Developer",
-    "description": "Convert Figma designs to pixel-perfect, responsive HTML and CSS. Work with a design agency on multiple client projects monthly.",
-    "type": "gig",
-    "skills_required": [
-      "HTML",
-      "CSS",
-      "Figma",
-      "Responsive Design",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Wuse",
-    "latitude": 9.0579,
-    "longitude": 7.4951,
-    "is_remote": true,
-    "pay_min": 50000,
-    "pay_max": 100000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "CRM Administrator (Salesforce)",
-    "description": "Manage and customise Salesforce for a B2B sales team. Handle user setup, workflow automation, reports, and integrations with third-party tools.",
-    "type": "full_time",
-    "skills_required": [
-      "Salesforce",
-      "CRM",
-      "Apex",
-      "Workflow Automation",
-      "Reporting"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 250000,
-    "pay_max": 400000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Animator (2D)",
-    "description": "Create 2D character animations for a children's educational app. Must be proficient in Adobe Animate or Spine.",
-    "type": "contract",
-    "skills_required": [
-      "2D Animation",
-      "Adobe Animate",
-      "Spine",
-      "Character Design",
-      "Illustration"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "WhatsApp Business Automation Developer",
-    "description": "Build WhatsApp Business API integrations and chatbots for SME clients using Twilio or 360dialog. Automate customer support and order tracking flows.",
-    "type": "gig",
-    "skills_required": [
-      "WhatsApp API",
-      "Twilio",
-      "Node.js",
-      "Chatbot Development",
-      "REST API"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 180000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "TikTok Content Creator",
-    "description": "Create engaging short-form video content for a Nigerian fashion brand on TikTok. Must understand trends, be comfortable on camera, and edit your own videos.",
-    "type": "contract",
-    "skills_required": [
-      "TikTok",
-      "Content Creation",
-      "Video Editing",
-      "Social Media",
-      "Storytelling"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
+    "skills_required": ["Sales", "Fabric Knowledge", "Market Trading", "Customer Service", "Stock Management"],
+    "languages_required": ["Yoruba", "English"],
     "state": "Lagos",
     "city": "Lagos Island",
-    "latitude": 6.4541,
-    "longitude": 3.3947,
+    "latitude": 6.4550,
+    "longitude": 3.3841,
     "is_remote": false,
-    "pay_min": 50000,
-    "pay_max": 100000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Vue.js Developer",
-    "description": "Build responsive frontend interfaces using Vue.js and Nuxt. Work on a logistics dashboard used by over 200 companies in Nigeria.",
-    "type": "full_time",
-    "skills_required": [
-      "Vue.js",
-      "Nuxt",
-      "JavaScript",
-      "CSS",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 220000,
-    "pay_max": 380000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Angular Developer",
-    "description": "Build enterprise-grade web applications using Angular and TypeScript for a banking software vendor.",
-    "type": "full_time",
-    "skills_required": [
-      "Angular",
-      "TypeScript",
-      "RxJS",
-      "REST API",
-      "Git"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 280000,
-    "pay_max": 460000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Customer Success Manager (Tech)",
-    "description": "Onboard and retain SaaS customers. Conduct demos, training sessions, and quarterly business reviews. Technical background preferred.",
-    "type": "full_time",
-    "skills_required": [
-      "Customer Success",
-      "SaaS",
-      "CRM",
-      "Communication",
-      "Problem Solving"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": false,
-    "pay_min": 180000,
-    "pay_max": 300000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Scrum Master",
-    "description": "Facilitate agile ceremonies and remove blockers for a distributed engineering team. Own sprint planning, retrospectives, and velocity tracking.",
-    "type": "full_time",
-    "skills_required": [
-      "Scrum",
-      "Agile",
-      "Jira",
-      "Sprint Planning",
-      "Team Facilitation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "API Integration Developer",
-    "description": "Integrate third-party APIs (payment gateways, SMS, logistics) into existing platforms. Build reliable webhook handlers and error recovery systems.",
-    "type": "gig",
-    "skills_required": [
-      "REST API",
-      "Node.js",
-      "Webhooks",
-      "Integration",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Google Ads Specialist",
-    "description": "Set up, manage, and optimise Google Search and Display campaigns for e-commerce clients. Must be Google Ads certified.",
-    "type": "contract",
-    "skills_required": [
-      "Google Ads",
-      "PPC",
-      "Keyword Research",
-      "Analytics",
-      "Landing Page Optimisation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Maitama",
-    "latitude": 9.0833,
-    "longitude": 7.4833,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Data Science Intern",
-    "description": "Support the data science team with EDA, feature engineering, and model evaluation. Must know Python, pandas, and basic statistics.",
-    "type": "contract",
-    "skills_required": [
-      "Python",
-      "pandas",
-      "Data Science",
-      "Statistics",
-      "Jupyter Notebook"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": false,
-    "pay_min": 60000,
-    "pay_max": 100000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Logo Designer",
-    "description": "Design professional logos and brand identities for startups and SMEs. Must deliver vector files and brand guidelines.",
-    "type": "gig",
-    "skills_required": [
-      "Logo Design",
-      "Adobe Illustrator",
-      "Branding",
-      "Typography",
-      "Canva"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Kano",
-    "city": "Kano",
-    "latitude": 12.0022,
-    "longitude": 8.5919,
-    "is_remote": true,
-    "pay_min": 20000,
-    "pay_max": 60000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Cyber Security Trainer",
-    "description": "Deliver cybersecurity awareness training to corporate teams. Develop training materials, conduct phishing simulations, and report risk scores.",
-    "type": "gig",
-    "skills_required": [
-      "Cybersecurity",
-      "Training",
-      "Phishing Simulation",
-      "Risk Assessment",
-      "Communication"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "UI Designer (Mobile-first)",
-    "description": "Design mobile-first interfaces for fintech and health apps. Deliver Figma files with component libraries, auto-layout, and design tokens.",
-    "type": "contract",
-    "skills_required": [
-      "Figma",
-      "UI Design",
-      "Mobile Design",
-      "Design Systems",
-      "Prototyping"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 280000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Embedded Systems Engineer",
-    "description": "Develop firmware for IoT devices using C and C++. Work on smart metering and agricultural monitoring hardware.",
-    "type": "full_time",
-    "skills_required": [
-      "C",
-      "C++",
-      "Embedded Systems",
-      "IoT",
-      "RTOS"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": false,
-    "pay_min": 300000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "SaaS Sales Executive",
-    "description": "Sell B2B SaaS products to Nigerian SMEs. Own the full sales cycle from prospecting to close. Prior tech sales experience required.",
-    "type": "full_time",
-    "skills_required": [
-      "B2B Sales",
-      "SaaS",
-      "CRM",
-      "Cold Outreach",
-      "Negotiation"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": false,
-    "pay_min": 150000,
-    "pay_max": 280000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Power BI Developer",
-    "description": "Build enterprise Power BI dashboards and data models for a FMCG company. Connect multiple data sources and automate report distribution.",
-    "type": "contract",
-    "skills_required": [
-      "Power BI",
-      "DAX",
-      "SQL",
-      "Data Modelling",
-      "Excel"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 280000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Prompt Engineer",
-    "description": "Design and optimise prompts for LLM-powered products. Build evaluation frameworks and improve AI output quality across our product suite.",
-    "type": "full_time",
-    "skills_required": [
-      "Prompt Engineering",
-      "LLM",
-      "Python",
-      "OpenAI API",
-      "Evaluation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 550000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Online Tutor (Mathematics)",
-    "description": "Teach secondary school and university mathematics online via Zoom. Flexible hours. Must have strong results in previous tutoring.",
-    "type": "gig",
-    "skills_required": [
-      "Mathematics",
-      "Teaching",
-      "Zoom",
-      "Curriculum Development",
-      "Communication"
-    ],
-    "languages_required": [
-      "English",
-      "Yoruba"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 15000,
-    "pay_max": 40000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Online Tutor (Coding \u2014 Python)",
-    "description": "Teach beginner Python programming to young adults online. Curriculum provided. Must be patient, clear, and engaging.",
-    "type": "gig",
-    "skills_required": [
-      "Python",
-      "Teaching",
-      "Curriculum Delivery",
-      "Zoom",
-      "Communication"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Abuja",
-    "city": "Garki",
-    "latitude": 9.0217,
-    "longitude": 7.4836,
-    "is_remote": true,
-    "pay_min": 20000,
-    "pay_max": 50000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "React Native Gig \u2014 Bug Fixes",
-    "description": "Fix a list of documented bugs in an existing React Native app. Estimated 3\u20135 days of work. Detailed bug report provided.",
-    "type": "gig",
-    "skills_required": [
-      "React Native",
-      "JavaScript",
-      "Debugging",
-      "Mobile Development",
-      "Git"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 120000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Influencer Marketing Coordinator",
-    "description": "Identify, negotiate, and manage influencer partnerships for a beauty brand. Track performance metrics and coordinate content delivery.",
-    "type": "contract",
-    "skills_required": [
-      "Influencer Marketing",
-      "Negotiation",
-      "Social Media",
-      "Campaign Management",
-      "Analytics"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Lagos Island",
-    "latitude": 6.4541,
-    "longitude": 3.3947,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "AWS Solutions Architect",
-    "description": "Design cloud architectures and lead migrations for enterprise clients. Deliver AWS Well-Architected Framework reviews and cost optimisation reports.",
-    "type": "contract",
-    "skills_required": [
-      "AWS",
-      "Cloud Architecture",
-      "Terraform",
-      "Cost Optimisation",
-      "Security"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 500000,
-    "pay_max": 900000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Zoho Developer",
-    "description": "Customise Zoho CRM, Zoho Books, and Zoho Creator for SME clients. Build workflows, custom functions, and third-party integrations.",
-    "type": "gig",
-    "skills_required": [
-      "Zoho CRM",
-      "Zoho Creator",
-      "Deluge Script",
-      "Workflow Automation",
-      "API Integration"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 180000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Kubernetes Engineer",
-    "description": "Manage and scale Kubernetes clusters on GKE and EKS. Own cluster security, autoscaling, and observability for a high-traffic platform.",
-    "type": "full_time",
-    "skills_required": [
-      "Kubernetes",
-      "Docker",
-      "Helm",
-      "GKE",
-      "EKS"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 450000,
-    "pay_max": 750000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Backend Developer (Go)",
-    "description": "Build high-performance microservices in Go for a real-time logistics platform. Experience with gRPC, Kafka, and PostgreSQL required.",
-    "type": "full_time",
-    "skills_required": [
-      "Go",
-      "gRPC",
-      "Kafka",
-      "PostgreSQL",
-      "Microservices"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 700000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Rust Developer",
-    "description": "Write performance-critical systems in Rust for a blockchain infrastructure company. Experience with async Rust and WebAssembly preferred.",
-    "type": "full_time",
-    "skills_required": [
-      "Rust",
-      "WebAssembly",
-      "Systems Programming",
-      "Blockchain",
-      "Performance Optimisation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 500000,
-    "pay_max": 900000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Next.js Developer",
-    "description": "Build server-side rendered web applications using Next.js. Own the frontend architecture for a SaaS product used by Nigerian businesses.",
-    "type": "full_time",
-    "skills_required": [
-      "Next.js",
-      "React",
-      "TypeScript",
-      "Tailwind CSS",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 280000,
-    "pay_max": 480000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Tailwind CSS Developer",
-    "description": "Build beautiful, responsive UIs using Tailwind CSS and React. Convert Figma designs to production-ready components with pixel-perfect accuracy.",
-    "type": "gig",
-    "skills_required": [
-      "Tailwind CSS",
-      "React",
-      "HTML",
-      "CSS",
-      "Figma"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 120000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Firebase Developer",
-    "description": "Build and manage Firebase-powered mobile and web apps. Handle Firestore, Authentication, Cloud Functions, and push notifications.",
-    "type": "gig",
-    "skills_required": [
-      "Firebase",
-      "Firestore",
-      "Cloud Functions",
-      "Authentication",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Wuse",
-    "latitude": 9.0579,
-    "longitude": 7.4951,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Supabase Developer",
-    "description": "Build backends using Supabase \u2014 PostgreSQL, Auth, Storage, and Edge Functions. Help teams migrate from Firebase to Supabase.",
-    "type": "gig",
-    "skills_required": [
-      "Supabase",
-      "PostgreSQL",
-      "JavaScript",
-      "Edge Functions",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "NestJS Developer",
-    "description": "Build scalable backend services using NestJS and TypeScript. Work on a microservices architecture with gRPC and message queues.",
-    "type": "full_time",
-    "skills_required": [
-      "NestJS",
-      "TypeScript",
-      "Node.js",
-      "PostgreSQL",
-      "gRPC"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 520000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Prisma ORM Developer",
-    "description": "Work with Prisma ORM to manage complex PostgreSQL schemas, migrations, and queries in a Node.js backend.",
-    "type": "gig",
-    "skills_required": [
-      "Prisma",
-      "PostgreSQL",
-      "Node.js",
-      "TypeScript",
-      "Database Design"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Redis Engineer",
-    "description": "Implement caching strategies, pub/sub messaging, and job queues using Redis and BullMQ for a high-traffic fintech API.",
-    "type": "gig",
-    "skills_required": [
-      "Redis",
-      "BullMQ",
-      "Node.js",
-      "Caching",
-      "Performance Optimisation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Hasura GraphQL Developer",
-    "description": "Set up and manage Hasura GraphQL Engine over PostgreSQL. Build custom actions, event triggers, and remote schemas.",
-    "type": "gig",
-    "skills_required": [
-      "Hasura",
-      "GraphQL",
-      "PostgreSQL",
-      "REST API",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "gRPC Service Developer",
-    "description": "Design and implement gRPC services in Node.js and Python. Write proto definitions, handle streaming, and build robust error handling.",
-    "type": "gig",
-    "skills_required": [
-      "gRPC",
-      "Protobuf",
-      "Node.js",
-      "Python",
-      "Microservices"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 120000,
-    "pay_max": 250000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Machine Learning \u2014 Credit Scoring Model",
-    "description": "Build an alternative credit scoring model using behavioural and transactional data. Deliver a trained scikit-learn model with evaluation metrics.",
-    "type": "gig",
-    "skills_required": [
-      "Machine Learning",
-      "scikit-learn",
-      "Python",
-      "Feature Engineering",
-      "Credit Scoring"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 200000,
-    "pay_max": 400000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "NLP Engineer",
-    "description": "Build natural language processing pipelines for document analysis and sentiment detection. Experience with HuggingFace Transformers required.",
-    "type": "full_time",
-    "skills_required": [
-      "NLP",
-      "HuggingFace",
-      "Python",
-      "BERT",
-      "Text Classification"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 700000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Computer Vision Engineer",
-    "description": "Build image recognition and object detection systems using OpenCV and PyTorch for an agritech startup.",
-    "type": "full_time",
-    "skills_required": [
-      "Computer Vision",
-      "PyTorch",
-      "OpenCV",
-      "Python",
-      "Deep Learning"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 420000,
-    "pay_max": 720000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Excel VBA Developer",
-    "description": "Write Excel macros and VBA scripts to automate reporting and data processing for a manufacturing company.",
-    "type": "gig",
-    "skills_required": [
-      "Excel VBA",
-      "Microsoft Excel",
-      "Macro Development",
-      "Automation",
-      "Data Processing"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 30000,
-    "pay_max": 70000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Google Workspace Administrator",
-    "description": "Manage Google Workspace for a 200-person company. Handle user provisioning, security policies, shared drives, and app integrations.",
-    "type": "contract",
-    "skills_required": [
-      "Google Workspace",
-      "Admin Console",
-      "IT Administration",
-      "Security",
-      "User Management"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Webflow Developer",
-    "description": "Build fast, beautiful websites in Webflow for startups and agencies. Handle CMS setup, custom interactions, and responsive design.",
-    "type": "gig",
-    "skills_required": [
-      "Webflow",
-      "CSS",
-      "HTML",
-      "UI Design",
-      "CMS"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 180000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Bubble.io Developer (No-code)",
-    "description": "Build functional web apps on Bubble.io for startup clients who need an MVP quickly. Handle database design, workflows, and API integrations.",
-    "type": "gig",
-    "skills_required": [
-      "Bubble.io",
-      "No-code Development",
-      "Database Design",
-      "API Integration",
-      "UI Design"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Abuja",
-    "city": "Wuse",
-    "latitude": 9.0579,
-    "longitude": 7.4951,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Zapier Automation Specialist",
-    "description": "Build Zapier automations to connect business tools and eliminate manual workflows for Nigerian SMEs.",
-    "type": "gig",
-    "skills_required": [
-      "Zapier",
-      "Workflow Automation",
-      "API Integration",
-      "Google Sheets",
-      "CRM"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 30000,
-    "pay_max": 70000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Make (Integromat) Developer",
-    "description": "Build complex automation workflows using Make (formerly Integromat) for marketing and operations teams.",
-    "type": "gig",
-    "skills_required": [
-      "Make",
-      "Integromat",
-      "Workflow Automation",
-      "API Integration",
-      "JSON"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
     "pay_min": 40000,
-    "pay_max": 90000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Notion Systems Builder",
-    "description": "Design and build Notion workspaces for startups. Create databases, dashboards, SOPs, and project management systems.",
-    "type": "gig",
-    "skills_required": [
-      "Notion",
-      "Systems Design",
-      "Documentation",
-      "Project Management",
-      "Database Design"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 20000,
-    "pay_max": 50000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Airtable Developer",
-    "description": "Build Airtable bases and automations for operations and logistics teams. Create interfaces, views, and API integrations.",
-    "type": "gig",
-    "skills_required": [
-      "Airtable",
-      "Database Design",
-      "Automation",
-      "API Integration",
-      "Scripting"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 30000,
     "pay_max": 70000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Cybersecurity Consultant",
-    "description": "Advise SMEs on cybersecurity strategy. Conduct risk assessments, implement security policies, and train staff on best practices.",
-    "type": "gig",
-    "skills_required": [
-      "Cybersecurity",
-      "Risk Assessment",
-      "Security Policy",
-      "Training",
-      "Compliance"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 150000,
-    "pay_max": 300000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "AI Chatbot Developer",
-    "description": "Build AI-powered customer support chatbots using OpenAI API and LangChain. Integrate with WhatsApp, web, and mobile platforms.",
-    "type": "gig",
-    "skills_required": [
-      "OpenAI API",
-      "LangChain",
-      "Python",
-      "Chatbot Development",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 300000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "RAG System Developer",
-    "description": "Build Retrieval Augmented Generation systems for document Q&A. Experience with LangChain, Pinecone, and OpenAI required.",
+    "title": "Iron Bender / Steel Fixer",
+    "description": "Construction company executing a commercial building in Abuja needs iron benders to cut and bend reinforcement bars for columns and beams. Must be experienced and physically fit.",
     "type": "contract",
-    "skills_required": [
-      "LangChain",
-      "RAG",
-      "Pinecone",
-      "OpenAI API",
-      "Python"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 200000,
-    "pay_max": 400000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Stripe Integration Developer",
-    "description": "Integrate Stripe payments into a SaaS platform. Handle subscriptions, invoices, webhooks, and refund flows.",
-    "type": "gig",
-    "skills_required": [
-      "Stripe",
-      "Node.js",
-      "Webhooks",
-      "Payment Integration",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 180000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Flutterwave Integration Developer",
-    "description": "Integrate Flutterwave payment APIs into web and mobile applications. Handle collections, disbursements, and webhook events.",
-    "type": "gig",
-    "skills_required": [
-      "Flutterwave",
-      "Node.js",
-      "REST API",
-      "Webhooks",
-      "Payment Integration"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
+    "skills_required": ["Iron Bending", "Steel Fixing", "Reinforcement", "Construction"],
+    "languages_required": ["English", "Hausa"],
+    "state": "Abuja",
+    "city": "Karu",
+    "latitude": 8.9833,
+    "longitude": 7.5500,
+    "is_remote": false,
     "pay_min": 60000,
-    "pay_max": 130000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Paystack Developer",
-    "description": "Integrate Paystack into web applications. Handle recurring billing, split payments, and refund automation.",
-    "type": "gig",
-    "skills_required": [
-      "Paystack",
-      "Node.js",
-      "REST API",
-      "Webhooks",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 50000,
-    "pay_max": 120000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Solana Developer",
-    "description": "Build on-chain programs and dApps on Solana using Rust and Anchor framework. Work on a DeFi protocol for African markets.",
-    "type": "full_time",
-    "skills_required": [
-      "Solana",
-      "Rust",
-      "Anchor",
-      "Web3.js",
-      "DeFi"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 600000,
-    "pay_max": 1000000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Web3 Frontend Developer",
-    "description": "Build dApp frontends using React, ethers.js, and WalletConnect. Own the user-facing layer of a DeFi application.",
-    "type": "full_time",
-    "skills_required": [
-      "React",
-      "ethers.js",
-      "Web3",
-      "WalletConnect",
-      "TypeScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 700000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Tableau Developer",
-    "description": "Build Tableau dashboards and data visualisations for a retail analytics company. Connect to SQL databases and automate report delivery.",
-    "type": "contract",
-    "skills_required": [
-      "Tableau",
-      "SQL",
-      "Data Visualisation",
-      "Analytics",
-      "Excel"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 280000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Splunk Engineer",
-    "description": "Deploy and manage Splunk for log monitoring, alerting, and security information management for a financial institution.",
-    "type": "contract",
-    "skills_required": [
-      "Splunk",
-      "SIEM",
-      "Log Management",
-      "Cybersecurity",
-      "Linux"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 300000,
-    "pay_max": 550000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Jenkins CI/CD Engineer",
-    "description": "Set up and maintain Jenkins pipelines for continuous integration and deployment. Integrate with GitHub, Docker, and Kubernetes.",
-    "type": "contract",
-    "skills_required": [
-      "Jenkins",
-      "CI/CD",
-      "Docker",
-      "Kubernetes",
-      "Shell Scripting"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 250000,
-    "pay_max": 450000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "GitHub Actions Developer",
-    "description": "Build and maintain GitHub Actions workflows for automated testing, security scanning, and deployment pipelines.",
-    "type": "gig",
-    "skills_required": [
-      "GitHub Actions",
-      "CI/CD",
-      "YAML",
-      "Docker",
-      "Shell Scripting"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Elasticsearch Engineer",
-    "description": "Implement and manage Elasticsearch for full-text search and log analytics. Optimise indexing strategies and query performance.",
-    "type": "contract",
-    "skills_required": [
-      "Elasticsearch",
-      "Kibana",
-      "Logstash",
-      "Search",
-      "Linux"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 250000,
-    "pay_max": 450000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Kafka Engineer",
-    "description": "Design and manage event-driven architectures using Apache Kafka. Build producers, consumers, and stream processing pipelines.",
-    "type": "full_time",
-    "skills_required": [
-      "Apache Kafka",
-      "Event-Driven Architecture",
-      "Java",
-      "Python",
-      "Microservices"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 680000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "GraphQL API Developer",
-    "description": "Design and build GraphQL APIs using Apollo Server. Implement subscriptions, dataloaders, and authentication middleware.",
-    "type": "full_time",
-    "skills_required": [
-      "GraphQL",
-      "Apollo Server",
-      "Node.js",
-      "PostgreSQL",
-      "TypeScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 280000,
-    "pay_max": 480000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Microservices Architect",
-    "description": "Design microservices architecture for a scaling fintech platform. Define service boundaries, communication patterns, and data consistency strategies.",
-    "type": "contract",
-    "skills_required": [
-      "Microservices",
-      "System Design",
-      "Docker",
-      "Kubernetes",
-      "API Gateway"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 500000,
-    "pay_max": 850000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Data Engineer",
-    "description": "Build ETL pipelines and data warehouses using Apache Airflow, dbt, and BigQuery. Enable analytics at scale for a retail company.",
-    "type": "full_time",
-    "skills_required": [
-      "Apache Airflow",
-      "dbt",
-      "BigQuery",
-      "Python",
-      "SQL"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 380000,
-    "pay_max": 650000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Snowflake Data Warehouse Engineer",
-    "description": "Design and manage Snowflake data warehouse for a financial services company. Build data models, optimise query performance, and manage costs.",
-    "type": "contract",
-    "skills_required": [
-      "Snowflake",
-      "SQL",
-      "Data Warehousing",
-      "dbt",
-      "Python"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 700000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "React Query / TanStack Developer",
-    "description": "Implement server state management using React Query (TanStack Query) in a complex React application with real-time data requirements.",
-    "type": "gig",
-    "skills_required": [
-      "React Query",
-      "React",
-      "TypeScript",
-      "REST API",
-      "State Management"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Redux Toolkit Developer",
-    "description": "Refactor complex Redux state management to Redux Toolkit in a large React application. Implement RTK Query for API state.",
-    "type": "gig",
-    "skills_required": [
-      "Redux Toolkit",
-      "React",
-      "TypeScript",
-      "RTK Query",
-      "State Management"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Jest & Testing Library Developer",
-    "description": "Write comprehensive unit and integration tests using Jest and React Testing Library for a React/Node.js codebase with low test coverage.",
-    "type": "gig",
-    "skills_required": [
-      "Jest",
-      "React Testing Library",
-      "Unit Testing",
-      "JavaScript",
-      "TypeScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Playwright E2E Test Engineer",
-    "description": "Build end-to-end test suites using Playwright for a web application. Cover critical user journeys, run in CI/CD, and maintain test reliability.",
-    "type": "contract",
-    "skills_required": [
-      "Playwright",
-      "E2E Testing",
-      "JavaScript",
-      "TypeScript",
-      "CI/CD"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Linux Systems Administrator",
-    "description": "Manage Ubuntu servers for a fintech company. Handle system updates, user management, log monitoring, performance tuning, and backup automation.",
-    "type": "full_time",
-    "skills_required": [
-      "Linux",
-      "Ubuntu",
-      "Shell Scripting",
-      "Nginx",
-      "System Administration"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 200000,
-    "pay_max": 380000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Bash Scripting Developer",
-    "description": "Write automation scripts in Bash for server administration, backup jobs, log rotation, and deployment automation.",
-    "type": "gig",
-    "skills_required": [
-      "Bash",
-      "Shell Scripting",
-      "Linux",
-      "Automation",
-      "Cron Jobs"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 40000,
-    "pay_max": 90000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Nginx Configuration Specialist",
-    "description": "Configure and optimise Nginx for reverse proxying, load balancing, SSL termination, and caching for a high-traffic application.",
-    "type": "gig",
-    "skills_required": [
-      "Nginx",
-      "Linux",
-      "SSL",
-      "Load Balancing",
-      "Performance Optimisation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 50000,
     "pay_max": 100000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "React Developer \u2014 Dashboard UI",
-    "description": "Build a complex analytics dashboard in React with charts, filters, and real-time data updates. Recharts and Tailwind CSS experience preferred.",
-    "type": "gig",
-    "skills_required": [
-      "React",
-      "Recharts",
-      "Tailwind CSS",
-      "TypeScript",
-      "Dashboard Development"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Copy Editor",
-    "description": "Proofread and edit marketing copy, blog posts, and product documentation for a tech company. Must have an eye for clarity, grammar, and brand voice.",
-    "type": "gig",
-    "skills_required": [
-      "Copy Editing",
-      "Proofreading",
-      "Grammar",
-      "Content Strategy",
-      "Communication"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 20000,
-    "pay_max": 50000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Brand Identity Designer",
-    "description": "Create a full brand identity for a new Nigerian fintech startup \u2014 logo, colour palette, typography, brand guidelines, and key collateral.",
-    "type": "gig",
-    "skills_required": [
-      "Branding",
-      "Adobe Illustrator",
-      "Logo Design",
-      "Typography",
-      "Brand Strategy"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 250000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Pitch Deck Designer",
-    "description": "Design a compelling investor pitch deck for an early-stage startup. Must tell a strong visual story and match the brand identity.",
-    "type": "gig",
-    "skills_required": [
-      "Presentation Design",
-      "Figma",
-      "PowerPoint",
-      "Storytelling",
-      "Branding"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "3D Modeller (Blender)",
-    "description": "Create 3D product models and renders for an e-commerce brand using Blender. Deliver high-quality renders for web and marketing use.",
-    "type": "gig",
-    "skills_required": [
-      "Blender",
-      "3D Modelling",
-      "3D Rendering",
-      "Product Visualisation",
-      "Texturing"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 150000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Drone Operator & Aerial Videographer",
-    "description": "Capture aerial footage and photos for real estate and events in Lagos. Must have a DJI drone and editing skills.",
-    "type": "gig",
-    "skills_required": [
-      "Drone Operation",
-      "Aerial Photography",
-      "Video Editing",
-      "DJI",
-      "Premiere Pro"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": false,
-    "pay_min": 50000,
-    "pay_max": 120000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Online Tutor (Web Development)",
-    "description": "Teach HTML, CSS, and JavaScript to complete beginners in a structured 8-week online course. Curriculum partially provided.",
-    "type": "gig",
-    "skills_required": [
-      "HTML",
-      "CSS",
-      "JavaScript",
-      "Teaching",
-      "Curriculum Development"
-    ],
-    "languages_required": [
-      "English",
-      "Yoruba"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 30000,
-    "pay_max": 70000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Technical Recruiter",
-    "description": "Source, screen, and hire software engineers for a fast-growing tech company. Must understand engineering roles and be able to evaluate technical CVs.",
+    "title": "Maiguard / Gateman",
+    "description": "Private compound in Bodija, Ibadan needs a live-in gateman. Duties are gate management, guest logging, and basic security. References required. Accommodation and 2 meals per day provided.",
     "type": "full_time",
-    "skills_required": [
-      "Technical Recruiting",
-      "Sourcing",
-      "Interviewing",
-      "LinkedIn Recruiter",
-      "ATS"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 180000,
-    "pay_max": 300000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "API Documentation Writer",
-    "description": "Write comprehensive API documentation using Swagger/OpenAPI. Document endpoints, request/response schemas, and provide code examples in multiple languages.",
-    "type": "gig",
-    "skills_required": [
-      "API Documentation",
-      "Swagger",
-      "OpenAPI",
-      "Technical Writing",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Postman Collection Developer",
-    "description": "Build comprehensive Postman collections for a REST API. Include environment variables, test scripts, and documentation for developer onboarding.",
-    "type": "gig",
-    "skills_required": [
-      "Postman",
-      "REST API",
-      "API Testing",
-      "Documentation",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 30000,
-    "pay_max": 70000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Monitoring & Observability Engineer",
-    "description": "Set up Grafana, Prometheus, and alerting for a microservices platform. Build dashboards for latency, error rates, and infrastructure health.",
-    "type": "contract",
-    "skills_required": [
-      "Grafana",
-      "Prometheus",
-      "Observability",
-      "Kubernetes",
-      "Linux"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 550000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Terraform Infrastructure Developer",
-    "description": "Write Terraform modules to provision and manage cloud infrastructure on AWS and GCP. Enforce infrastructure as code best practices.",
-    "type": "contract",
-    "skills_required": [
-      "Terraform",
-      "AWS",
-      "GCP",
-      "Infrastructure as Code",
-      "Linux"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 350000,
-    "pay_max": 600000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Ansible Automation Engineer",
-    "description": "Write Ansible playbooks to automate server provisioning, configuration management, and application deployments.",
-    "type": "contract",
-    "skills_required": [
-      "Ansible",
-      "Linux",
-      "Shell Scripting",
-      "Automation",
-      "YAML"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 250000,
-    "pay_max": 450000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Web Scraping Developer",
-    "description": "Build web scrapers using Python, BeautifulSoup, and Playwright to collect market data from Nigerian e-commerce and price comparison websites.",
-    "type": "gig",
-    "skills_required": [
-      "Web Scraping",
-      "Python",
-      "BeautifulSoup",
-      "Playwright",
-      "Data Processing"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 130000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "FastAPI Developer",
-    "description": "Build high-performance REST APIs using FastAPI and Python. Work on a microservices architecture with PostgreSQL and Redis.",
-    "type": "full_time",
-    "skills_required": [
-      "FastAPI",
-      "Python",
-      "PostgreSQL",
-      "Redis",
-      "Pydantic"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 280000,
-    "pay_max": 480000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Spring Boot Developer (Java)",
-    "description": "Build enterprise Java applications using Spring Boot. Work on a banking core system with strict reliability and security requirements.",
-    "type": "full_time",
-    "skills_required": [
-      "Java",
-      "Spring Boot",
-      "PostgreSQL",
-      "REST API",
-      "Maven"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 350000,
-    "pay_max": 600000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": ".NET Developer (C#)",
-    "description": "Build web APIs and services using .NET Core and C#. Work on a healthcare records management system.",
-    "type": "full_time",
-    "skills_required": [
-      ".NET",
-      "C#",
-      "SQL Server",
-      "REST API",
-      "Azure"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": false,
-    "pay_min": 300000,
-    "pay_max": 520000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Elixir/Phoenix Developer",
-    "description": "Build real-time features and APIs using Elixir and Phoenix LiveView for a high-concurrency messaging platform.",
-    "type": "full_time",
-    "skills_required": [
-      "Elixir",
-      "Phoenix",
-      "LiveView",
-      "PostgreSQL",
-      "WebSockets"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 400000,
-    "pay_max": 700000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Product Designer",
-    "description": "Own the end-to-end design process from research to delivery for a B2B SaaS product. Work closely with engineering and product teams.",
-    "type": "full_time",
-    "skills_required": [
-      "Product Design",
-      "Figma",
-      "User Research",
-      "Design Systems",
-      "Prototyping"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 280000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Design System Developer",
-    "description": "Build and maintain a React component library and design system used by multiple product teams. Storybook, Figma tokens, and accessibility required.",
-    "type": "full_time",
-    "skills_required": [
-      "Design Systems",
-      "React",
-      "Storybook",
-      "TypeScript",
-      "Figma"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 300000,
-    "pay_max": 520000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Accessibility (a11y) Engineer",
-    "description": "Audit and improve web accessibility across a suite of products. Implement WCAG 2.1 AA compliance and build accessible component patterns.",
-    "type": "contract",
-    "skills_required": [
-      "Web Accessibility",
-      "WCAG",
-      "HTML",
-      "ARIA",
-      "React"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 280000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "i18n / Localisation Developer",
-    "description": "Implement internationalisation for a React web app supporting English, Pidgin, Yoruba, Hausa, and Igbo. Use react-i18next and build a translation workflow.",
-    "type": "gig",
-    "skills_required": [
-      "i18n",
-      "react-i18next",
-      "React",
-      "Localisation",
-      "TypeScript"
-    ],
-    "languages_required": [
-      "English",
-      "Yoruba",
-      "Hausa",
-      "Igbo",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "WebSocket Developer",
-    "description": "Build real-time features using WebSockets and Socket.io \u2014 live notifications, chat, and real-time dashboard updates.",
-    "type": "gig",
-    "skills_required": [
-      "WebSockets",
-      "Socket.io",
-      "Node.js",
-      "React",
-      "Real-time Systems"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 180000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "PWA Developer",
-    "description": "Convert an existing React web app to a Progressive Web App with offline capability, push notifications, and install prompts. Optimise for low-end Android devices.",
-    "type": "gig",
-    "skills_required": [
-      "PWA",
-      "Service Workers",
-      "React",
-      "Web APIs",
-      "Performance Optimisation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Hausa Content Writer",
-    "description": "Write blog posts, social media content, and product copy in Hausa for a fintech platform targeting Northern Nigeria users.",
-    "type": "contract",
-    "skills_required": [
-      "Content Writing",
-      "Hausa Language",
-      "Copywriting",
-      "Social Media",
-      "Research"
-    ],
-    "languages_required": [
-      "Hausa",
-      "English"
-    ],
-    "state": "Kano",
-    "city": "Kano",
-    "latitude": 12.0022,
-    "longitude": 8.5919,
-    "is_remote": true,
-    "pay_min": 30000,
-    "pay_max": 60000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Yoruba Content Creator",
-    "description": "Create educational and entertainment content in Yoruba for a digital media platform targeting Southwest Nigeria.",
-    "type": "contract",
-    "skills_required": [
-      "Content Creation",
-      "Yoruba Language",
-      "Video Production",
-      "Social Media",
-      "Storytelling"
-    ],
-    "languages_required": [
-      "Yoruba",
-      "English"
-    ],
+    "skills_required": ["Security", "Gate Management", "Vigilance", "Guest Logging"],
+    "languages_required": ["Yoruba", "English"],
     "state": "Oyo",
     "city": "Ibadan",
     "latitude": 7.3775,
-    "longitude": 3.947,
-    "is_remote": true,
-    "pay_min": 40000,
-    "pay_max": 80000,
+    "longitude": 3.9470,
+    "is_remote": false,
+    "pay_min": 35000,
+    "pay_max": 55000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Igbo Language Translator",
-    "description": "Translate app UI strings, marketing copy, and support documentation from English to Igbo for a fintech product expanding to Southeast Nigeria.",
+    "title": "POP / False Ceiling Installer",
+    "description": "Interior finishing company in Lagos needs a skilled POP (Plaster of Paris) artisan to install ceilings, cornices, and decorative mouldings in finished apartments. Portfolio of previous work required.",
     "type": "gig",
-    "skills_required": [
-      "Igbo Language",
-      "Translation",
-      "Localisation",
-      "Proofreading",
-      "Communication"
-    ],
-    "languages_required": [
-      "Igbo",
-      "English"
-    ],
-    "state": "Anambra",
-    "city": "Awka",
-    "latitude": 6.2104,
-    "longitude": 7.0678,
-    "is_remote": true,
-    "pay_min": 20000,
-    "pay_max": 50000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Short-form Video Editor (Reels/TikTok)",
-    "description": "Edit short-form videos for Instagram Reels and TikTok for a consumer brand. Must understand current trends, pacing, and caption styling.",
-    "type": "gig",
-    "skills_required": [
-      "Video Editing",
-      "CapCut",
-      "Premiere Pro",
-      "TikTok",
-      "Storytelling"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
+    "skills_required": ["POP Installation", "False Ceiling", "Plaster of Paris", "Cornice", "Interior Finishing"],
+    "languages_required": ["English", "Yoruba"],
     "state": "Lagos",
-    "city": "Lagos Island",
-    "latitude": 6.4541,
-    "longitude": 3.3947,
-    "is_remote": true,
-    "pay_min": 30000,
-    "pay_max": 70000,
+    "city": "Magodo",
+    "latitude": 6.6059,
+    "longitude": 3.3870,
+    "is_remote": false,
+    "pay_min": 70000,
+    "pay_max": 150000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Community Manager",
-    "description": "Manage and grow an online community for a tech product. Engage members, moderate discussions, run events, and report on community health metrics.",
+    "title": "Nanny / Childcare Worker",
+    "description": "Working couple in Abuja needs a live-in nanny for two children aged 2 and 5. Duties include feeding, bathing, school drop-off, and playing with the children. Must be calm, patient, and love kids.",
     "type": "full_time",
-    "skills_required": [
-      "Community Management",
-      "Social Media",
-      "Content Creation",
-      "Analytics",
-      "Communication"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 180000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Customer Support Engineer",
-    "description": "Provide technical support to developers integrating our API. Answer questions on Slack, email, and documentation. Must be comfortable reading code.",
-    "type": "full_time",
-    "skills_required": [
-      "Technical Support",
-      "REST API",
-      "Communication",
-      "Documentation",
-      "Problem Solving"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 250000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Illustration Artist (Digital)",
-    "description": "Create custom digital illustrations for editorial and brand projects. Must have a distinctive style and experience with Procreate or Illustrator.",
-    "type": "gig",
-    "skills_required": [
-      "Digital Illustration",
-      "Procreate",
-      "Adobe Illustrator",
-      "Character Design",
-      "Storytelling"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
+    "skills_required": ["Childcare", "Nannying", "Child Development", "First Aid", "Patience"],
+    "languages_required": ["English"],
+    "state": "Abuja",
+    "city": "Asokoro",
+    "latitude": 9.0430,
+    "longitude": 7.5298,
+    "is_remote": false,
     "pay_min": 50000,
-    "pay_max": 120000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Data Labelling Specialist",
-    "description": "Label and annotate datasets for machine learning model training \u2014 images, text, and audio. Accuracy and consistency are critical.",
-    "type": "gig",
-    "skills_required": [
-      "Data Labelling",
-      "Annotation",
-      "Attention to Detail",
-      "Machine Learning",
-      "Data Processing"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Oshodi",
-    "latitude": 6.5563,
-    "longitude": 3.3375,
-    "is_remote": true,
-    "pay_min": 20000,
-    "pay_max": 50000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Conversational AI Designer",
-    "description": "Design conversation flows and dialogue scripts for AI chatbots and voice assistants. Map user intents, entities, and fallback handling.",
-    "type": "contract",
-    "skills_required": [
-      "Conversational Design",
-      "Chatbot Development",
-      "UX Writing",
-      "Dialogue Design",
-      "NLP"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 120000,
-    "pay_max": 220000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Product Analyst",
-    "description": "Analyse user behaviour, funnel data, and feature performance using Mixpanel and SQL. Generate weekly insights to guide product decisions.",
-    "type": "full_time",
-    "skills_required": [
-      "Product Analytics",
-      "Mixpanel",
-      "SQL",
-      "A/B Testing",
-      "Data Visualisation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 200000,
-    "pay_max": 350000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "UX Researcher",
-    "description": "Conduct user interviews, usability tests, and surveys for a fintech product targeting informal workers. Deliver research reports and actionable recommendations.",
-    "type": "contract",
-    "skills_required": [
-      "UX Research",
-      "User Interviews",
-      "Usability Testing",
-      "Survey Design",
-      "Research Synthesis"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": false,
-    "pay_min": 150000,
-    "pay_max": 280000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Fintech Compliance Officer",
-    "description": "Ensure the company's fintech products comply with CBN regulations, KYC/AML requirements, and data protection laws.",
-    "type": "full_time",
-    "skills_required": [
-      "Fintech Compliance",
-      "CBN Regulations",
-      "KYC",
-      "AML",
-      "Risk Management"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": false,
-    "pay_min": 300000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Open Source Contributor (React)",
-    "description": "Contribute to an open-source React component library used by Nigerian developers. Fix issues, write tests, and improve documentation.",
-    "type": "gig",
-    "skills_required": [
-      "React",
-      "TypeScript",
-      "Open Source",
-      "Git",
-      "Documentation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 30000,
     "pay_max": 80000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "DevRel Engineer",
-    "description": "Build developer community and relationships for a Nigerian API company. Write tutorials, speak at events, manage Discord, and produce demo apps.",
+    "title": "Fishmonger / Fish Processing Worker",
+    "description": "Fishing cooperative in Warri needs workers to clean, smoke, and package fish for distribution. Experience with catfish and tilapia processing preferred. Early morning to afternoon shift.",
     "type": "full_time",
-    "skills_required": [
-      "Developer Relations",
-      "Technical Writing",
-      "Public Speaking",
-      "Community Management",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 250000,
-    "pay_max": 420000,
+    "skills_required": ["Fish Processing", "Fish Smoking", "Cleaning", "Packaging", "Food Hygiene"],
+    "languages_required": ["English", "Urhobo"],
+    "state": "Delta",
+    "city": "Warri",
+    "latitude": 5.5166,
+    "longitude": 5.7522,
+    "is_remote": false,
+    "pay_min": 35000,
+    "pay_max": 60000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "SQL Developer",
-    "description": "Write complex SQL queries, stored procedures, and database views for a reporting system. Optimise slow queries and document the data model.",
+    "title": "Okada Rider (Intra-City Deliveries)",
+    "description": "On-demand delivery app needs okada riders in Benin City for fast intracity delivery of packages and food. Must own a bike in good working condition. Earn per delivery with daily cashout.",
     "type": "gig",
-    "skills_required": [
-      "SQL",
-      "PostgreSQL",
-      "Query Optimisation",
-      "Stored Procedures",
-      "Database Design"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 130000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "MongoDB Developer",
-    "description": "Design schemas and aggregation pipelines for a MongoDB-based application. Optimise indexes and manage Atlas cloud database.",
-    "type": "gig",
-    "skills_required": [
-      "MongoDB",
-      "NoSQL",
-      "Aggregation Pipeline",
-      "Atlas",
-      "Node.js"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Startup Advisor (Tech)",
-    "description": "Provide strategic technology advice to an early-stage Nigerian startup on a retainer basis. Monthly calls, Slack access, and document reviews.",
-    "type": "contract",
-    "skills_required": [
-      "Startup Advisory",
-      "Technology Strategy",
-      "Product Management",
-      "System Design",
-      "Mentorship"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 200000,
-    "pay_max": 500000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Figma Design Audit",
-    "description": "Audit an existing Figma file for consistency, missing components, and accessibility issues. Deliver a written report with fixes applied.",
-    "type": "gig",
-    "skills_required": [
-      "Figma",
-      "UI Design",
-      "Design Systems",
-      "Accessibility",
-      "Documentation"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 40000,
+    "skills_required": ["Motorbike Riding", "Delivery", "Navigation", "Customer Service"],
+    "languages_required": ["English", "Edo"],
+    "state": "Edo",
+    "city": "Benin City",
+    "latitude": 6.3350,
+    "longitude": 5.6273,
+    "is_remote": false,
+    "pay_min": 50000,
     "pay_max": 90000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "React Performance Optimisation",
-    "description": "Audit and optimise a React app with performance issues \u2014 reduce bundle size, fix render bottlenecks, and implement code splitting.",
-    "type": "gig",
-    "skills_required": [
-      "React",
-      "Performance Optimisation",
-      "Webpack",
-      "Code Splitting",
-      "Profiling"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 180000,
+    "title": "Palm Oil Producer / Mill Operator",
+    "description": "Palm oil processing company in Ondo State needs mill operators to manage extraction machines, filtering, and storage. Experience with palm oil production cycle is required. Weekly pay.",
+    "type": "full_time",
+    "skills_required": ["Palm Oil Processing", "Mill Operation", "Filtration", "Quality Control"],
+    "languages_required": ["Yoruba", "English"],
+    "state": "Ondo",
+    "city": "Akure",
+    "latitude": 7.2526,
+    "longitude": 5.1920,
+    "is_remote": false,
+    "pay_min": 45000,
+    "pay_max": 75000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Node.js Performance Tuning",
-    "description": "Profile and optimise a Node.js API with slow response times. Identify bottlenecks, implement caching, and reduce database query load.",
-    "type": "gig",
-    "skills_required": [
-      "Node.js",
-      "Performance Optimisation",
-      "Redis",
-      "Profiling",
-      "PostgreSQL"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 200000,
+    "title": "Shoe Maker (Custom Footwear)",
+    "description": "Leather workshop in Abeokuta makes custom shoes for weddings and events. Need a skilled shoemaker who can work from customer measurements, cut leather, stitch, and glue soles. Orders are regular.",
+    "type": "full_time",
+    "skills_required": ["Shoe Making", "Leather Cutting", "Stitching", "Custom Footwear", "Sole Fixing"],
+    "languages_required": ["Yoruba", "English"],
+    "state": "Ogun",
+    "city": "Abeokuta",
+    "latitude": 7.1475,
+    "longitude": 3.3619,
+    "is_remote": false,
+    "pay_min": 55000,
+    "pay_max": 90000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "PostgreSQL Query Optimisation",
-    "description": "Analyse and optimise slow PostgreSQL queries for a production database. Add indexes, rewrite queries, and document improvements.",
-    "type": "gig",
-    "skills_required": [
-      "PostgreSQL",
-      "SQL",
-      "Query Optimisation",
-      "Database Tuning",
-      "EXPLAIN ANALYZE"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
+    "title": "Roofing & Waterproofing Technician",
+    "description": "Construction firm needs an experienced roofer who can install iron sheets, aluminium roofing, and apply waterproofing membrane to flat roofs. Work is in Imo State — 2-month contract.",
+    "type": "contract",
+    "skills_required": ["Roofing", "Iron Sheet Installation", "Waterproofing", "Aluminium Roofing"],
+    "languages_required": ["Igbo", "English"],
+    "state": "Imo",
+    "city": "Owerri",
+    "latitude": 5.4897,
+    "longitude": 7.0328,
+    "is_remote": false,
+    "pay_min": 90000,
     "pay_max": 160000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Mobile UI Kit Designer",
-    "description": "Design a comprehensive mobile UI kit in Figma for a fintech app \u2014 100+ components with light and dark mode variants.",
-    "type": "contract",
-    "skills_required": [
-      "Figma",
-      "Mobile Design",
-      "UI Kit",
-      "Design Systems",
-      "Dark Mode"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 300000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Stripe + Squad Payment Integration",
-    "description": "Build a dual-payment system supporting both Stripe (international) and Squad API (Nigeria) in a single checkout flow.",
+    "title": "Videographer for Content Creation",
+    "description": "Growing brand needs a freelance videographer for product shoots, short reels, and event coverage in Lagos. Must own camera and gimbal, know how to shoot and do basic editing for social media.",
     "type": "gig",
-    "skills_required": [
-      "Stripe",
-      "Squad API",
-      "Node.js",
-      "Payment Integration",
-      "Webhooks"
-    ],
-    "languages_required": [
-      "English"
-    ],
+    "skills_required": ["Videography", "Filming", "Video Editing", "Gimbal", "Social Media Content"],
+    "languages_required": ["English"],
     "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 120000,
-    "pay_max": 250000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Discord Bot Developer",
-    "description": "Build a Discord bot for a tech community with commands, moderation tools, role assignment, and integration with a web API.",
-    "type": "gig",
-    "skills_required": [
-      "Discord.js",
-      "Node.js",
-      "Bot Development",
-      "JavaScript",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
+    "city": "Ikoyi",
+    "latitude": 6.4480,
+    "longitude": 3.4354,
+    "is_remote": false,
     "pay_min": 50000,
     "pay_max": 120000,
     "currency": "NGN",
@@ -4132,453 +748,103 @@
     "payment_method": "squad"
   },
   {
-    "title": "Telegram Bot Developer",
-    "description": "Build a Telegram bot for customer support automation and order tracking for an e-commerce brand using Node.js and Telegraf.",
-    "type": "gig",
-    "skills_required": [
-      "Telegram Bot",
-      "Telegraf",
-      "Node.js",
-      "Bot Development",
-      "REST API"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 50000,
-    "pay_max": 100000,
+    "title": "Waste Collector / Environmental Worker",
+    "description": "Waste management company in Rivers State needs waste collectors for residential and commercial routes. Must be physically fit, punctual, and comfortable with early morning work. Protective gear provided.",
+    "type": "full_time",
+    "skills_required": ["Waste Management", "Manual Labour", "Route Navigation", "Physical Fitness"],
+    "languages_required": ["English", "Igbo"],
+    "state": "Rivers",
+    "city": "Port Harcourt",
+    "latitude": 4.8156,
+    "longitude": 7.0498,
+    "is_remote": false,
+    "pay_min": 40000,
+    "pay_max": 65000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Crypto Payment Integration Developer",
-    "description": "Integrate cryptocurrency payment acceptance (USDT, USDC) into a Nigerian e-commerce platform using Coinbase Commerce or NOWPayments.",
-    "type": "gig",
-    "skills_required": [
-      "Crypto Payments",
-      "Web3",
-      "Node.js",
-      "REST API",
-      "Blockchain"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 300000,
+    "title": "Aluminium Door & Window Fabricator",
+    "description": "Aluminium works company in Enugu needs a fabricator for aluminium doors, windows, and partitions. Must be able to read drawings, cut, weld, and install aluminium profiles cleanly.",
+    "type": "full_time",
+    "skills_required": ["Aluminium Fabrication", "Welding", "Window Installation", "Door Fitting", "Profile Cutting"],
+    "languages_required": ["Igbo", "English"],
+    "state": "Enugu",
+    "city": "Enugu",
+    "latitude": 6.4582,
+    "longitude": 7.5464,
+    "is_remote": false,
+    "pay_min": 75000,
+    "pay_max": 130000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Podcast Production Manager",
-    "description": "End-to-end management of a weekly business podcast \u2014 guest coordination, recording scheduling, editing oversight, and distribution to Spotify and Apple Podcasts.",
-    "type": "contract",
-    "skills_required": [
-      "Podcast Production",
-      "Project Management",
-      "Audio Editing",
-      "Content Strategy",
-      "Distribution"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
+    "title": "Poultry Farm Attendant",
+    "description": "Commercial poultry farm in Kaduna needs farm attendants to feed, clean pens, monitor bird health, and assist with egg collection. Experience with broiler or layer management is required.",
+    "type": "full_time",
+    "skills_required": ["Poultry Farming", "Animal Husbandry", "Feed Management", "Pen Cleaning", "Disease Monitoring"],
+    "languages_required": ["Hausa", "English"],
+    "state": "Kaduna",
+    "city": "Kaduna",
+    "latitude": 10.5105,
+    "longitude": 7.4165,
+    "is_remote": false,
+    "pay_min": 40000,
+    "pay_max": 65000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "YouTube Channel Manager",
-    "description": "Manage a YouTube channel for a Nigerian tech educator \u2014 upload scheduling, SEO optimisation, thumbnail design briefs, and analytics reporting.",
-    "type": "contract",
-    "skills_required": [
-      "YouTube Management",
-      "Video SEO",
-      "Content Strategy",
-      "Analytics",
-      "Social Media"
-    ],
-    "languages_required": [
-      "English",
-      "Pidgin"
-    ],
+    "title": "Bead Maker / Jewellery Artisan",
+    "description": "Accessories brand in Lagos needs a skilled bead maker who can string waist beads, necklaces, anklets, and bracelets. Must work with different bead types and meet production targets daily.",
+    "type": "full_time",
+    "skills_required": ["Bead Making", "Jewellery Making", "Stringing", "Waist Beads", "Accessory Design"],
+    "languages_required": ["Yoruba", "English"],
     "state": "Lagos",
     "city": "Surulere",
-    "latitude": 6.4968,
-    "longitude": 3.3564,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 120000,
+    "latitude": 6.5044,
+    "longitude": 3.3523,
+    "is_remote": false,
+    "pay_min": 40000,
+    "pay_max": 70000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "SaaS Onboarding Specialist",
-    "description": "Design and deliver onboarding flows for new SaaS customers. Create in-app tours, email sequences, and video walkthroughs that reduce time-to-value.",
+    "title": "Swimming Pool Cleaner & Maintenance",
+    "description": "Hotel in Calabar needs a dedicated pool attendant to clean, balance chemicals, and maintain the swimming pool daily. Must know how to use pool testing kits and backwash filters.",
     "type": "full_time",
-    "skills_required": [
-      "SaaS Onboarding",
-      "Customer Success",
-      "Intercom",
-      "Video Production",
-      "Copywriting"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 280000,
+    "skills_required": ["Pool Cleaning", "Chemical Balancing", "Filter Maintenance", "Water Testing"],
+    "languages_required": ["English"],
+    "state": "Cross River",
+    "city": "Calabar",
+    "latitude": 4.9517,
+    "longitude": 8.3220,
+    "is_remote": false,
+    "pay_min": 50000,
+    "pay_max": 80000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
   },
   {
-    "title": "Intercom Chatbot Builder",
-    "description": "Build and optimise customer support chatbots inside Intercom. Configure resolution bots, custom actions, and handoff to human agents.",
-    "type": "gig",
-    "skills_required": [
-      "Intercom",
-      "Chatbot Development",
-      "Customer Support",
-      "Automation",
-      "SaaS"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 60000,
-    "pay_max": 120000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Data Privacy Consultant (NDPR)",
-    "description": "Advise Nigerian tech companies on NDPR compliance \u2014 data audits, privacy policy drafting, consent management, and staff training.",
-    "type": "contract",
-    "skills_required": [
-      "Data Privacy",
-      "NDPR",
-      "GDPR",
-      "Compliance",
-      "Legal Writing"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 200000,
-    "pay_max": 400000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Excel Financial Modelling",
-    "description": "Build a 3-statement financial model and 5-year forecast in Excel for a startup seeking investment. Must deliver clean, auditable spreadsheets.",
-    "type": "gig",
-    "skills_required": [
-      "Financial Modelling",
-      "Microsoft Excel",
-      "Forecasting",
-      "Finance",
-      "Data Analysis"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 200000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Investor Pitch Consultant",
-    "description": "Help a Nigerian startup refine their investor narrative, pitch deck, and financial story for a pre-seed fundraise.",
-    "type": "gig",
-    "skills_required": [
-      "Fundraising",
-      "Pitch Deck",
-      "Financial Modelling",
-      "Storytelling",
-      "Startup Strategy"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 350000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Framer Developer",
-    "description": "Build interactive, animated marketing websites in Framer for design-forward startups and agencies.",
-    "type": "gig",
-    "skills_required": [
-      "Framer",
-      "Web Design",
-      "Animation",
-      "CSS",
-      "UI Design"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 100000,
-    "pay_max": 220000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Strapi CMS Developer",
-    "description": "Set up and customise a Strapi headless CMS. Build custom content types, plugins, and REST/GraphQL API endpoints.",
-    "type": "gig",
-    "skills_required": [
-      "Strapi",
-      "Node.js",
-      "CMS",
-      "REST API",
-      "PostgreSQL"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Ikeja",
-    "latitude": 6.6018,
-    "longitude": 3.3515,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Sanity.io Developer",
-    "description": "Build and configure Sanity.io CMS with custom schemas, GROQ queries, and React front-end integration for a content-heavy platform.",
-    "type": "gig",
-    "skills_required": [
-      "Sanity.io",
-      "CMS",
-      "React",
-      "GROQ",
-      "JavaScript"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Contentful Developer",
-    "description": "Manage and develop on Contentful CMS. Build content models, migrations, and integrate with a Next.js frontend.",
-    "type": "gig",
-    "skills_required": [
-      "Contentful",
-      "CMS",
-      "Next.js",
-      "JavaScript",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 80000,
-    "pay_max": 160000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "AI Content Generator Developer",
-    "description": "Build a content generation tool using OpenAI API that helps Nigerian SMEs create social media posts, product descriptions, and email copy.",
-    "type": "gig",
-    "skills_required": [
-      "OpenAI API",
-      "Python",
-      "LLM",
-      "Content Generation",
-      "REST API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Yaba",
-    "latitude": 6.5158,
-    "longitude": 3.3763,
-    "is_remote": true,
-    "pay_min": 120000,
-    "pay_max": 250000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Vector Embeddings Developer",
-    "description": "Build semantic search using vector embeddings and pgvector in PostgreSQL. Index documents and implement similarity search for a knowledge base.",
-    "type": "gig",
-    "skills_required": [
-      "Vector Embeddings",
-      "pgvector",
-      "PostgreSQL",
-      "Python",
-      "OpenAI API"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 150000,
-    "pay_max": 300000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Cloud Cost Optimisation Engineer",
-    "description": "Audit and reduce AWS cloud spend for a growing startup. Identify waste, implement reserved instances, and set up cost alerts.",
-    "type": "gig",
-    "skills_required": [
-      "AWS",
-      "Cloud Cost Optimisation",
-      "FinOps",
-      "Terraform",
-      "Cost Management"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 200000,
-    "pay_max": 400000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Senior Frontend Architect",
-    "description": "Define frontend architecture standards, review PRs, and mentor junior developers for a 20-person engineering team building a fintech platform.",
-    "type": "full_time",
-    "skills_required": [
-      "React",
-      "TypeScript",
-      "Frontend Architecture",
-      "Code Review",
-      "Mentorship"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Victoria Island",
-    "latitude": 6.4281,
-    "longitude": 3.4219,
-    "is_remote": true,
-    "pay_min": 500000,
-    "pay_max": 850000,
-    "currency": "NGN",
-    "status": "open",
-    "payment_method": "squad"
-  },
-  {
-    "title": "Senior Backend Architect",
-    "description": "Design backend systems, define API standards, and lead technical decisions for a scaling fintech platform handling millions of transactions.",
-    "type": "full_time",
-    "skills_required": [
-      "System Design",
-      "Node.js",
-      "PostgreSQL",
-      "Microservices",
-      "Technical Leadership"
-    ],
-    "languages_required": [
-      "English"
-    ],
-    "state": "Lagos",
-    "city": "Lekki",
-    "latitude": 6.4698,
-    "longitude": 3.5852,
-    "is_remote": true,
-    "pay_min": 550000,
-    "pay_max": 950000,
+    "title": "Private Lesson Teacher (Primary School)",
+    "description": "Parents in Abuja (Jabi) need a home lesson teacher for primary school pupils aged 7–11. Must be able to teach English, Maths, Basic Science, and Social Studies. Weekdays, 3pm–6pm.",
+    "type": "part_time",
+    "skills_required": ["Teaching", "Primary Education", "Mathematics", "English Language", "Lesson Planning"],
+    "languages_required": ["English"],
+    "state": "Abuja",
+    "city": "Jabi",
+    "latitude": 9.0765,
+    "longitude": 7.4332,
+    "is_remote": false,
+    "pay_min": 40000,
+    "pay_max": 70000,
     "currency": "NGN",
     "status": "open",
     "payment_method": "squad"
