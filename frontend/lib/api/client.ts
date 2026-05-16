@@ -98,7 +98,7 @@ export class ApiClient {
 
         if (response.status === 401) {
           this.handleError(error, silent)
-          const publicPaths = ['/', '/login', '/signup', '/verify', '/onboarding']
+          const publicPaths = ['/', '/login', '/signup', '/verify', '/onboarding', '/forgot-password', '/verify-reset-otp', '/reset-password']
           const onPublicPage = typeof window !== 'undefined' &&
             publicPaths.some((p) => window.location.pathname === p || window.location.pathname.startsWith(p + '/'))
           if (!onPublicPage && typeof window !== 'undefined') {

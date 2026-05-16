@@ -8,9 +8,10 @@ interface AuthLayoutProps {
     features: { title: string; desc: string }[]
   }
   reversed?: boolean
+  headerRight?: React.ReactNode
 }
 
-export function AuthLayout({ children, panel, reversed = false }: AuthLayoutProps) {
+export function AuthLayout({ children, panel, reversed = false, headerRight }: AuthLayoutProps) {
   const formCol = (
     <div className="flex items-center justify-center px-4 sm:px-6 lg:px-8 py-12 lg:py-0">
       <div className="w-full max-w-md">{children}</div>
@@ -41,7 +42,12 @@ export function AuthLayout({ children, panel, reversed = false }: AuthLayoutProp
   )
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
+    <div className="relative min-h-screen grid lg:grid-cols-2">
+        {headerRight && (
+          <div className="absolute right-6 top-6 z-10 hidden sm:block text-sm text-muted-foreground">
+            {headerRight}
+          </div>
+        )}
         {reversed ? (
           <>
             {panelCol}
