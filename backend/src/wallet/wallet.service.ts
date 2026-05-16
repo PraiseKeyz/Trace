@@ -2,11 +2,13 @@ import {
   BadRequestException,
   Injectable,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import { SquadService } from '@/squad/squad.service';
 import { WithdrawDto } from './dto/withdraw.dto';
+import { DepositDto } from './dto/deposit.dto';
 
 @Injectable()
 export class WalletService {
@@ -36,6 +38,38 @@ export class WalletService {
       balance: Number(wallet.balance),
       currency: wallet.currency,
       updated_at: wallet.updated_at,
+    };
+  }
+
+  async initiateDeposit(userId: string, dto: DepositDto) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const email = user.email ?? `${user.phone.replace(/\D/g, '')}@trace.ng`;
+    const name = user.full_name ?? user.phone;
+    const frontendUrl = process.env.FRONTEND_URL?.split(',')[0]?.trim() ?? 'http://localhost:3001';
+
+    const response = await this.squadService.initiatePayment({
+      email,
+      amount: dto.amount * 100,           // naira → kobo at the API boundary
+      initiate_type: 'inline',
+      currency: 'NGN',
+      customer_name: name,
+      callback_url: `${frontendUrl}/dashboard/payment/callback`,
+      payment_channels: ['card', 'bank', 'ussd', 'transfer'],
+      metadata: {
+        user_id: userId,
+        category: 'wallet_deposit',
+        amount_naira: dto.amount,
+      },
+    });
+
+    const data = response.data as any;
+
+    return {
+      checkout_url: data?.checkout_url as string,
+      transaction_ref: data?.transaction_ref as string,
+      amount: dto.amount,
     };
   }
 

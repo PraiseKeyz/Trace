@@ -14,7 +14,6 @@ import { join } from 'path';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PrismaService } from '@/opportunities/prisma/prisma.service';
-import { EconomicProfileService } from '@/economic-profile/economic-profile.service';
 import { CreateVirtualAccountDto } from './dto/create-virtual-account.dto';
 import { InitiatePaymentDto } from './dto/initiate-payment.dto';
 import { LookupAccountDto } from './dto/lookup-account.dto';
@@ -47,7 +46,6 @@ export class SquadService {
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
-    private readonly economicProfileService: EconomicProfileService,
     @InjectQueue('score-recalculation') private readonly scoreQueue: Queue,
   ) {
     this.baseUrl =
@@ -539,13 +537,17 @@ export class SquadService {
   }
 
   async processWebhook(payload: any, encryptedBody?: string) {
+    this.logger.log(`[Webhook] Incoming payload: ${JSON.stringify(payload)}`);
+
     if (!this.verifyWebhookSignature(payload, encryptedBody)) {
+      this.logger.warn('[Webhook] Signature verification FAILED — request rejected');
       throw new BadRequestException('Invalid Squad webhook signature');
     }
 
-    // Respond immediately, process asynchronously via BullMQ (Gap #8)
+    this.logger.log('[Webhook] Signature verified ✓ — processing asynchronously');
+
     void this.recordWebhookTransaction(payload).catch((error) => {
-      this.logger.error('Failed to process Squad webhook', error);
+      this.logger.error('[Webhook] recordWebhookTransaction threw an error', error);
     });
 
     return { message: 'Webhook received' };
@@ -559,8 +561,10 @@ export class SquadService {
       body?.transaction_reference ??
       body?.gateway_ref;
 
+    this.logger.log(`[Webhook] Processing reference: ${reference}`);
+
     if (!reference) {
-      this.logger.warn('Squad webhook skipped because it has no transaction reference');
+      this.logger.warn('[Webhook] Skipped — no transaction reference in payload');
       return;
     }
 
@@ -568,18 +572,26 @@ export class SquadService {
     const userId = metadata.user_id ?? metadata.userId;
 
     if (!userId) {
-      this.logger.warn(`Squad webhook ${reference} skipped because metadata.user_id is missing`);
+      this.logger.warn(`[Webhook] Skipped ref=${reference} — metadata.user_id is missing`);
       return;
     }
 
+    // Signature already verified — trust the webhook payload directly
     const status = this.mapTransactionStatus(body?.transaction_status);
     const amount = Number(body?.amount ?? body?.principal_amount ?? 0) / 100;
+
+    this.logger.log(`[Webhook] payload status=${body?.transaction_status} amount=₦${amount} ref=${reference}`);
 
     const existingTransaction = await this.prisma.transaction.findUnique({
       where: { squad_reference: reference },
     });
 
-    await this.prisma.transaction.upsert({
+    if (existingTransaction?.status === 'successful') {
+      this.logger.warn(`[Webhook] ref=${reference} already credited — skipping to prevent double credit`);
+      return;
+    }
+
+    const tx = await this.prisma.transaction.upsert({
       where: { squad_reference: reference },
       create: {
         user_id: userId,
@@ -591,13 +603,12 @@ export class SquadService {
         status,
         metadata: payload,
       },
-      update: {
-        status,
-        metadata: payload,
-      },
+      update: { status, metadata: payload },
     });
 
-    if (status === 'successful' && existingTransaction?.status !== 'successful') {
+    this.logger.log(`[Webhook] Transaction upserted — id=${tx.id} status=${status} amount=₦${amount}`);
+
+    if (status === 'successful') {
       await this.prisma.economicProfile.upsert({
         where: { user_id: userId },
         create: {
@@ -613,14 +624,17 @@ export class SquadService {
         },
       });
 
-      // Credit the user's internal wallet (cast until prisma generate runs with new schema)
       await (this.prisma as any).wallet.upsert({
         where: { user_id: userId },
         create: { user_id: userId, balance: amount, currency: 'NGN' },
         update: { balance: { increment: amount } },
       });
 
+      this.logger.log(`[Webhook] ✓ Wallet credited ₦${amount} for user=${userId} ref=${reference}`);
+
       await this.scoreQueue.add('recalculate-score', { userId });
+    } else {
+      this.logger.log(`[Webhook] Status='${status}' — wallet not credited for ref=${reference}`);
     }
   }
 

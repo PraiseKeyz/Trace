@@ -43,3 +43,16 @@ export function useWithdraw() {
     },
   })
 }
+
+export interface DepositResult {
+  checkout_url: string
+  transaction_ref: string
+  amount: number
+}
+
+export function useDeposit() {
+  return useMutation({
+    mutationFn: (amount: number) =>
+      api.post<DepositResult>('/wallet/deposit', { amount }),
+  })
+}

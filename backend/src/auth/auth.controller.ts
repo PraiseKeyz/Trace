@@ -16,11 +16,6 @@ import type { Response } from 'express';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // In production the frontend (traceafrika.app) and backend (api.traceafrika.app) are on
-  // different subdomains. Without an explicit domain the cookie is scoped to api.traceafrika.app
-  // only, so the Next.js middleware on traceafrika.app never sees it and redirects every
-  // post-login navigation back to /login. Setting domain=.traceafrika.app shares the cookie
-  // across all subdomains so both the backend and the middleware can read it.
   private get cookieOptions() {
     const isProduction = process.env.NODE_ENV === 'production';
     return {

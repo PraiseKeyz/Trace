@@ -14,13 +14,14 @@ import {
   Loader2,
   LucideIcon,
   ArrowDownToLine,
+  ArrowUpFromLine,
   ChevronDown,
   X,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useCurrentUser, currentUserKey } from '@/lib/api/hooks/use-current-user'
 import { useEconomicProfile } from '@/lib/api/hooks/use-economic-profile'
-import { useWallet, useWithdraw } from '@/lib/api/hooks/use-wallet'
+import { useWallet, useWithdraw, useDeposit } from '@/lib/api/hooks/use-wallet'
 import { api } from '@/lib/api'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -71,6 +72,8 @@ const TIER_NEXT: Record<string, { label: string; target: number }> = {
 
 // ── Wallet Section ────────────────────────────────────────────────────────────
 
+type ActivePanel = 'deposit' | 'withdraw' | null
+
 function WalletSection() {
   const { data: wallet, isLoading } = useWallet()
   const { data: banksData } = useQuery<Bank[]>({
@@ -78,10 +81,12 @@ function WalletSection() {
     queryFn: () => api.get('/squad/banks', { silent: true }) as Promise<Bank[]>,
     staleTime: Infinity,
   })
-  const { mutateAsync: withdraw, isPending } = useWithdraw()
+  const { mutateAsync: withdraw, isPending: withdrawPending } = useWithdraw()
+  const { mutateAsync: deposit, isPending: depositPending } = useDeposit()
 
-  const [showForm, setShowForm] = useState(false)
-  const [amount, setAmount] = useState('')
+  const [activePanel, setActivePanel] = useState<ActivePanel>(null)
+  const [depositAmount, setDepositAmount] = useState('')
+  const [withdrawAmount, setWithdrawAmount] = useState('')
   const [bankCode, setBankCode] = useState('')
   const [accountNumber, setAccountNumber] = useState('')
   const [accountName, setAccountName] = useState('')
@@ -90,14 +95,35 @@ function WalletSection() {
   const balance = wallet?.balance ?? 0
   const banks = banksData ?? []
 
+  const togglePanel = (panel: ActivePanel) =>
+    setActivePanel(prev => (prev === panel ? null : panel))
+
+  // ── Deposit ──────────────────────────────────────────────────────────────────
+
+  const handleDeposit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const amt = Number(depositAmount)
+    if (amt < 500) { toast.error('Minimum deposit is ₦500'); return }
+
+    try {
+      const result = await deposit(amt)
+      // Redirect to Squad's hosted payment page
+      window.location.href = result.checkout_url
+    } catch {
+      // handled by api client
+    }
+  }
+
+  // ── Withdraw ─────────────────────────────────────────────────────────────────
+
   const handleResolve = async () => {
     if (accountNumber.length !== 10 || !bankCode) return
     setResolving(true)
     try {
-      const res = await api.post<{ data?: { account_name?: string } }>(
-        '/squad/accounts/resolve',
-        { bank_code: bankCode, account_number: accountNumber },
-      ) as any
+      const res = await api.post('/squad/accounts/resolve', {
+        bank_code: bankCode,
+        account_number: accountNumber,
+      }) as any
       const name = res?.data?.account_name ?? res?.account_name ?? ''
       if (name) {
         setAccountName(name)
@@ -106,7 +132,6 @@ function WalletSection() {
         toast.error('Could not resolve account name')
       }
     } catch {
-      // error toast handled by api client
     } finally {
       setResolving(false)
     }
@@ -114,7 +139,7 @@ function WalletSection() {
 
   const handleWithdraw = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const amt = Number(amount)
+    const amt = Number(withdrawAmount)
     if (!amt || amt < 100) { toast.error('Minimum withdrawal is ₦100'); return }
     if (!bankCode) { toast.error('Select a bank'); return }
     if (accountNumber.length !== 10) { toast.error('Account number must be 10 digits'); return }
@@ -124,10 +149,9 @@ function WalletSection() {
     try {
       await withdraw({ amount: amt, bank_code: bankCode, account_number: accountNumber, account_name: accountName })
       toast.success(`₦${amt.toLocaleString()} withdrawal initiated`)
-      setShowForm(false)
-      setAmount(''); setBankCode(''); setAccountNumber(''); setAccountName('')
+      setActivePanel(null)
+      setWithdrawAmount(''); setBankCode(''); setAccountNumber(''); setAccountName('')
     } catch {
-      // handled by api client
     }
   }
 
@@ -143,55 +167,123 @@ function WalletSection() {
   return (
     <div className="rounded-2xl border border-border bg-white overflow-hidden">
       {/* Balance Header */}
-      <div className="p-6 flex items-center justify-between">
+      <div className="p-6 flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-trace-accent/10">
             <Wallet className="h-5 w-5 text-trace-accent" />
           </div>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Trace Wallet</p>
-            <p className="text-2xl font-black text-slate-900">₦{balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}</p>
+            <p className="text-2xl font-black text-slate-900">
+              ₦{balance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}
+            </p>
           </div>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setShowForm(v => !v)}
-          className="gap-1.5"
-        >
-          <ArrowDownToLine className="h-3.5 w-3.5" />
-          Withdraw
-          <ChevronDown className={cn('h-3 w-3 transition-transform', showForm && 'rotate-180')} />
-        </Button>
+
+        <div className="flex gap-2">
+          <Button
+            variant={activePanel === 'deposit' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => togglePanel('deposit')}
+            className="gap-1.5"
+          >
+            <ArrowUpFromLine className="h-3.5 w-3.5" />
+            Deposit
+          </Button>
+          <Button
+            variant={activePanel === 'withdraw' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => togglePanel('withdraw')}
+            className="gap-1.5"
+          >
+            <ArrowDownToLine className="h-3.5 w-3.5" />
+            Withdraw
+          </Button>
+        </div>
       </div>
 
-      {/* Withdraw Form */}
-      {showForm && (
-        <form onSubmit={handleWithdraw} className="border-t border-border px-6 py-5 space-y-4 bg-slate-50">
-          <div className="flex items-center justify-between mb-1">
-            <p className="font-semibold text-slate-800 text-sm">Withdraw to Bank</p>
-            <button type="button" onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600">
+      {/* Deposit Panel */}
+      {activePanel === 'deposit' && (
+        <form onSubmit={handleDeposit} className="border-t border-border px-6 py-5 space-y-4 bg-slate-50">
+          <div className="flex items-center justify-between">
+            <p className="font-semibold text-slate-800 text-sm">Deposit via Card / Bank Transfer</p>
+            <button type="button" onClick={() => setActivePanel(null)} className="text-slate-400 hover:text-slate-600">
               <X className="h-4 w-4" />
             </button>
           </div>
 
-          {/* Amount */}
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">Amount (₦)</label>
-            <input
-              type="number"
-              min="100"
-              max={balance}
-              value={amount}
-              onChange={e => setAmount(e.target.value)}
-              placeholder="e.g. 5000"
-              className="w-full rounded-xl border border-border bg-white px-4 py-2.5 text-sm outline-none focus:border-trace-accent focus:ring-2 focus:ring-trace-accent/10"
-              required
-            />
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-sm">₦</span>
+              <input
+                type="number"
+                min="500"
+                step="100"
+                value={depositAmount}
+                onChange={e => setDepositAmount(e.target.value)}
+                placeholder="500"
+                className="w-full rounded-xl border border-border bg-white pl-8 pr-4 py-2.5 text-sm outline-none focus:border-trace-accent focus:ring-2 focus:ring-trace-accent/10"
+                required
+              />
+            </div>
+            <p className="text-[11px] text-slate-400 mt-1">Minimum deposit: ₦500</p>
+          </div>
+
+          {/* Quick amount chips */}
+          <div className="flex gap-2 flex-wrap">
+            {[500, 1000, 2000, 5000].map(amt => (
+              <button
+                key={amt}
+                type="button"
+                onClick={() => setDepositAmount(String(amt))}
+                className={cn(
+                  'rounded-full border px-3 py-1 text-xs font-semibold transition-colors',
+                  depositAmount === String(amt)
+                    ? 'border-trace-accent bg-trace-accent text-white'
+                    : 'border-border bg-white text-slate-600 hover:border-trace-accent/50'
+                )}
+              >
+                ₦{amt.toLocaleString()}
+              </button>
+            ))}
+          </div>
+
+          <Button type="submit" className="w-full" disabled={depositPending || Number(depositAmount) < 500}>
+            {depositPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {depositPending ? 'Opening payment…' : `Deposit ₦${Number(depositAmount || 0).toLocaleString()}`}
+          </Button>
+        </form>
+      )}
+
+      {/* Withdraw Panel */}
+      {activePanel === 'withdraw' && (
+        <form onSubmit={handleWithdraw} className="border-t border-border px-6 py-5 space-y-4 bg-slate-50">
+          <div className="flex items-center justify-between">
+            <p className="font-semibold text-slate-800 text-sm">Withdraw to Bank</p>
+            <button type="button" onClick={() => setActivePanel(null)} className="text-slate-400 hover:text-slate-600">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-600 mb-1.5">Amount (₦)</label>
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-sm">₦</span>
+              <input
+                type="number"
+                min="100"
+                max={balance}
+                value={withdrawAmount}
+                onChange={e => setWithdrawAmount(e.target.value)}
+                placeholder="1000"
+                className="w-full rounded-xl border border-border bg-white pl-8 pr-4 py-2.5 text-sm outline-none focus:border-trace-accent focus:ring-2 focus:ring-trace-accent/10"
+                required
+              />
+            </div>
             <p className="text-[11px] text-slate-400 mt-1">Available: ₦{balance.toLocaleString()}</p>
           </div>
 
-          {/* Bank */}
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">Bank</label>
             <select
@@ -207,7 +299,6 @@ function WalletSection() {
             </select>
           </div>
 
-          {/* Account Number + Resolve */}
           <div>
             <label className="block text-xs font-semibold text-slate-600 mb-1.5">Account Number</label>
             <div className="flex gap-2">
@@ -234,7 +325,6 @@ function WalletSection() {
             </div>
           </div>
 
-          {/* Account Name (read-only) */}
           {accountName && (
             <div className="flex items-center gap-2 rounded-xl bg-green-50 border border-green-200 px-4 py-2.5">
               <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
@@ -242,9 +332,9 @@ function WalletSection() {
             </div>
           )}
 
-          <Button type="submit" className="w-full" disabled={isPending || !accountName}>
-            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-            {isPending ? 'Processing…' : `Withdraw ₦${Number(amount || 0).toLocaleString()}`}
+          <Button type="submit" className="w-full" disabled={withdrawPending || !accountName}>
+            {withdrawPending ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+            {withdrawPending ? 'Processing…' : `Withdraw ₦${Number(withdrawAmount || 0).toLocaleString()}`}
           </Button>
         </form>
       )}
