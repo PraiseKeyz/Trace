@@ -3,7 +3,6 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PrismaService } from '@/opportunities/prisma/prisma.service';
 import { OpportunityApplicationStatus } from '../../generated/prisma/enums';
-import { SquadService } from '@/squad/squad.service';
 import { GrpcService, MatchedOpportunity } from '@/grpc/grpc.service';
 import { CreateOpportunityDto } from './dto/create-opportunity.dto';
 import { ApplyOpportunityDto } from './dto/apply-opportunity.dto';
@@ -15,7 +14,6 @@ const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 export class OpportunitiesService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly squadService: SquadService,
     private readonly grpcService: GrpcService,
     @InjectQueue('score-recalculation') private readonly scoreQueue: Queue,
   ) {}
@@ -207,7 +205,24 @@ export class OpportunitiesService {
       );
     }
 
-    // Set escrow_amount and selected_applicant, then lock funds
+    // Wallet balance check — must have enough to cover the agreed amount
+    const wallet = await (this.prisma as any).wallet.findUnique({
+      where: { user_id: posterId },
+    });
+    const walletBalance = Number(wallet?.balance ?? 0);
+    if (walletBalance < dto.agreed_amount) {
+      throw new BadRequestException(
+        `Insufficient wallet balance. You need ₦${dto.agreed_amount.toLocaleString()} but your wallet only has ₦${walletBalance.toLocaleString('en-NG', { minimumFractionDigits: 2 })}. Please fund your wallet before approving.`,
+      );
+    }
+
+    // Debit trader's Trace wallet — funds held in escrow until job confirmed
+    await (this.prisma as any).wallet.update({
+      where: { user_id: posterId },
+      data: { balance: { decrement: dto.agreed_amount } },
+    });
+
+    // Update opportunity: select worker, lock escrow amount, mark filled
     await this.prisma.opportunity.update({
       where: { id: opportunityId },
       data: {
@@ -228,14 +243,24 @@ export class OpportunitiesService {
       data: { status: 'accepted' },
     });
 
-    // Lock funds via Squad
-    const escrow = await this.squadService.lockEscrow(opportunityId, posterId);
+    // Record escrow-lock transaction
+    await this.prisma.transaction.create({
+      data: {
+        user_id: posterId,
+        counterparty_id: applicantId,
+        squad_reference: `ESC_${opportunityId}`,
+        type: 'escrow_lock',
+        category: 'gig_escrow',
+        amount: dto.agreed_amount,
+        currency: 'NGN',
+        status: 'pending',
+        metadata: { opportunity_id: opportunityId } as any,
+      },
+    });
 
     return {
-      message: 'Applicant approved and funds locked in escrow',
-      escrow_reference: escrow.escrow_reference,
+      message: 'Applicant approved — funds held in escrow from your Trace wallet',
       agreed_amount: dto.agreed_amount,
-      checkout_url: escrow.checkout_url,
     };
   }
 
@@ -250,7 +275,7 @@ export class OpportunitiesService {
     if (opportunity.selected_applicant !== workerId) {
       throw new ForbiddenException('You are not the assigned worker for this opportunity');
     }
-    if (opportunity.status !== 'filled') {
+    if (!['filled', 'in_progress'].includes(opportunity.status)) {
       throw new BadRequestException(
         `Cannot mark done — current status is '${opportunity.status}'`,
       );
@@ -296,7 +321,45 @@ export class OpportunitiesService {
       );
     }
 
-    await this.squadService.autoReleaseEscrow(opportunityId);
+    const workerId = opportunity.selected_applicant;
+    if (!workerId) throw new BadRequestException('No worker assigned to this opportunity');
+
+    const payout = Number(opportunity.escrow_amount ?? 0);
+    if (payout <= 0) throw new BadRequestException('No escrow amount set for this opportunity');
+
+    // Credit worker's Trace wallet
+    await (this.prisma as any).wallet.upsert({
+      where: { user_id: workerId },
+      create: { user_id: workerId, balance: payout, currency: 'NGN' },
+      update: { balance: { increment: payout } },
+    });
+
+    // Mark opportunity as confirmed
+    await this.prisma.opportunity.update({
+      where: { id: opportunityId },
+      data: { status: 'confirmed' },
+    });
+
+    // Mark escrow as released (funds went to worker — this is NOT new income for the poster)
+    await this.prisma.transaction.updateMany({
+      where: { squad_reference: `ESC_${opportunityId}` },
+      data: { status: 'released' },
+    });
+
+    // Record payout credit for the worker
+    await this.prisma.transaction.create({
+      data: {
+        user_id: workerId,
+        counterparty_id: posterId,
+        squad_reference: `PAY_${opportunityId}`,
+        type: 'credit',
+        category: 'gig_payout',
+        amount: payout,
+        currency: 'NGN',
+        status: 'successful',
+        metadata: { opportunity_id: opportunityId } as any,
+      },
+    });
 
     return { message: 'Job confirmed — payment released to the worker' };
   }
@@ -310,7 +373,7 @@ export class OpportunitiesService {
 
     if (!opportunity) throw new NotFoundException('Opportunity not found');
     if (opportunity.posted_by !== posterId) throw new ForbiddenException('Not your opportunity');
-    if (!['filled', 'worker_done'].includes(opportunity.status)) {
+    if (!['filled', 'in_progress', 'worker_done'].includes(opportunity.status)) {
       throw new BadRequestException('No active escrow to dispute');
     }
 

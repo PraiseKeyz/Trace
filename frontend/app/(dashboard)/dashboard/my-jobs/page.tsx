@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -24,7 +24,7 @@ import { useAuth } from '@/context/auth-context'
 
 function fmt(n?: number | null) {
   if (n == null) return null
-  return n >= 1000 ? `₦${(n / 1000).toFixed(0)}K` : `₦${n}`
+  return `₦${Number(n).toLocaleString('en-NG')}`
 }
 
 function payRange(min?: number | null, max?: number | null) {
@@ -39,11 +39,17 @@ function payRange(min?: number | null, max?: number | null) {
 const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   open:        { label: 'Open',               classes: 'bg-green-50 text-green-700 border-green-200' },
   filled:      { label: 'In Progress',        classes: 'bg-blue-50 text-blue-700 border-blue-200' },
+  in_progress: { label: 'In Progress',        classes: 'bg-blue-50 text-blue-700 border-blue-200' },
   worker_done: { label: 'Awaiting Approval',  classes: 'bg-amber-50 text-amber-700 border-amber-200' },
   confirmed:   { label: 'Completed',          classes: 'bg-slate-50 text-slate-600 border-slate-200' },
   disputed:    { label: 'Disputed',           classes: 'bg-red-50 text-red-700 border-red-200' },
   closed:      { label: 'Closed',             classes: 'bg-slate-50 text-slate-500 border-slate-200' },
 }
+
+const ACTIVE_STATUSES = ['open', 'filled', 'in_progress', 'worker_done']
+const PAST_STATUSES   = ['confirmed', 'disputed', 'closed']
+
+type StatusFilter = 'all' | 'open' | 'active' | 'awaiting' | 'past'
 
 const APP_STATUS: Record<string, { label: string; classes: string }> = {
   pending:  { label: 'Pending',  classes: 'bg-slate-100 text-slate-600' },
@@ -97,7 +103,7 @@ function ApprovalModal({
           }
           onClose()
         },
-        onError: () => toast.error('Approval failed. Try again.'),
+        onError: () => {},
       },
     )
   }
@@ -144,7 +150,7 @@ function ApprovalModal({
               <p className="text-xs font-bold text-amber-800">Escrow Agreement</p>
             </div>
             <ul className="space-y-1.5 text-xs text-amber-700 leading-relaxed pl-1">
-              <li>• The agreed amount will be locked from your Squad wallet when you approve.</li>
+              <li>• The agreed amount will be deducted from your Trace wallet when you approve.</li>
               <li>• Funds are held safely in escrow until the job is completed.</li>
               <li>• Once the worker marks the job as done, you have <strong>7 days</strong> to confirm or raise a dispute.</li>
               <li>• If you take no action within 7 days, <strong>the money is automatically released</strong> to the worker.</li>
@@ -383,9 +389,87 @@ function JobCard({ job }: { job: PostedOpportunity }) {
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 
+const FILTER_OPTIONS: { key: StatusFilter; label: string }[] = [
+  { key: 'all',     label: 'All' },
+  { key: 'open',    label: 'Open' },
+  { key: 'active',  label: 'In Progress' },
+  { key: 'awaiting', label: 'Awaiting' },
+  { key: 'past',    label: 'Completed' },
+]
+
+function FilterDropdown({
+  options,
+  value,
+  counts,
+  onChange,
+}: {
+  options: { key: StatusFilter; label: string }[]
+  value: StatusFilter
+  counts: Record<StatusFilter, number>
+  onChange: (v: StatusFilter) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const selected = options.find(o => o.key === value)!
+
+  return (
+    <div ref={ref} className="relative w-full">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="w-full flex items-center justify-between gap-2 rounded-xl border border-trace-accent bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-trace-accent/20"
+      >
+        <span>
+          {selected.label}
+          {counts[value] > 0 && (
+            <span className="ml-1.5 text-xs font-bold text-trace-accent">({counts[value]})</span>
+          )}
+        </span>
+        <ChevronDown size={15} className={cn('text-trace-accent transition-transform', open && 'rotate-180')} />
+      </button>
+
+      {open && (
+        <div className="absolute z-20 mt-1.5 w-full rounded-xl border border-trace-accent/30 bg-white shadow-lg overflow-hidden">
+          {options.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => { onChange(key); setOpen(false) }}
+              className={cn(
+                'w-full flex items-center justify-between px-4 py-2.5 text-sm font-semibold transition-colors',
+                key === value
+                  ? 'bg-trace-accent text-white'
+                  : 'text-slate-700 hover:bg-trace-accent/10 hover:text-trace-accent'
+              )}
+            >
+              {label}
+              {counts[key] > 0 && (
+                <span className={cn(
+                  'text-[10px] font-bold rounded-full px-1.5 py-0.5 min-w-[18px] text-center',
+                  key === value ? 'bg-white/20 text-white' : 'bg-trace-accent/10 text-trace-accent'
+                )}>
+                  {counts[key]}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function MyJobsPage() {
   const { user, isLoading: authLoading } = useAuth()
   const router = useRouter()
+  const [filter, setFilter] = useState<StatusFilter>('all')
 
   useEffect(() => {
     if (authLoading) return
@@ -396,18 +480,33 @@ export default function MyJobsPage() {
 
   if (authLoading || !user || user.persona !== 'trader') return null
 
-  const activeJobs = jobs?.filter(j => ['open', 'filled', 'worker_done'].includes(j.status)) ?? []
-  const pastJobs = jobs?.filter(j => ['confirmed', 'disputed', 'closed'].includes(j.status)) ?? []
+  const allJobs = jobs ?? []
+  const visibleJobs = allJobs.filter(j => {
+    if (filter === 'all')     return true
+    if (filter === 'open')    return j.status === 'open'
+    if (filter === 'active')  return ['filled', 'in_progress'].includes(j.status)
+    if (filter === 'awaiting') return j.status === 'worker_done'
+    if (filter === 'past')    return PAST_STATUSES.includes(j.status)
+    return true
+  })
+
+  const counts: Record<StatusFilter, number> = {
+    all:      allJobs.length,
+    open:     allJobs.filter(j => j.status === 'open').length,
+    active:   allJobs.filter(j => ['filled', 'in_progress'].includes(j.status)).length,
+    awaiting: allJobs.filter(j => j.status === 'worker_done').length,
+    past:     allJobs.filter(j => PAST_STATUSES.includes(j.status)).length,
+  }
 
   return (
-    <div className="space-y-6 pb-4">
+    <div className="space-y-5 pb-4">
       {/* Header */}
       <div className="bg-gradient-to-br from-slate-950 to-slate-800 rounded-2xl p-6 text-white relative overflow-hidden">
         <div className="absolute -top-8 -right-8 w-40 h-40 rounded-full bg-white/[0.04] pointer-events-none" />
         <p className="text-trace-accent text-xs font-bold uppercase tracking-widest mb-2">My Jobs</p>
         <h1 className="text-2xl font-black leading-tight mb-1">Jobs you've posted</h1>
         <p className="text-white/60 text-sm leading-relaxed mb-4">
-          Track applicants, approve workers, and manage escrow payments.
+          Track applicants, approve workers, and release payments.
         </p>
         <Button asChild size="sm">
           <Link href="/dashboard/post-job">
@@ -416,6 +515,14 @@ export default function MyJobsPage() {
           </Link>
         </Button>
       </div>
+
+      {/* Filter dropdown */}
+      <FilterDropdown
+        options={FILTER_OPTIONS}
+        value={filter}
+        counts={counts}
+        onChange={setFilter}
+      />
 
       {isLoading ? (
         <div className="space-y-4">
@@ -427,27 +534,21 @@ export default function MyJobsPage() {
             </div>
           ))}
         </div>
-      ) : jobs?.length === 0 ? (
+      ) : allJobs.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-trace-border bg-white py-20 text-center">
           <Briefcase className="h-12 w-12 text-slate-300 mb-4" />
           <p className="font-semibold text-slate-500">No jobs posted yet</p>
           <p className="text-sm text-slate-400 mt-1 mb-5">Post your first job and find trusted workers nearby</p>
         </div>
+      ) : visibleJobs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-trace-border bg-white py-12 text-center">
+          <Briefcase className="h-10 w-10 text-slate-300 mb-3" />
+          <p className="font-semibold text-slate-500">No jobs in this category</p>
+        </div>
       ) : (
-        <>
-          {activeJobs.length > 0 && (
-            <section className="space-y-3">
-              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider px-1">Active</h2>
-              {activeJobs.map(job => <JobCard key={job.id} job={job} />)}
-            </section>
-          )}
-          {pastJobs.length > 0 && (
-            <section className="space-y-3">
-              <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider px-1">Past</h2>
-              {pastJobs.map(job => <JobCard key={job.id} job={job} />)}
-            </section>
-          )}
-        </>
+        <div className="space-y-3">
+          {visibleJobs.map(job => <JobCard key={job.id} job={job} />)}
+        </div>
       )}
     </div>
   )

@@ -28,7 +28,7 @@ const PAGE_LIMIT = 20
 
 function fmt(n?: number | null) {
   if (n == null) return null
-  return n >= 1000 ? `₦${(n / 1000).toFixed(0)}K` : `₦${n}`
+  return `₦${Number(n).toLocaleString('en-NG')}`
 }
 
 function payRange(opp: Opportunity) {
@@ -313,6 +313,7 @@ const APP_STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
 const JOB_STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   open:        { label: 'Open',              classes: 'bg-green-50 text-green-700' },
   filled:      { label: 'In Progress',       classes: 'bg-blue-50 text-blue-700' },
+  in_progress: { label: 'In Progress',       classes: 'bg-blue-50 text-blue-700' },
   worker_done: { label: 'Done — Awaiting',   classes: 'bg-amber-50 text-amber-700' },
   confirmed:   { label: 'Completed',         classes: 'bg-slate-50 text-slate-500' },
   disputed:    { label: 'Disputed',          classes: 'bg-red-50 text-red-700' },
@@ -320,7 +321,7 @@ const JOB_STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
 
 function fmtAmt(n?: number | null) {
   if (n == null) return null
-  return n >= 1000 ? `₦${(n / 1000).toFixed(0)}K` : `₦${n}`
+  return `₦${Number(n).toLocaleString('en-NG')}`
 }
 
 function ApplicationCard({ app }: { app: MyApplication }) {
@@ -328,7 +329,7 @@ function ApplicationCard({ app }: { app: MyApplication }) {
   const jobStatus = JOB_STATUS_CONFIG[app.opportunity.status] ?? { label: app.opportunity.status, classes: 'bg-slate-100 text-slate-600' }
   const appStatus = APP_STATUS_CONFIG[app.status] ?? { label: app.status, classes: 'bg-slate-100 text-slate-600' }
 
-  const canMarkDone = app.status === 'accepted' && app.opportunity.status === 'filled'
+  const canMarkDone = app.status === 'accepted' && ['filled', 'in_progress'].includes(app.opportunity.status)
   const escrow = app.opportunity.escrow_amount
 
   function handleMarkDone() {
@@ -439,7 +440,7 @@ function MyApplicationsTab() {
     )
   }
 
-  const active = applications.filter(a => ['open', 'filled', 'worker_done'].includes(a.opportunity.status) && a.status !== 'rejected')
+  const active = applications.filter(a => ['open', 'filled', 'in_progress', 'worker_done'].includes(a.opportunity.status) && a.status !== 'rejected')
   const past = applications.filter(a => ['confirmed', 'disputed'].includes(a.opportunity.status) || a.status === 'rejected')
 
   return (
