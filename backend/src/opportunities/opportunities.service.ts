@@ -9,9 +9,12 @@ import { ApplyOpportunityDto } from './dto/apply-opportunity.dto';
 import { ApproveOpportunityDto } from './dto/approve-opportunity.dto';
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const MATCH_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 @Injectable()
 export class OpportunitiesService {
+  private readonly matchCache = new Map<string, { data: unknown[]; expiresAt: number }>()
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly grpcService: GrpcService,
@@ -109,6 +112,12 @@ export class OpportunitiesService {
   }
 
   async getMatches(userId: string) {
+    // Serve from cache if still fresh
+    const cached = this.matchCache.get(userId)
+    if (cached && cached.expiresAt > Date.now()) {
+      return cached.data
+    }
+
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
       include: { economic_profile: true },
@@ -127,7 +136,10 @@ export class OpportunitiesService {
     });
 
     const aiMatches = result.opportunities ?? [];
-    if (aiMatches.length === 0) return [];
+    if (aiMatches.length === 0) {
+      this.matchCache.set(userId, { data: [], expiresAt: Date.now() + MATCH_CACHE_TTL_MS })
+      return [];
+    }
 
     // Enrich AI match IDs with full opportunity details from the database
     const ids = aiMatches.map(m => m.opportunity_id);
@@ -140,10 +152,13 @@ export class OpportunitiesService {
 
     const oppMap = new Map(opportunities.map(o => [o.id, o]));
 
-    return aiMatches
+    const enriched = aiMatches
       .filter(m => oppMap.has(m.opportunity_id))
       .map(m => ({ ...oppMap.get(m.opportunity_id)!, match_score: m.match_score }))
       .sort((a, b) => b.match_score - a.match_score);
+
+    this.matchCache.set(userId, { data: enriched, expiresAt: Date.now() + MATCH_CACHE_TTL_MS })
+    return enriched;
   }
 
   async getMyApplications(userId: string) {

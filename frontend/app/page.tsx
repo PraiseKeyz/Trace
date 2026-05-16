@@ -5,6 +5,7 @@ import { motion, Variants } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Briefcase, TrendingUp, PiggyBank, ArrowRight, CheckCircle, Shield, Zap, Users, Award, Clock } from 'lucide-react'
 import Hero from '@/components/Hero'
+import Image from 'next/image'
 
 export default function LandingPage() {
   const staggerContainer: Variants = {
@@ -34,10 +35,8 @@ export default function LandingPage() {
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.03)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-linear-to-br from-trace-accent to-trace-accent/90 shadow-lg shadow-trace-accent/20 group-hover:scale-105 transition-all duration-300">
-              <span className="font-bold text-white text-lg font-mono">T</span>
-            </div>
+          <Link href="/" className="flex items-center gap-2 group">
+          <Image src="/icon-light-32x32.png" alt="Trace Logo" width={50} height={50} className='pt-[10px]' />
             <div>
               <span className="text-xl font-black text-trace-text tracking-tight">Trace</span>
               <span className="text-[10px] uppercase font-bold tracking-widest text-trace-accent block -mt-1">Economic Identity</span>
@@ -349,16 +348,10 @@ export default function LandingPage() {
             </div>
           </div>
           
-          <div className="pt-8 border-t border-trace-border flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="pt-8 border-t border-trace-border flex flex-col md:flex-row items-center justify-center">
             <p className="text-sm font-medium text-trace-text/50">
-              &copy; {new Date().getFullYear()} Trace Inc. All rights reserved.
+              &copy; {new Date().getFullYear()} Trace Africa. All rights reserved.
             </p>
-            <div className="flex gap-4">
-              {/* Social placeholders */}
-                <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-accent/10 cursor-pointer transition-colors" />
-              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-accent/10 cursor-pointer transition-colors" />
-              <div className="w-8 h-8 rounded-full bg-trace-surface hover:bg-trace-accent/10 cursor-pointer transition-colors" />
-            </div>
           </div>
         </div>
       </footer>

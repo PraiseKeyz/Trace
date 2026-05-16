@@ -10,7 +10,7 @@ The AI/ML layer for the Trace platform. Built with Python and FastAPI, this serv
 |--|--|
 | Framework | FastAPI |
 | Language | Python 3.10+ |
-| Embeddings | SentenceTransformers (`sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`) — multilingual, 50+ languages including major African languages |
+| Embeddings | SentenceTransformers (`Davlan/afro-xlmr-large`) — AfroXLM-R, optimised for 17 African languages |
 | ML | scikit-learn, sentence-transformers, PyTorch |
 | gRPC Server | grpcio + grpcio-tools |
 | Database | PostgreSQL (SQLAlchemy async) |
@@ -67,7 +67,7 @@ API docs available at [http://localhost:8000/docs](http://localhost:8000/docs) (
 
 ### 1. Identity Engine
 
-Calculates a user's Economic Identity Score (0–1000) from four weighted signals:
+Calculates a user's Economic Identity Score (0–100) from four weighted signals:
 
 | Signal | Weight | What It Measures |
 |--------|--------|-----------------|
@@ -82,10 +82,10 @@ Output includes `identity_score`, per-component breakdown, `risk_tier`, and `max
 
 | Score | Tier | Max Loan |
 |-------|------|----------|
-| 0–299 | High | Not eligible |
-| 300–549 | Medium | ₦50,000 |
-| 550–749 | Low | ₦200,000 |
-| 750–1000 | Very Low | ₦500,000 |
+| 0–29 | High | Not eligible |
+| 30–49 | Medium | ₦50,000 |
+| 50–69 | Low | ₦200,000 |
+| 70–100 | Very Low | ₦500,000 |
 
 ### 2. Matching Engine
 
@@ -129,7 +129,7 @@ Generates market intelligence for trade categories by location:
 The gRPC server runs on port `50051`. The contract is defined in `proto/trace.proto` (shared with the backend).
 
 Services exposed:
-- `ScoringService.CalculateScore` — called by backend on score recalculation
+- `ScoringService.ScoreUser` — called by backend on score recalculation
 - `MatchingService.MatchOpportunities` — called by backend on work-matcher requests
 
 The proto file is kept in sync between `backend/proto/trace.proto` and `ai-service/proto/trace.proto`.

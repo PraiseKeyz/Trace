@@ -140,7 +140,7 @@ All routes are prefixed with `/api/v1`. Protected routes require a valid JWT coo
 | POST | `/opportunities/:id/confirm` | JWT | Confirm job completion (poster only) |
 | POST | `/opportunities/:id/dispute` | JWT | Raise a dispute |
 | POST | `/opportunities/:id/mark-done` | JWT | Mark job as done (worker) |
-| POST | `/opportunities/match` | JWT | Get AI-matched opportunities (calls gRPC) |
+| GET | `/opportunities/matches` | JWT | Get AI-matched opportunities (calls gRPC) |
 
 ### Transactions — `/api/v1/transactions/*`
 
@@ -245,8 +245,8 @@ The backend calls the Python AI service via gRPC for two operations:
 
 | Method | gRPC Call | Triggered By |
 |--------|-----------|--------------|
-| Score recalculation | `ScoringService.CalculateScore` | Successful transaction, explicit recalculate endpoint |
-| Opportunity matching | `MatchingService.MatchOpportunities` | `POST /opportunities/match` |
+| Score recalculation | `ScoringService.ScoreUser` | Successful transaction, explicit recalculate endpoint |
+| Opportunity matching | `MatchingService.MatchOpportunities` | `GET /opportunities/matches` |
 
 The shared contract is [`proto/trace.proto`](./proto/trace.proto). The `GrpcModule` manages the connection to `AI_SERVICE_URL` (default `localhost:50051`).
 

@@ -10,7 +10,6 @@ Built by **Team Neuralstack**
 - `ai-service/` - Python AI service for scoring, matching, and intelligence generation.
 - `document_pdf.pdf` - Architecture document used for the system design.
 
-<<<<<<< HEAD
 ## What Is Trace?
 
 Trace is an AI-powered platform that turns invisible informal economic activity into a verifiable digital identity — giving African traders, gig workers, and job seekers access to financial services they have always been excluded from.
@@ -25,7 +24,7 @@ The informal economy provides up to 70% of employment in sub-Saharan Africa. Tra
 | **Trade Intelligence** | Gives traders real-time market demand signals and pricing insights |
 | **Finance Gateway** | Exposes verified credit profiles to financial institution partners |
 
-Everything feeds into one central record: **The Economic Identity Profile** — a composite score (0–1000) that grows with every transaction, gig, and interaction.
+Everything feeds into one central record: **The Economic Identity Profile** — a composite score (0–100) that grows with every transaction, gig, and interaction.
 
 ---
 
@@ -33,7 +32,7 @@ Everything feeds into one central record: **The Economic Identity Profile** — 
 
 ```
 ┌─────────────────────┐
-│   Frontend (3001)   │  Next.js 16 · React 19 · Tailwind CSS · TypeScript
+│   Frontend (3001)   │  Next.js 15 · React 19 · Tailwind CSS · TypeScript
 └────────┬────────────┘
          │ REST  (HTTPS + JWT cookie)
 ┌────────▼────────────┐
@@ -56,7 +55,7 @@ Everything feeds into one central record: **The Economic Identity Profile** — 
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Radix UI, shadcn/ui |
+| Frontend | Next.js 15, React 19, TypeScript, Tailwind CSS 4, Radix UI, shadcn/ui |
 | Backend | NestJS 11, TypeScript, Prisma ORM, PostgreSQL |
 | AI Service | FastAPI, Python, AfroXLM-R (17 African languages), scikit-learn |
 | Auth | Phone-based OTP (Twilio) + JWT + HttpOnly Cookies |
@@ -81,6 +80,7 @@ squad-hackathon/
 ├── docker-compose.yml
 ├── frontend.env
 └── .github/workflows/deploy.yml
+```
 
 ## Quick Start (Local Development)
 
@@ -210,10 +210,10 @@ Push to `main` triggers the GitHub Actions workflow in `.github/workflows/deploy
 
 | Score | Tier | Max Recommended Loan |
 |-------|------|---------------------|
-| 0–299 | High | Not eligible |
-| 300–549 | Medium | ₦50,000 |
-| 550–749 | Low | ₦200,000 |
-| 750–1000 | Very Low | ₦500,000 |
+| 0–29 | High | Not eligible |
+| 30–49 | Medium | ₦50,000 |
+| 50–69 | Low | ₦200,000 |
+| 70–100 | Very Low | ₦500,000 |
 
 ---
 

@@ -49,28 +49,101 @@ flowchart TD
 ---
 
 ## Table of Contents
-1. [Product Overview](#1-product-overview)
-2. [The Problem We Are Solving](#2-the-problem-we-are-solving)
-3. [System Philosophy](#3-system-philosophy)
-4. [Tech Stack](#4-tech-stack)
-5. [Database Design (PostgreSQL)](#5-database-design-postgresql)
-6. [API Structure](#6-api-structure)
-7. [Core Engines](#7-core-engines)
-8. [Squad API Integration](#8-squad-api-integration)
-9. [AI & Scoring Layer](#9-ai--scoring-layer)
-10. [The Learning Loop](#10-the-learning-loop)
-11. [Trade Intelligence Data Sources](#11-trade-intelligence-data-sources)
-12. [The Partner API — Financial Institutions](#12-the-partner-api--financial-institutions)
-13. [Job Supply Strategy](#13-job-supply-strategy)
-14. [Accessibility Strategy](#14-accessibility-strategy)
-15. [The Full Data Flow](#15-the-full-data-flow)
-16. [Build Order & Team Responsibilities](#16-build-order--team-responsibilities)
-17. [Demo Strategy](#17-demo-strategy)
-18. [Colour Palette](#18-colour-palette)
+1. [Challenge Alignment — The Four Pillars](#1-challenge-alignment--the-four-pillars)
+2. [Product Overview](#2-product-overview)
+3. [The Problem We Are Solving](#3-the-problem-we-are-solving)
+4. [System Philosophy](#4-system-philosophy)
+5. [Tech Stack](#5-tech-stack)
+6. [Database Design (PostgreSQL)](#6-database-design-postgresql)
+7. [API Structure](#7-api-structure)
+8. [Core Engines](#8-core-engines)
+9. [Squad API Integration](#9-squad-api-integration)
+10. [AI & Scoring Layer](#10-ai--scoring-layer)
+11. [The Learning Loop](#11-the-learning-loop)
+12. [Trade Intelligence Data Sources](#12-trade-intelligence-data-sources)
+13. [The Partner API — Financial Institutions](#13-the-partner-api--financial-institutions)
+14. [Job Supply Strategy](#14-job-supply-strategy)
+15. [Accessibility Strategy](#15-accessibility-strategy)
+16. [The Full Data Flow](#16-the-full-data-flow)
+17. [Build Order & Team Responsibilities](#17-build-order--team-responsibilities)
+18. [Demo Strategy](#18-demo-strategy)
+19. [Colour Palette](#19-colour-palette)
 
 ---
 
-## 1. Product Overview
+## 1. Challenge Alignment — The Four Pillars
+
+Trace was built to address all four pillars of the Squad Hackathon 3.0 — Challenge 02: Intelligent Economic Platform. Here is exactly how each pillar is satisfied.
+
+---
+
+### Pillar 1 — AI Automation
+
+AI is the core capability of Trace, not a cosmetic feature. Every scoring event, every match, and every market insight is machine-generated.
+
+| Feature | AI Mechanism |
+|---|---|
+| **Identity Scoring** | Python scoring engine (scikit-learn) computes a weighted composite score (0–100) from four signals — transaction history (40%), community vouches (25%), platform activity (20%), profile completeness (15%). Score recalculates automatically on every significant event via a BullMQ async queue. |
+| **Work Matching** | Multilingual sentence embeddings from **AfroXLM-R** (`Davlan/afro-xlmr-large`, optimised for 17 African languages) compute semantic skill similarity. Match score combines skill overlap (40%), proximity via Haversine distance (25%), historical success rate (20%), and language match (15%). |
+| **Market Intelligence** | Internal Squad transaction data aggregated by trade category and location produces a demand index, trend signal (rising / stable / falling), and confidence level — updated weekly. |
+| **Continuous Learning** | Gig completion outcomes feed back into the matching model monthly. Loan repayment outcomes reported by partner institutions retrain the credit scoring model. The system gets smarter at scale. |
+
+The AI layer runs as an independent **Python / FastAPI** microservice. The NestJS backend communicates with it over **gRPC (port 50051)** — typed, low-latency, HTTP/2. Two services are exposed: `ScoringService.ScoreUser` and `MatchingService.MatchOpportunities`.
+
+---
+
+### Pillar 2 — Squad APIs
+
+Squad is not a payment bolt-on — it is the **data backbone** of Trace. Every Squad event is a scoring signal.
+
+| Squad Feature | How Trace Uses It |
+|---|---|
+| **Virtual Accounts API** | Created automatically at onboarding — every user gets a unique Squad virtual account that serves as their financial identity anchor on the platform. |
+| **Payment Links** | Generated for gig payments — employers pay via Squad, ensuring every transaction is captured on-platform and contributes to the worker's identity score. |
+| **Escrow** | Gig payments are held in escrow until both parties confirm completion — a trust mechanism for informal workers operating without formal contracts. |
+| **Webhook Events** | Every Squad payment event fires `POST /webhooks/squad`. The NestJS handler responds 200 immediately, then queues a BullMQ job → AI score recalculation → identity profile update. The Squad webhook is the primary scoring trigger. |
+| **Transfers API** | Escrow release to workers and loan disbursements from partner institutions both flow directly to users' Squad virtual accounts. |
+
+> **The Golden Rule:** If the transaction does not go through Squad on Trace, it does not belong on Trace. The moment transactions escape the platform, the data pipeline breaks and the scoring engine starves.
+
+---
+
+### Pillar 3 — Use of Data
+
+Trace is a data platform first. Every user action generates a signal that feeds back into the Economic Identity.
+
+| Data Type | Source | Used For |
+|---|---|---|
+| **Transaction signals** | Squad webhook events | Transaction history score — 40% of identity score |
+| **Peer vouches** | In-app vouch system | Community trust score — 25% of identity score; verified vouches worth 3× |
+| **Platform activity** | Logins, gig applications, completions | Activity score — 20% of identity score |
+| **Profile completeness** | Onboarding fields | Profile completeness score — 15% of identity score |
+| **Gig outcomes** | Completion confirmed by both parties | Matching model training dataset (`gig_outcomes` table) |
+| **Trade demand** | Squad transactions aggregated by category + location | Trade Intelligence feed — demand index, trend, pricing insights |
+| **Loan repayment** | Partner institutions report outcome | Credit scoring model retraining labels |
+
+All partner data access is logged to `partner_queries`. Users can see exactly which institution queried their profile and when. Raw transaction data is never exposed — only aggregated signals.
+
+---
+
+### Pillar 4 — Financial Innovation
+
+Trace builds alternative credit infrastructure for the informal economy — the 70% of the Nigerian workforce excluded from formal financial services not because they are not creditworthy, but because no system has ever tracked them.
+
+| Innovation | What It Solves |
+|---|---|
+| **Economic Identity Score (0–100)** | Replaces bank statements — a verifiable, growing credit signal built entirely from informal economic activity |
+| **Risk Tier → Loan Ceiling** | Translates score directly into a loan amount financial institutions can act on (₦50k / ₦200k / ₦500k) |
+| **Partner API** | `GET /partner/credit-profile/:phone` — financial institutions query verified credit profiles without ever receiving raw transaction data; user consent is required |
+| **Data Consent Layer** | Users explicitly opt in during onboarding; they control which institutions can query their profile and can view the access log from their dashboard |
+| **Virtual Account as Identity** | Squad virtual account created at onboarding anchors the user's financial identity — gig payments and loan disbursements flow to the same account |
+| **Zero Bank History Required** | The entire scoring model operates without a single bank statement — informal transaction history, peer vouches, and gig completion outcomes are sufficient credit signals |
+
+Target partner institutions: FairMoney, Carbon, LAPO Microfinance, Renmoney — fintechs and microfinance banks already serving the informal sector who lack reliable alternative credit data.
+
+---
+
+## 2. Product Overview
 
 **Trace** is an AI-powered economic platform that turns invisible informal economic activity into a verifiable digital identity — giving African traders, gig workers, and job seekers access to financial services they have always been excluded from.
 
@@ -95,7 +168,7 @@ Everything feeds into and builds from one central record: **The Economic Identit
 
 ---
 
-## 2. The Problem We Are Solving
+## 3. The Problem We Are Solving
 
 - The informal economy provides **up to 70% of employment in sub-Saharan Africa**
 - Informal cross-border trade in SADC alone is valued at **$17.6 billion annually**
@@ -107,7 +180,7 @@ Everything feeds into and builds from one central record: **The Economic Identit
 
 ---
 
-## 3. System Philosophy
+## 4. System Philosophy
 
 > Trace is not a collection of features. It is a **data pipeline.**
 
@@ -125,56 +198,55 @@ Every feature, every integration, every partnership must pass this test. The mom
 
 ---
 
-## 4. Tech Stack
+## 5. Tech Stack
 
 | Layer | Technology | Why |
 |---|---|---|
-| Frontend | React.js (PWA) | Mobile-first, works on low-end Android, no App Store needed |
-| Backend | Node.js + Express | REST API, webhook handling, Squad integration, LLM calls |
-| Primary Database | PostgreSQL | Relational data, ACID compliance, financial integrity |
+| Frontend | Next.js 15 (React 19, TypeScript) | Server components, mobile-first, works on low-end Android |
+| Backend | NestJS 11 (TypeScript) | Modular architecture, dependency injection, REST API + webhook handling |
+| Primary Database | PostgreSQL (Neon serverless) | Relational data, ACID compliance, financial integrity |
+| ORM | Prisma | Type-safe queries, migrations, schema management |
 | Cache + Queue | Redis + BullMQ | Cache scores, async job queue for score recalculation |
-| AI Microservice | Python + FastAPI | Scoring + matching — needs scikit-learn, pandas, numpy |
-| Internal Transport | gRPC | Node → Python, faster than REST, type-safe, HTTP/2 |
-| Payments | Squad API | Virtual accounts, payment initiation, webhooks, escrow |
-| Auth | JWT + OTP (phone-based) | Phone number is the primary identifier, not email |
-| Process Manager | PM2 | Keeps Node and Python alive on VPS |
-| Reverse Proxy | Nginx (1.13.10+) | Serves React, proxies Node (proxy_pass) and Python (grpc_pass) |
+| AI Microservice | Python + FastAPI | Scoring + matching — scikit-learn, sentence-transformers, PyTorch |
+| Internal Transport | gRPC (HTTP/2) | NestJS → Python, faster than REST, type-safe, shared proto contract |
+| Payments | Squad API | Virtual accounts, payment links, escrow, webhooks, transfers |
+| Auth | Phone OTP + JWT + HttpOnly Cookies | Phone number is the primary identifier, not email |
+| SMS | Twilio / Textbelt | Configurable via `SMS_PROVIDER` env var |
+| Containers | Docker + Docker Compose | All three services containerised and orchestrated |
+| CI/CD | GitHub Actions → Docker Hub → SSH deploy | Push to main → build images → pull and restart on VPS |
+| Reverse Proxy | Nginx | Serves Next.js, proxies NestJS API and AI service HTTP |
 
 ### Service Communication
 ```
-React (client)
-    ↓  HTTPS + JWT          ← public REST
-Node/Express (server)
-    ↓  gRPC + shared secret ← internal, type-safe
-Python FastAPI (ai-service)
+Next.js (frontend — port 3001)
+    ↓  HTTPS + JWT cookie       ← public REST
+NestJS (backend — port 5001)
+    ↓  gRPC port 50051          ← internal, type-safe
+Python FastAPI (ai-service — port 8000)
     ↓
-PostgreSQL + Redis
+PostgreSQL (Neon) + Redis
 ```
-
-### Hybrid AI Approach
-- **Python** — credit scoring model and matching algorithm (scikit-learn, pandas)
-- **Node** — market intelligence text generation via LLM API call (no extra service needed)
 
 ### Directory Structure
 ```
-trace/
-├── client/        # React PWA
-├── server/        # Node.js + Express
-└── ai-service/    # Python FastAPI (gRPC server)
+squad-hackathon/
+├── frontend/      # Next.js 15 application
+├── backend/       # NestJS 11 REST API + gRPC client
+└── ai-service/    # Python FastAPI (HTTP :8000) + gRPC server (:50051)
 ```
 
-### VPS Startup Order
+### Docker Startup Order
 ```
-1. PostgreSQL   → must be up before Node connects
-2. Redis        → must be up before BullMQ initialises
-3. Python       → must be up before Node makes gRPC calls
-4. Node         → starts last
-5. Nginx        → reload config
+1. PostgreSQL (Neon)  → external managed; must be reachable before backend starts
+2. Redis              → must be up before BullMQ initialises
+3. ai-service         → must be up before backend makes gRPC calls
+4. backend            → starts after ai-service
+5. frontend           → starts last; calls backend API
 ```
 
 ---
 
-## 5. Database Design (PostgreSQL)
+## 6. Database Design (PostgreSQL)
 
 ### Table 1: `users`
 ```sql
@@ -449,7 +521,7 @@ partner_institutions → loan_applications (1:many)
 
 ---
 
-## 6. API Structure
+## 7. API Structure
 
 All routes prefixed with `/api/v1`
 
@@ -457,42 +529,72 @@ All routes prefixed with `/api/v1`
 ```
 POST  /auth/register
 POST  /auth/login
-POST  /auth/verify-phone
-POST  /auth/refresh
+POST  /auth/logout
+POST  /auth/verify-otp
+POST  /auth/resend-otp
+POST  /auth/onboard
 ```
 
-### Profile
+### Users
 ```
-GET   /profile/:userId
-PUT   /profile/:userId
-GET   /profile/:userId/score
-POST  /profile/vouch
-GET   /profile/:userId/vouches
-GET   /profile/:userId/data-access-log
+GET   /users/me
+PATCH /users/me
+POST  /users/change-password
+```
+
+### Economic Profile
+```
+GET   /economic-profile/me
+PATCH /economic-profile/me/skills
+POST  /economic-profile/me/recalculate
 ```
 
 ### Opportunities
 ```
-GET   /opportunities
 POST  /opportunities
-GET   /opportunities/:id
+GET   /opportunities
+GET   /opportunities/my-posts
+GET   /opportunities/my-applications
+GET   /opportunities/matches          ← AI-matched opportunities (gRPC)
 POST  /opportunities/:id/apply
-POST  /opportunities/:id/select/:uid
-POST  /opportunities/:id/complete
+POST  /opportunities/:id/approve
+POST  /opportunities/:id/confirm
+POST  /opportunities/:id/dispute
+POST  /opportunities/:id/mark-done
 ```
 
-### Finance
+### Transactions
 ```
-GET   /finance/eligibility
-GET   /finance/products
-POST  /finance/loan/apply
-GET   /finance/loans
+POST  /transactions
+GET   /transactions
+GET   /transactions/:id
+PATCH /transactions/:id/status
 ```
 
-### Intelligence
+### Squad Payments
 ```
-GET   /intelligence/feed
-GET   /intelligence/:category
+GET   /squad/banks
+POST  /squad/virtual-accounts
+POST  /squad/payment-links
+POST  /squad/accounts/resolve
+POST  /squad/transfers
+POST  /squad/transfers/requery
+GET   /squad/transfers
+POST  /webhooks/squad               ← validates Squad signature
+```
+
+### Vouch
+```
+POST  /vouch
+GET   /vouch/received
+GET   /vouch/given
+DELETE /vouch/:id
+```
+
+### Upload
+```
+POST  /upload
+DELETE /upload/:filename
 ```
 
 ### Partner API (Financial Institutions)
@@ -501,45 +603,41 @@ GET   /partner/credit-profile/:phone     ← requires partner API key
 POST  /partner/loan-outcome              ← institution reports repayment result
 ```
 
-### Webhooks
-```
-POST  /webhooks/squad
-```
-
 ---
 
-## 7. Core Engines
+## 8. Core Engines
 
 ### Engine 1: Identity Engine
-Triggered after every significant event.
+Triggered after every significant event via BullMQ queue.
 
 1. Fetch transaction aggregates from `transactions`
 2. Fetch vouch data from `vouches`
-3. Call Python via gRPC → `CalculateScore`
+3. Call Python AI service via gRPC → `ScoringService.ScoreUser`
 4. Write new score to `economic_profiles`
 5. Invalidate Redis cache
 6. Notify user if eligibility threshold crossed
 
 ### Engine 2: Matching Engine
-On request from Work Matcher.
+On request from Work Matcher (`GET /opportunities/matches`).
 
 1. Fetch user skills, location, language, history
 2. Fetch all open opportunities
-3. Call Python via gRPC → `MatchOpportunities`
-4. Return ranked list with match percentages
+3. Call Python AI service via gRPC → `MatchingService.MatchOpportunities`
+4. Enrich results with full opportunity details from Prisma
+5. Return ranked list with match scores merged into opportunity objects
 
 ### Engine 3: Intelligence Engine
 Weekly cron — Sunday midnight.
 
-1. Query `transactions` grouped by category and location for past week
-2. Call Python AI service → aggregate numbers
-3. Call LLM API from Node → generate plain-English insights
+1. Query `transactions` grouped by category and location for the past week
+2. Compute demand index vs. 4-week rolling average
+3. Generate plain-English insights
 4. Write to `market_intelligence`
 5. Clear Redis cache
 
 ---
 
-## 8. Squad API Integration
+## 9. Squad API Integration
 
 | Touch Point | What Happens | Squad Feature |
 |---|---|---|
@@ -550,64 +648,83 @@ Weekly cron — Sunday midnight.
 | Loan disbursed by partner | Funds sent to virtual account | Transfer API |
 
 ### Webhook Handler
-```javascript
-router.post('/squad', async (req, res) => {
+```typescript
+// NestJS controller — POST /api/v1/webhooks/squad
+@Post('squad')
+async handleSquadWebhook(@Req() req: Request, @Res() res: Response) {
   const signature = req.headers['x-squad-signature'];
-  if (!validateSquadSignature(req.body, signature)) {
+  if (!this.squadService.validateSignature(req.body, signature)) {
     return res.status(401).json({ error: 'Invalid signature' });
   }
 
-  res.status(200).json({ received: true }); // always respond immediately
+  res.status(200).json({ received: true }); // respond immediately
 
   const event = req.body;
   switch (event.type) {
     case 'payment.completed':
-      await TransactionService.record(event);
-      await queue.add('recalculate-score', { userId: event.metadata.userId });
+      await this.transactionService.record(event);
+      await this.queue.add('recalculate-score', { userId: event.metadata.userId });
       break;
     case 'escrow.released':
-      await TransactionService.record(event);
-      await queue.add('recalculate-score', { userId: event.metadata.workerId });
+      await this.transactionService.record(event);
+      await this.queue.add('recalculate-score', { userId: event.metadata.workerId });
       break;
   }
-});
+}
 ```
 
 > Respond 200 immediately. Push to BullMQ. Never block the webhook handler.
 
 ---
 
-## 9. AI & Scoring Layer
+## 10. AI & Scoring Layer
 
 ### gRPC Proto Definition
 ```protobuf
 syntax = "proto3";
 package trace;
 
+// ── Scoring Service ─────────────────────────────────────────────
 service ScoringService {
-  rpc CalculateScore (ScoreRequest) returns (ScoreResponse);
-  rpc MatchOpportunities (MatchRequest) returns (MatchResponse);
+  rpc ScoreUser (ScoreRequest) returns (ScoreResponse);
 }
 
 message ScoreRequest {
-  string user_id = 1;
-  double total_volume = 2;
-  int32 transaction_count = 3;
-  int32 vouch_count = 4;
-  int32 verified_vouch_count = 5;
-  double profile_completeness = 6;
-  double monthly_variance = 7;
-  int32 gigs_completed = 8;
+  string user_id                    = 1;
+  float  transaction_history_score  = 2;
+  float  platform_activity_score    = 3;
+  float  community_vouching_score   = 4;
+  float  profile_completeness_score = 5;
 }
 
 message ScoreResponse {
-  int32 identity_score = 1;
-  double transaction_score = 2;
-  double activity_score = 3;
-  double vouch_score = 4;
-  double profile_score = 5;
-  string risk_tier = 6;
-  double max_recommended_loan = 7;
+  string user_id       = 1;
+  float  identity_score = 2;
+  string risk_tier     = 3;
+}
+
+// ── Matching Service ─────────────────────────────────────────────
+service MatchingService {
+  rpc MatchOpportunities (MatchRequest) returns (MatchResponse);
+}
+
+message MatchRequest {
+  string          user_id   = 1;
+  repeated string skills    = 2;
+  float           latitude  = 3;
+  float           longitude = 4;
+  repeated string languages = 5;
+}
+
+message MatchedOpportunity {
+  string opportunity_id = 1;
+  float  match_score    = 2;
+  string title          = 3;
+}
+
+message MatchResponse {
+  string                    user_id       = 1;
+  repeated MatchedOpportunity opportunities = 2;
 }
 ```
 
@@ -615,7 +732,7 @@ message ScoreResponse {
 | Signal | Weight | What It Measures |
 |---|---|---|
 | Transaction history | 40% | Volume, frequency, consistency, recency |
-| Community vouching | 25% | Verified vouches (transacted via Squad) worth 3x |
+| Community vouching | 25% | Verified vouches (transacted via Squad) worth 3× |
 | Platform activity | 20% | Gigs completed, logins, applications |
 | Profile completeness | 15% | Honesty and thoroughness |
 
@@ -623,21 +740,27 @@ message ScoreResponse {
 | Score | Tier | Max Recommended Loan |
 |---|---|---|
 | 0–29 | High | Not eligible |
-| 30–54 | Medium | ₦50,000 |
-| 55–74 | Low | ₦200,000 |
-| 75–100 | Very Low | ₦500,000 |
+| 30–49 | Medium | ₦50,000 |
+| 50–69 | Low | ₦200,000 |
+| 70–100 | Very Low | ₦500,000 |
 
 ### Matching Formula
 | Factor | Weight |
 |---|---|
-| Skill overlap | 40% |
-| Proximity | 25% |
+| Skill overlap (AfroXLM-R semantic similarity) | 40% |
+| Proximity (Haversine distance, 100 km radius) | 25% |
 | Historical success rate | 20% |
 | Language match | 15% |
 
+### Embedding Model
+- **Model:** `Davlan/afro-xlmr-large` (AfroXLM-R)
+- **Languages:** 17 African languages including English, Yoruba, Hausa, Igbo, Pidgin, Swahili, Amharic, and more
+- **Why:** Skill descriptions in Nigeria are often multilingual. Standard English-only models miss semantic similarity across code-switched or local-language text.
+- **Performance optimisation:** User skill embeddings are pre-computed once before the matching loop, then reused across all opportunity comparisons — reducing encode calls from O(N×M) to O(N+M).
+
 ---
 
-## 10. The Learning Loop
+## 11. The Learning Loop
 
 ### Loop 1: Matching Model (Monthly)
 **Data source:** `gig_outcomes` table — internal
@@ -664,7 +787,7 @@ This is the exchange: partners get better borrowers. Trace gets smarter credit s
 
 ---
 
-## 11. Trade Intelligence Data Sources
+## 12. Trade Intelligence Data Sources
 
 ### Primary — Internal Squad Transaction Data
 Every Squad transaction on the platform reveals: category, location, amount, timing, frequency. This is the core source. No external dependency needed from day one.
@@ -682,7 +805,7 @@ Every Squad transaction on the platform reveals: category, location, amount, tim
 
 ---
 
-## 12. The Partner API — Financial Institutions
+## 13. The Partner API — Financial Institutions
 
 ### What Trace Exposes
 ```
@@ -741,7 +864,7 @@ Authorization: Bearer {partner-api-key}
 
 ---
 
-## 13. Job Supply Strategy~
+## 14. Job Supply Strategy
 
 ### Primary — Direct Employer Onboarding
 SMEs and market associations sign up on Trace and post opportunities directly. All payments go through Squad escrow. Everything stays in the loop.
@@ -750,23 +873,22 @@ SMEs and market associations sign up on Trace and post opportunities directly. A
 Computer Village, Alaba International Market, Oshodi Traders Association post vacancies exclusively through Trace.
 
 ### Cold Start
-Seed with realistic fake listings at hackathon stage. For real launch, direct outreach to 50+ SMEs in Lagos before opening to workers.
+Seed with realistic listings at hackathon stage. For real launch, direct outreach to 50+ SMEs in Lagos before opening to workers.
 
 ### The Rule
 > **No external job board integrations.** Jobberman and similar platforms redirect users off Trace — transactions escape the platform, Squad never sees them, the scoring engine gets no data. They do not belong in the architecture.
 
 ---
 
-## 14. Accessibility Strategy
+## 15. Accessibility Strategy
 
 ### Target User Reality
 Trace's users already use WhatsApp, Opay, Palmpay, Kuda, and POS terminals daily. They are **financially** excluded, not digitally excluded. A WhatsApp bot adds months of development to solve a problem that doesn't exist for this audience.
 
-### PWA-First
+### Mobile-First Web
 - Works on low-end Android (2G/3G optimised)
 - No App Store download required
-- Offline capability — key screens cached
-- Lightweight bundle
+- Lightweight Next.js bundle with server components
 
 ### Language Support
 | Code | Language |
@@ -779,7 +901,7 @@ Trace's users already use WhatsApp, Opay, Palmpay, Kuda, and POS terminals daily
 
 ---
 
-## 15. The Full Data Flow
+## 16. The Full Data Flow
 
 ```
 User registers → Squad virtual account created
@@ -792,9 +914,9 @@ User selected → employer deposits to Squad escrow
         ↓
 Gig completed → both confirm → Trace calls Squad → escrow released
         ↓
-Squad fires webhook → Node responds 200 immediately
+Squad fires webhook → NestJS responds 200 immediately
         ↓
-BullMQ job queued → Python calculates new score via gRPC
+BullMQ job queued → Python calculates new score via gRPC (ScoringService.ScoreUser)
         ↓
 Score written to DB → Redis cache cleared → user notified
         ↓
@@ -809,11 +931,11 @@ POST /partner/loan-outcome → label saved → monthly retraining triggered
 
 ---
 
-## 16. Build Order & Team Responsibilities
+## 17. Build Order & Team Responsibilities
 
 | Day | Focus | Layer |
 |---|---|---|
-| Day 1 AM | PostgreSQL setup, all tables, seed data | Backend |
+| Day 1 AM | PostgreSQL setup, Prisma schema, seed data | Backend |
 | Day 1 AM | User registration + JWT auth + OTP | Backend |
 | Day 1 PM | Squad virtual account creation on signup | Backend |
 | Day 1 PM | gRPC proto definition + Python service scaffold | AI + Backend |
@@ -824,7 +946,7 @@ POST /partner/loan-outcome → label saved → monthly retraining triggered
 | Day 2 PM | Work Matcher UI + Finance Gateway UI | Frontend |
 | Day 3 AM | Opportunity posting + gRPC Matching Engine | Backend + AI |
 | Day 3 AM | Vouch system | Backend |
-| Day 3 PM | Market Intelligence feed + LLM insight generation | Backend |
+| Day 3 PM | Market Intelligence feed + insight generation | Backend + AI |
 | Day 3 PM | Partner API endpoints | Backend |
 | Day 3 PM | Trade Intel UI + data access log UI | Frontend |
 | Day 4 AM | End-to-end integration | Full Team |
@@ -832,7 +954,7 @@ POST /partner/loan-outcome → label saved → monthly retraining triggered
 
 ---
 
-## 17. Demo Strategy
+## 18. Demo Strategy
 
 > **Do not demo features. Demo a person's transformation.**
 
@@ -840,7 +962,7 @@ POST /partner/loan-outcome → label saved → monthly retraining triggered
 > **Tunde, 27. Phone repair technician. Surulere, Lagos. No bank account. No credit history.**
 
 ### The Demo Journey (5 minutes)
-1. Tunde opens Trace PWA on Android → onboarding → consents to data sharing → gets virtual account
+1. Tunde opens Trace on his phone → onboarding → consents to data sharing → gets virtual account
 2. Sees matched gig: "Phone screen repair, Yaba, ₦8,000" — 91% match
 3. Employer has already locked ₦8,000 in Squad escrow
 4. Tunde accepts → completes gig → both confirm
@@ -853,16 +975,18 @@ POST /partner/loan-outcome → label saved → monthly retraining triggered
 
 ---
 
-## 18. Colour Palette
+## 19. Colour Palette
 
 | Role | Colour | Hex |
 |---|---|---|
-| Primary | Deep Forest Green | `#1B4332` |
-| Accent | Warm Gold | `#F4A826` |
+| Primary | Slate (near-black) | `#020617` |
+| Accent | Orange | `#F97316` |
 | Surface | Off White / Cream | `#F9F6F0` |
 | Text | Rich Charcoal | `#1A1A1A` |
 | Success | Fresh Green | `#2D6A4F` |
 | Muted | Warm Grey | `#9E9E9E` |
+
+> The orange accent (`#F97316` — Tailwind `orange-500`) is used for CTAs, score highlights, and active states throughout the UI. The off-white surface (`#F9F6F0`) gives the platform a warm, trustworthy feel suited to the informal economy audience.
 
 ---
 
