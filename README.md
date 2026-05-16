@@ -70,7 +70,7 @@ Everything feeds into one central record: **The Economic Identity Profile** — 
 ## Repository Structure
 
 ```
-squad-hackathon/
+Trace/
 ├── frontend/                  # Next.js application
 ├── backend/                   # NestJS REST API + gRPC client
 ├── ai-service/                # FastAPI HTTP + gRPC server (AI/ML)
@@ -206,16 +206,6 @@ Push to `main` triggers the GitHub Actions workflow in `.github/workflows/deploy
 | Platform Activity | 20% | Gigs completed, applications, logins |
 | Profile Completeness | 15% | Identity verification and profile depth |
 
-### Risk Tiers
-
-| Score | Tier | Max Recommended Loan |
-|-------|------|---------------------|
-| 0–29 | High | Not eligible |
-| 30–49 | Medium | ₦50,000 |
-| 50–69 | Low | ₦200,000 |
-| 70–100 | Very Low | ₦500,000 |
-
----
 
 ## Further Reading
 

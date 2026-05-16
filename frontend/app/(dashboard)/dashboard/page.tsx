@@ -124,7 +124,7 @@ export default function DashboardPage() {
   const firstName = user?.full_name?.split(' ')[0] ?? 'there'
   const score = profile?.identity_score ?? 0
   const tier = RISK_TIER_LABEL[profile?.risk_tier ?? 'high'] ?? 'Starter'
-  const scorePct = Math.round((score / 1000) * 100)
+  const scorePct = Math.min(score, 100)
 
   const walletBalance = wallet?.balance ?? 0
   const isTrader = user?.persona === 'trader'
@@ -320,7 +320,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Score Build Card (only if score is low) ───────────────── */}
-      {!profileLoading && score < 400 && (
+      {!profileLoading && score < 40 && (
         <div className="bg-white rounded-2xl border border-trace-border p-5 flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-trace-accent/10 flex items-center justify-center flex-shrink-0">
             <TrendingUp className="h-6 w-6 text-trace-accent" />
